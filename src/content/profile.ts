@@ -8,7 +8,7 @@ export interface Profile {
   email: string;
   github: string;
   linkedin: string;
-  /** Set to '/resume.pdf' once public/resume.pdf exists. */
+  /** Google Drive share link to the resume PDF. */
   resumeUrl?: string;
   summary: string;
   about: string[];
@@ -23,7 +23,9 @@ export const profile: Profile = {
   email: 'sn.s@northeastern.edu',
   github: 'https://github.com/sujay-sn',
   linkedin: 'https://linkedin.com/in/sujay-s-n',
-  // TODO(sujay): add public/resume.pdf, then set resumeUrl: '/resume.pdf'.
+  // TODO(sujay): placeholder. Replace with the Google Drive share link
+  // ("Anyone with the link", Viewer) before launch.
+  resumeUrl: 'https://drive.google.com/file/d/RESUME_FILE_ID/view',
   summary:
     "Master's student in Computer Software Engineering at Northeastern University, graduating December 2026. Nearly three years at Accenture building healthcare platforms, and most recently distributed pipelines and LLM automation at GeodeChain.",
   about: [
