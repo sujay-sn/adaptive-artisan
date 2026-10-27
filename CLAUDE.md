@@ -15,7 +15,8 @@ The dev machine has `NODE_ENV=production` set globally. `.npmrc` forces devDepen
 - **Tokens only.** Colors come from MD3 roles (`bg-surface-container`, `text-on-primary`). The default Tailwind palette, font scale, radii, and breakpoints are cleared on purpose. Never hardcode a color except a seed swatch.
 - **One theme engine.** `src/theme/engine.ts` is pure and runs in Node and the browser. The build plugin and the app both use it. Do not duplicate palette logic.
 - **Weight through `font-weight`, width through `font-stretch`.** Only ROND and GRAD go in `font-variation-settings`.
-- **Motion uses `src/motion/tokens.ts`.** Spatial springs may overshoot, effects springs never do. Animate transform, opacity, and clip-path only. Handle reduced motion per component; never add a global duration override.
+- **Motion uses the MD3 tokens.** In CSS, use `var(--md-spring-<kind>-<speed>)` with its `-duration` partner; the build generates both from `src/motion/tokens.ts`. Spatial springs may overshoot, effects springs never do. Animate transform, opacity, and clip-path for anything large or frequent; small controls may also animate border-radius (the press morph), box-shadow, and their own width (the chip check). Reach for the Motion library only for real layout animations, and load it on demand: it costs about 45 KB gzipped. Handle reduced motion per component; never add a global duration override.
+- **Components live in `src/ui`.** Prefer native elements: `<dialog>` for dialogs, a checkbox with `role="switch"` for switches. Use Base UI only where nothing native fits. While `npm run dev` runs, `/?gallery` shows every component.
 - **Icons** must be listed in `src/ui/icons.ts` before use. Decorative icons stay `aria-hidden`.
 - **No fake progress.** Never add artificial delays or simulated loading.
 - **Content lives in `src/content` and follows the resume.** Every number on the site must also appear on the resume. No self-assessed skill levels.

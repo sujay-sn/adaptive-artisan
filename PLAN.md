@@ -133,7 +133,14 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 
 ### Day 2: Component library
 
-Button (five variants), FAB, Icon Button, Card, Chip, Switch (expressive thumb with icon), Text Field, Dialog. State layers and spring press feedback on all of them. Navigation: top app bar, rail, sliding active pill, blur on scroll, one config. Shape-morph utility with normalized shapes. Cards must stay distinguishable from the page in dark mode, where surface-container-low is nearly invisible against surface. The extra-large window class (1600px+) gets a wider container; the 4K monitor is the test case.
+- [x] Spring tokens as CSS `linear()` easings, generated from the MD3 values at build time
+- [x] Button (five variants, two sizes), Icon Button (with toggle), FAB (three sizes, extended), Card (elevated, filled, outlined, tonal), Chips (static, assist, filter), Switch with icons, Text Field and Text Area (filled, outlined, validation), Dialog
+- [x] State layers on every interactive component; Expressive shape morph on press
+- [x] Navigation: sticky top app bar with a modal navigation sheet on compact and medium, rail on expanded and up, one sliding indicator, one config
+- [x] Shape library: 13 shapes sampled at the same 144 points, so any two can morph
+- [x] Cards on the page are filled (surface-container-highest) so they read in dark mode; container widens at extra-large
+- [x] Component gallery at `/?gallery` in development
+- [ ] Check in a browser: gallery and page on the 4K monitor, laptop, and phone; keyboard through the nav sheet and dialog; light and dark
 
 ### Day 3: Personalization Hub
 
@@ -202,3 +209,9 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **material-color-utilities 0.4.0 ships extensionless ESM imports** that Node rejects. `scripts/fix-mcu-esm.mjs` adds the `.js` extensions on postinstall and becomes a no-op once upstream fixes it.
 - **CSS target set explicitly** in `vite.config.ts`, because Vite's default target lowered `light-dark()` into a polyfill.
 - **`NODE_ENV=production` is set globally on the dev machine**, which makes npm skip devDependencies. The project `.npmrc` sets `include=dev` as a workaround.
+- **Native `<dialog>` instead of Base UI's Dialog.** The browser provides the inert page, focus containment, top-layer stacking, Esc, and focus return. Base UI stays for components with no native equivalent, like sliders.
+- **The switch is a native checkbox with `role="switch"`,** the same semantics the switch polyfill would add, without loading it.
+- **Springs run in CSS.** MD3 spring tokens become `linear()` easings at build time, so components need no animation JavaScript.
+- **Motion loads only where layout animation needs it.** Using it for the rail indicator pushed the bundle from 99 KB to 146 KB gzipped; a single CSS-sprung indicator does the same job.
+- **The top app bar's scrolled tint uses a scroll-state container query** (Chromium today). Other browsers keep a solid surface, which is always legible.
+- **Shapes are radial approximations** of the MD3 shape library, not exact ports, so every shape shares one point count and any two can morph.
