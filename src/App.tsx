@@ -2,19 +2,22 @@ import type { ReactNode } from 'react';
 import { education, experience, profile, sectionLabel, type SectionId } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { SKILL_CATEGORIES, skills } from '@/content/skills';
+import { container } from '@/layout/container';
+import { NavigationRail } from '@/layout/NavigationRail';
+import { TopAppBar } from '@/layout/TopAppBar';
+import { useActiveSection } from '@/layout/useActiveSection';
 import { ThemeControls } from '@/theme/ThemeControls';
-import { Icon } from '@/ui/Icon';
-import type { IconName } from '@/ui/icons';
+import { Button } from '@/ui/Button';
+import { Card } from '@/ui/Card';
+import { Chip } from '@/ui/Chip';
 
-// Day 1 foundation page: real content on the real tokens, before any
-// components exist. Each section is replaced by its designed version later in
-// the plan, so this stays deliberately plain.
-
-const container = 'mx-auto w-full max-w-[75rem] px-4 medium:px-6 expanded:px-12';
+// The page on the real components. Each section is still a straightforward
+// layout; the designed hero, constellation, timeline, and project grid
+// replace these one by one.
 
 function Section({ id, children }: { id: SectionId; children: ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-4 py-16 expanded:py-24">
+    <section id={id} tabIndex={-1} aria-labelledby={`${id}-title`} className="py-16 expanded:py-24">
       <div className={container}>
         <h2 id={`${id}-title`} className="font-display text-headline-large text-on-surface expanded:text-display-small">
           {sectionLabel(id)}
@@ -25,27 +28,11 @@ function Section({ id, children }: { id: SectionId; children: ReactNode }) {
   );
 }
 
-function LinkButton({ href, icon, children }: { href: string; icon?: IconName; children: ReactNode }) {
-  const external = href.startsWith('http');
-  return (
-    <a
-      href={href}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noopener noreferrer' : undefined}
-      className="inline-flex min-h-12 items-center gap-2 rounded-full border border-outline px-5 text-label-large text-primary hover:bg-primary/8"
-    >
-      {icon && <Icon name={icon} size={18} />}
-      {children}
-      {external && <span className="sr-only"> (opens in a new tab)</span>}
-    </a>
-  );
-}
-
 function Hero() {
   return (
-    <header id="home" className="flex min-h-[85svh] flex-col justify-end pt-24 pb-16">
+    <section id="home" tabIndex={-1} aria-labelledby="home-title" className="flex min-h-[85svh] flex-col justify-end pt-16 pb-16 expanded:pt-24">
       <div className={container}>
-        <h1 className="font-display text-hero text-primary [font-stretch:82%] rond-40">
+        <h1 id="home-title" className="font-display text-hero text-primary [font-stretch:82%] rond-40">
           <span className="block">Sujay</span>
           <span className="block">S N</span>
         </h1>
@@ -56,21 +43,21 @@ function Hero() {
         <div className="mt-10">
           <ThemeControls />
         </div>
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap gap-3">
           {profile.resumeUrl && (
-            <LinkButton href={profile.resumeUrl} icon="download">
+            <Button href={profile.resumeUrl} icon="description">
               Resume
-            </LinkButton>
+            </Button>
           )}
-          <LinkButton href={profile.github} icon="code">
+          <Button href={profile.github} variant="outlined" icon="code">
             GitHub
-          </LinkButton>
-          <LinkButton href={profile.linkedin} icon="person">
+          </Button>
+          <Button href={profile.linkedin} variant="outlined" icon="person">
             LinkedIn
-          </LinkButton>
+          </Button>
         </div>
       </div>
-    </header>
+    </section>
   );
 }
 
@@ -89,7 +76,7 @@ function About() {
 function Skills() {
   return (
     <Section id="skills">
-      <div className="grid gap-10 medium:grid-cols-2">
+      <div className="grid gap-10 medium:grid-cols-2 large:grid-cols-3">
         {SKILL_CATEGORIES.map((category) => (
           <div key={category.id}>
             <h3 className="text-title-medium text-on-surface">{category.label}</h3>
@@ -97,11 +84,8 @@ function Skills() {
               {skills
                 .filter((skill) => skill.category === category.id)
                 .map((skill) => (
-                  <li
-                    key={skill.id}
-                    className="rounded-sm border border-outline-variant px-3 py-1.5 text-label-large text-on-surface-variant"
-                  >
-                    {skill.name}
+                  <li key={skill.id}>
+                    <Chip label={skill.name} />
                   </li>
                 ))}
             </ul>
@@ -132,7 +116,13 @@ function Experience() {
                   <li key={highlight}>{highlight}</li>
                 ))}
               </ul>
-              <p className="mt-4 text-label-medium text-on-surface-variant">{job.technologies.join(', ')}</p>
+              <ul className="mt-5 flex flex-wrap gap-2" aria-label="Technologies">
+                {job.technologies.map((technology) => (
+                  <li key={technology}>
+                    <Chip label={technology} />
+                  </li>
+                ))}
+              </ul>
             </div>
           </li>
         ))}
@@ -148,14 +138,13 @@ function Projects() {
         {projects.map((project, index) => {
           const featured = index === 0;
           return (
-            <article
+            <Card
               key={project.id}
+              as="article"
+              variant="filled"
+              tone={featured ? 'primary' : 'surface'}
               aria-labelledby={`${project.id}-title`}
-              className={
-                featured
-                  ? 'rounded-2xl bg-primary-container p-6 text-on-primary-container expanded:col-span-2 expanded:p-10'
-                  : 'rounded-xl bg-surface-container-low p-6 text-on-surface expanded:p-8'
-              }
+              className={featured ? 'rounded-xl p-6 expanded:col-span-2 expanded:rounded-2xl expanded:p-10' : 'rounded-lg-plus p-6 expanded:p-8'}
             >
               <h3 id={`${project.id}-title`} className="font-display text-headline-medium">
                 {project.title}
@@ -175,18 +164,18 @@ function Projects() {
               {(project.repoUrl || project.demoUrl) && (
                 <div className="mt-6 flex flex-wrap gap-3">
                   {project.demoUrl && (
-                    <LinkButton href={project.demoUrl} icon="open_in_new">
+                    <Button href={project.demoUrl} icon="open_in_new">
                       Live demo
-                    </LinkButton>
+                    </Button>
                   )}
                   {project.repoUrl && (
-                    <LinkButton href={project.repoUrl} icon="code">
+                    <Button href={project.repoUrl} variant="outlined" icon="code">
                       Source
-                    </LinkButton>
+                    </Button>
                   )}
                 </div>
               )}
-            </article>
+            </Card>
           );
         })}
       </div>
@@ -209,11 +198,8 @@ function Education() {
               {degree.summary && <p className="mt-4 max-w-[65ch] text-body-large text-on-surface">{degree.summary}</p>}
               <ul className="mt-4 flex flex-wrap gap-2" aria-label="Coursework">
                 {degree.coursework.map((course) => (
-                  <li
-                    key={course}
-                    className="rounded-sm bg-secondary-container px-3 py-1.5 text-label-large text-on-secondary-container"
-                  >
-                    {course}
+                  <li key={course}>
+                    <Chip label={course} />
                   </li>
                 ))}
               </ul>
@@ -232,21 +218,22 @@ function Contact() {
         I graduate in December 2026 and I'm looking for full-time software engineering roles. Email is the fastest way to reach me.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <LinkButton href={`mailto:${profile.email}`} icon="mail">
+        <Button href={`mailto:${profile.email}`} icon="mail">
           {profile.email}
-        </LinkButton>
-        <LinkButton href={profile.linkedin} icon="person">
+        </Button>
+        <Button href={profile.linkedin} variant="outlined" icon="person">
           LinkedIn
-        </LinkButton>
-        <LinkButton href={profile.github} icon="code">
+        </Button>
+        <Button href={profile.github} variant="outlined" icon="code">
           GitHub
-        </LinkButton>
+        </Button>
       </div>
     </Section>
   );
 }
 
 export function App() {
+  const active = useActiveSection();
   return (
     <>
       <a
@@ -255,26 +242,29 @@ export function App() {
       >
         Skip to content
       </a>
-      <main id="main">
-        <Hero />
-        <About />
-        <Skills />
-        <Experience />
-        <Projects />
-        <Education />
-        <Contact />
-      </main>
-      <footer className="border-t border-outline-variant py-10">
-        <div className={`${container} flex flex-wrap items-center justify-between gap-4 text-body-medium text-on-surface-variant`}>
-          <p>
-            &copy; {new Date().getFullYear()} {profile.name}
-          </p>
-          <a href="#home" className="inline-flex min-h-12 items-center gap-2 rounded-full px-4 hover:bg-on-surface/8">
-            <Icon name="arrow_upward" size={18} />
-            Back to top
-          </a>
-        </div>
-      </footer>
+      <TopAppBar active={active} />
+      <NavigationRail active={active} />
+      <div className="expanded:ps-24 large:ps-[13.75rem]">
+        <main id="main">
+          <Hero />
+          <About />
+          <Skills />
+          <Experience />
+          <Projects />
+          <Education />
+          <Contact />
+        </main>
+        <footer className="border-t border-outline-variant py-10">
+          <div className={`${container} flex flex-wrap items-center justify-between gap-4 text-body-medium text-on-surface-variant`}>
+            <p>
+              &copy; {new Date().getFullYear()} {profile.name}
+            </p>
+            <Button href="#home" variant="text" icon="arrow_upward">
+              Back to top
+            </Button>
+          </div>
+        </footer>
+      </div>
     </>
   );
 }
