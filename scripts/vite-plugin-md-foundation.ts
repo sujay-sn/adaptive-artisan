@@ -2,6 +2,7 @@
 //
 //  - the default MD3 theme as an inline <style>, so the very first paint is
 //    already in the right colors with no JavaScript involved
+//  - the MD3 spring tokens as CSS linear() easings
 //  - the Material Symbols stylesheet, subset by Google Fonts to only the icons
 //    listed in src/ui/icons.ts
 //
@@ -10,6 +11,7 @@
 import type { Plugin } from 'vite';
 import { DEFAULT_THEME, themeStylesheet } from '../src/theme/engine.ts';
 import { ICON_NAMES } from '../src/ui/icons.ts';
+import { springStylesheet } from '../src/motion/tokens.ts';
 
 const THEME_MARKER = '<!-- md:default-theme -->';
 const ICONS_MARKER = '<!-- md:icon-font -->';
@@ -30,7 +32,10 @@ export function mdFoundation(): Plugin {
         if (!html.includes(THEME_MARKER) || !html.includes(ICONS_MARKER)) {
           throw new Error('index.html is missing an md: marker comment');
         }
-        const theme = `<style id="md-default-theme">\n${themeStylesheet(DEFAULT_THEME)}\n</style>`;
+        const theme = [
+          `<style id="md-default-theme">\n${themeStylesheet(DEFAULT_THEME)}\n</style>`,
+          `<style id="md-motion">\n${springStylesheet()}\n</style>`,
+        ].join('\n    ');
         const icons = [
           '<link rel="preconnect" href="https://fonts.googleapis.com">',
           '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',

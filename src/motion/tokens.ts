@@ -3,10 +3,18 @@
 // Springs are specified by Material as a damping ratio plus stiffness.
 // Spatial springs (position, size, shape) may overshoot; effects springs
 // (color, opacity) are critically damped and never bounce.
+//
+// The same tokens drive two runtimes. Motion uses `spring()` for layout
+// animations. CSS uses `springStylesheet()`, which turns each spring into a
+// `linear()` easing plus a duration; the build plugin writes it into
+// index.html, so components animate with plain CSS transitions.
 
 export type MotionScheme = 'expressive' | 'standard';
 export type SpringKind = 'spatial' | 'effects';
 export type SpringSpeed = 'fast' | 'default' | 'slow';
+
+export const SPRING_KINDS: readonly SpringKind[] = ['spatial', 'effects'];
+export const SPRING_SPEEDS: readonly SpringSpeed[] = ['fast', 'default', 'slow'];
 
 export interface SpringToken {
   stiffness: number;
@@ -47,6 +55,49 @@ export function toMotionSpring({ stiffness, dampingRatio }: SpringToken) {
 
 export function spring(scheme: MotionScheme, kind: SpringKind, speed: SpringSpeed = 'default') {
   return toMotionSpring(SPRINGS[scheme][kind][speed]);
+}
+
+/** Position over time of a unit-mass spring released from 0 toward 1. */
+function springPosition({ stiffness, dampingRatio }: SpringToken): (t: number) => number {
+  const natural = Math.sqrt(stiffness);
+  if (dampingRatio < 1) {
+    const decay = dampingRatio * natural;
+    const damped = natural * Math.sqrt(1 - dampingRatio * dampingRatio);
+    return (t) => 1 - Math.exp(-decay * t) * (Math.cos(damped * t) + (decay / damped) * Math.sin(damped * t));
+  }
+  // Critically damped. MD3 defines no overdamped springs.
+  return (t) => 1 - Math.exp(-natural * t) * (1 + natural * t);
+}
+
+/**
+ * A spring as a CSS easing: one `linear()` sample per frame at 60fps, over the
+ * time the spring takes to settle within 0.1% of its target.
+ */
+export function springEasing(token: SpringToken): { duration: number; easing: string } {
+  const position = springPosition(token);
+  const step = 0.001;
+  let settle = step;
+  for (let t = 0; t <= 5; t += step) {
+    if (Math.abs(1 - position(t)) >= 0.001) settle = t + step;
+  }
+  const frames = Math.max(2, Math.round(settle * 60));
+  const points = Array.from({ length: frames + 1 }, (_, i) => (i === frames ? 1 : position((settle * i) / frames)));
+  return {
+    duration: Math.round(settle * 1000),
+    easing: `linear(${points.map((p) => Number(p.toFixed(4))).join(', ')})`,
+  };
+}
+
+/** Custom properties for every spring. The Standard scheme applies under data-motion-scheme="standard". */
+export function springStylesheet(): string {
+  const declarations = (scheme: MotionScheme) =>
+    SPRING_KINDS.flatMap((kind) =>
+      SPRING_SPEEDS.map((speed) => {
+        const { duration, easing } = springEasing(SPRINGS[scheme][kind][speed]);
+        return `--md-spring-${kind}-${speed}: ${easing};\n--md-spring-${kind}-${speed}-duration: ${duration}ms;`;
+      }),
+    ).join('\n');
+  return `:root {\n${declarations('expressive')}\n}\n:root[data-motion-scheme="standard"] {\n${declarations('standard')}\n}`;
 }
 
 /** Cubic-bezier easings, for CSS transitions and keyframes. */
