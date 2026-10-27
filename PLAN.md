@@ -129,7 +129,7 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Contrast tests pass across seeds, variants, contrast levels, and modes (15,000+ checks, zero failures)
 - [x] Typecheck, lint, test, and build all green; first commit
 - [ ] Check Day 1 in a real browser: light, dark, system, seed switching, no flash on reload, keyboard focus
-- [ ] GitHub remote and first deploy (waiting on repo name and host)
+- [x] GitHub remote: github.com/sujay-sn/adaptive-artisan (deploying moves to launch, below)
 
 ### Day 2: Component library
 
@@ -155,6 +155,13 @@ Rich cards with animated thumbnails, filter chips with layout animation, shared-
 
 Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animation. Prerendered HTML, Open Graph, structured data. Accessibility, performance, and cross-browser passes. Lighthouse.
 
+## Before launch
+
+- [ ] Buy the domain
+- [ ] Choose the host (Vercel, Netlify, or Cloudflare Pages) and connect the repo: build `npm run build`, output `dist`, Node 22
+- [ ] Replace the placeholder resume link with the real Google Drive link and confirm it opens without a sign-in
+- [ ] Point the domain at the host and set the canonical URL and Open Graph URLs to it
+
 ## Quality bar
 
 - Signature moments hold 60fps at 4x CPU throttling.
@@ -170,14 +177,14 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 
 ## Content needed from Sujay
 
-- [ ] Resume PDF in `public/resume.pdf` (decide first whether the public copy should show the phone number)
+- [ ] Resume: Google Drive share link ("Anyone with the link", Viewer). A placeholder sits in `src/content/profile.ts` until launch
 - [ ] Photo for the avatar
 - [ ] Screenshots or short screen recordings of each project
 - [ ] Repo links per project
 - [x] Project numbers come from the resume; unverified ones removed
 - [x] Graduation date: December 2026 (from the resume)
 - [x] Experience follows the resume: GeodeChain, the TA role, Accenture
-- [ ] Host (Vercel, Netlify, or Cloudflare Pages). Repo: public, on the personal account `sujay-sn`
+- [ ] Domain, bought before launch
 
 ## Decision log
 

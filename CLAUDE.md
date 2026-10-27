@@ -21,3 +21,9 @@ The dev machine has `NODE_ENV=production` set globally. `.npmrc` forces devDepen
 - **Content lives in `src/content` and follows the resume.** Every number on the site must also appear on the resume. No self-assessed skill levels.
 - **Browser support:** Baseline features freely. Newer features are feature-detected, never polyfilled, and the page must read correctly without them.
 - Typecheck, lint, and tests must pass before a commit.
+
+## Commits
+
+- Professional, descriptive messages in the imperative mood: "Add theme engine", "Fix outline contrast in dark mode".
+- Never reference planning terms in commit messages: no "day", "phase", "plan", "step", "v1", or similar. Planning structure lives in `PLAN.md` only.
+- Subject line under about 72 characters. Add a body when the what or why needs explaining.
