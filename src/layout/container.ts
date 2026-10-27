@@ -1,0 +1,2 @@
+/** Page content column. Widens on extra-large screens so 4K monitors are not mostly margin. */
+export const container = 'mx-auto w-full max-w-[75rem] px-4 medium:px-6 expanded:px-12 xlarge:max-w-[96rem]';
