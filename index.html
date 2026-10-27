@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Sujay S N | Software Engineer</title>
+    <meta
+      name="description"
+      content="Sujay S N, full-stack software engineer in Boston. A portfolio built as a working Material 3 Expressive design system."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/google-sans-flex-display.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- md:default-theme -->
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Runs before first paint. Restores a light or dark override and a custom
+      // theme from a previous visit, so the page never flashes the defaults.
+      try {
+        var scheme = localStorage.getItem('color-scheme');
+        if (scheme) document.querySelector('meta[name="color-scheme"]').content = scheme;
+        var css = localStorage.getItem('md-theme-css');
+        if (css) {
+          var style = document.createElement('style');
+          style.id = 'md-theme';
+          style.textContent = css;
+          document.head.appendChild(style);
+        }
+      } catch (e) {}
+    </script>
+    <!-- md:icon-font -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
