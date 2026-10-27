@@ -128,12 +128,12 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Real content ported to `src/content`
 - [x] Contrast tests pass across seeds, variants, contrast levels, and modes (15,000+ checks, zero failures)
 - [x] Typecheck, lint, test, and build all green; first commit
-- [ ] Check Day 1 in a real browser: light, dark, system, seed switching, no flash on reload, keyboard focus
+- [x] Checked in a browser on a 4K 32-inch monitor (about 2560px wide), a 16-inch laptop, and a phone-sized viewport: light, dark, seed switching, no flash on hard reload, skip link and keyboard focus
 - [x] GitHub remote: github.com/sujay-sn/adaptive-artisan (deploying moves to launch, below)
 
 ### Day 2: Component library
 
-Button (five variants), FAB, Icon Button, Card, Chip, Switch (expressive thumb with icon), Text Field, Dialog. State layers and spring press feedback on all of them. Navigation: top app bar, rail, sliding active pill, blur on scroll, one config. Shape-morph utility with normalized shapes.
+Button (five variants), FAB, Icon Button, Card, Chip, Switch (expressive thumb with icon), Text Field, Dialog. State layers and spring press feedback on all of them. Navigation: top app bar, rail, sliding active pill, blur on scroll, one config. Shape-morph utility with normalized shapes. Cards must stay distinguishable from the page in dark mode, where surface-container-low is nearly invisible against surface. The extra-large window class (1600px+) gets a wider container; the 4K monitor is the test case.
 
 ### Day 3: Personalization Hub
 
@@ -141,7 +141,7 @@ FAB container transform. Hex input with swatch, wallpaper extraction (image in I
 
 ### Day 4: Hero and About
 
-The bloom. Morphing shape background with cursor and scroll parallax, plus its pause control. Headline axes animate on load; letters respond to cursor proximity on hover-capable devices. Physics press feedback on actions. Avatar in a morphing frame with breathing idle and spring hover. Working resume download.
+The bloom. Morphing shape background with cursor and scroll parallax, plus its pause control. Headline axes animate on load; letters respond to cursor proximity on hover-capable devices. Physics press feedback on actions. Avatar in a morphing frame with breathing idle and spring hover. Working resume link, with a document icon rather than a download icon since it opens in Drive. On large screens the hero type keeps growing past the current 176px cap and the shape cluster fills the right side, so the hero uses the full width.
 
 ### Day 5: Skills and Experience
 
