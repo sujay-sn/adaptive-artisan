@@ -5,12 +5,18 @@
 // multi-megabyte full icon font. Add a name here before using it.
 
 export const ICON_NAMES = [
+  'add',
   'arrow_upward',
   'brightness_auto',
+  'check',
   'close',
   'code',
   'dark_mode',
+  'description',
   'download',
+  'edit',
+  'error',
+  'favorite',
   'folder',
   'home',
   'hub',
@@ -21,6 +27,7 @@ export const ICON_NAMES = [
   'palette',
   'person',
   'school',
+  'send',
   'work',
 ] as const;
 

@@ -260,9 +260,472 @@
       "wght" var(--md-icon-wght, 400),
       "GRAD" var(--md-icon-grad, 0),
       "opsz" var(--md-icon-opsz, 24);
+    /* FILL and weight changes ease in, so a nav icon filling when active reads as motion. */
+    transition: font-variation-settings var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
   }
 }
 
 @utility rond-* {
   font-variation-settings: "ROND" --value(integer);
+}
+
+/* ------------------------------------------------------------------------
+   Elevation: MD3 levels 1 to 5, tinted by the shadow role.
+   ------------------------------------------------------------------------ */
+@theme inline {
+  --shadow-*: initial;
+  --shadow-1: 0 1px 2px 0 color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent), 0 1px 3px 1px color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+  --shadow-2: 0 1px 2px 0 color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent), 0 2px 6px 2px color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+  --shadow-3: 0 1px 3px 0 color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent), 0 4px 8px 3px color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+  --shadow-4: 0 2px 3px 0 color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent), 0 6px 10px 4px color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+  --shadow-5: 0 4px 4px 0 color-mix(in srgb, var(--md-sys-color-shadow) 30%, transparent), 0 8px 12px 6px color-mix(in srgb, var(--md-sys-color-shadow) 15%, transparent);
+}
+
+/* ------------------------------------------------------------------------
+   Interaction. State layers are the MD3 hover, focus, and press tint; the
+   press morph is the Expressive corner change on press. Springs come from
+   the --md-spring-* properties the build writes into index.html.
+   ------------------------------------------------------------------------ */
+@utility state-layer {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: currentColor;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--md-sys-motion-duration-short4) var(--ease-standard);
+  }
+  @media (hover: hover) {
+    &:hover::before {
+      opacity: 0.08;
+    }
+  }
+  &:focus-visible::before,
+  &:active::before {
+    opacity: 0.1;
+  }
+  &:disabled::before {
+    opacity: 0;
+  }
+}
+
+@utility press-morph {
+  border-radius: var(--md-shape-rest);
+  transition:
+    border-radius var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast),
+    box-shadow var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+    background-color var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+    color var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+  &:active:not(:disabled) {
+    border-radius: var(--md-shape-pressed);
+  }
+}
+
+@layer base {
+  /* Anchor jumps clear the sticky top app bar; the rail sits beside content instead. */
+  html {
+    scroll-padding-top: 4.5rem;
+  }
+  @media (width >= 52.5rem) {
+    html {
+      scroll-padding-top: 0;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  /* Sections take focus after navigation; the jump itself is the cue. */
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
+}
+
+@layer components {
+  /* Top app bar: solid surface at rest, translucent once stuck. The stuck
+     state is a scroll-state container query (Chromium today); elsewhere the
+     bar stays solid, which is always legible. */
+  .md-top-app-bar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 40;
+    container-name: top-app-bar;
+    container-type: scroll-state;
+  }
+  .md-top-app-bar-surface {
+    background-color: var(--md-sys-color-surface);
+    transition: background-color var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow);
+  }
+  @container top-app-bar scroll-state(stuck: top) {
+    .md-top-app-bar-surface {
+      background-color: color-mix(in srgb, var(--md-sys-color-surface-container) 85%, transparent);
+      backdrop-filter: blur(16px) saturate(1.4);
+    }
+  }
+
+  /* Filter chip check mark: the leading space widens to make room for it. */
+  .md-filter-chip-check {
+    display: inline-flex;
+    flex: none;
+    inline-size: 0.5rem;
+    overflow: hidden;
+    transition: inline-size var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast);
+  }
+  .md-filter-chip-check .md-icon {
+    opacity: 0;
+    scale: 0.4;
+    transition:
+      opacity var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast),
+      scale var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast);
+  }
+  .md-filter-chip[aria-pressed="true"] .md-filter-chip-check {
+    inline-size: 1.625rem;
+  }
+  .md-filter-chip[aria-pressed="true"] .md-filter-chip-check .md-icon {
+    opacity: 1;
+    scale: 1;
+  }
+
+  /* Switch: 52 by 32 track, 24px thumb that grows to 28px while pressed. */
+  .md-switch {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    inline-size: 3.25rem;
+    block-size: 2rem;
+  }
+  .md-switch > input {
+    position: absolute;
+    inset: -0.5rem;
+    z-index: 1;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .md-switch-track {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: var(--md-sys-color-surface-container-highest);
+    box-shadow: inset 0 0 0 2px var(--md-sys-color-outline);
+    transition:
+      background-color var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+      box-shadow var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+  }
+  .md-switch-thumb {
+    --md-switch-halo: var(--md-sys-color-on-surface);
+    position: absolute;
+    inset-block-start: 0.25rem;
+    inset-inline-start: 0.25rem;
+    display: grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border-radius: 9999px;
+    background-color: var(--md-sys-color-outline);
+    color: var(--md-sys-color-surface-container-highest);
+    box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--md-switch-halo) 0%, transparent);
+    transition:
+      translate var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast),
+      scale var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast),
+      background-color var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+      color var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+      box-shadow var(--md-sys-motion-duration-short4) var(--ease-standard);
+  }
+  .md-switch-thumb > .md-icon {
+    grid-area: 1 / 1;
+    transition: opacity var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast);
+  }
+  .md-switch-icon-on {
+    opacity: 0;
+  }
+  .md-switch > input:checked ~ .md-switch-track {
+    background-color: var(--md-sys-color-primary);
+    box-shadow: inset 0 0 0 2px var(--md-sys-color-primary);
+  }
+  .md-switch > input:checked ~ .md-switch-thumb {
+    --md-switch-halo: var(--md-sys-color-primary);
+    translate: 1.25rem 0;
+    background-color: var(--md-sys-color-on-primary);
+    color: var(--md-sys-color-on-primary-container);
+  }
+  .md-switch > input:checked ~ .md-switch-thumb .md-switch-icon-on {
+    opacity: 1;
+  }
+  .md-switch > input:checked ~ .md-switch-thumb .md-switch-icon-off {
+    opacity: 0;
+  }
+  @media (hover: hover) {
+    .md-switch > input:hover ~ .md-switch-thumb {
+      box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--md-switch-halo) 8%, transparent);
+    }
+  }
+  .md-switch > input:is(:focus-visible, :active) ~ .md-switch-thumb {
+    box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--md-switch-halo) 10%, transparent);
+  }
+  .md-switch > input:active ~ .md-switch-thumb {
+    scale: 1.1667;
+  }
+  .md-switch > input:focus-visible ~ .md-switch-track {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 2px;
+  }
+
+  /* Text fields. The placeholder is a single space so :placeholder-shown
+     means "empty", which floats the label without JavaScript. */
+  .md-field {
+    --md-field-bg: var(--md-sys-color-surface);
+    --md-field-accent: var(--md-sys-color-primary);
+    display: grid;
+    gap: 0.25rem;
+  }
+  .md-field-box {
+    position: relative;
+  }
+  .md-field-box > :is(input, textarea) {
+    display: block;
+    inline-size: 100%;
+    margin: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    caret-color: var(--md-field-accent);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.03125rem;
+    padding: 1rem;
+  }
+  .md-field-box > :is(input, textarea)::placeholder {
+    color: transparent;
+  }
+  .md-field-box > textarea {
+    min-block-size: 8rem;
+    resize: vertical;
+    field-sizing: content;
+  }
+  .md-field-box > label {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-start: 1rem;
+    max-inline-size: calc(100% - 2rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.03125rem;
+    transform-origin: left top;
+    transition:
+      translate var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast),
+      scale var(--md-spring-spatial-fast-duration) var(--md-spring-spatial-fast),
+      color var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast);
+  }
+  .md-field-box:focus-within > label {
+    color: var(--md-field-accent);
+  }
+
+  .md-field-filled .md-field-box {
+    border-radius: 0.25rem 0.25rem 0 0;
+    background-color: var(--md-sys-color-surface-container-highest);
+    box-shadow: inset 0 -1px 0 var(--md-sys-color-on-surface-variant);
+  }
+  /* The focus indicator grows out from the center. */
+  .md-field-filled .md-field-box::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 2px;
+    background-color: var(--md-field-accent);
+    scale: 0 1;
+    transition: scale var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+  }
+  .md-field-filled .md-field-box:focus-within::after {
+    scale: 1 1;
+  }
+  .md-field-filled .md-field-box > :is(input, textarea) {
+    padding-block: 1.5rem 0.5rem;
+  }
+  .md-field-filled .md-field-box > :is(input, textarea):is(:focus, :not(:placeholder-shown)) + label {
+    translate: 0 -0.5rem;
+    scale: 0.75;
+  }
+
+  .md-field-outlined .md-field-box {
+    border-radius: 0.25rem;
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline);
+    transition: box-shadow var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast);
+  }
+  .md-field-outlined .md-field-box:focus-within {
+    box-shadow: inset 0 0 0 2px var(--md-field-accent);
+  }
+  .md-field-outlined .md-field-box > label {
+    inset-inline-start: 0.75rem;
+    padding-inline: 0.25rem;
+  }
+  /* Floated onto the outline, with a background to cut the line behind it. */
+  .md-field-outlined .md-field-box > :is(input, textarea):is(:focus, :not(:placeholder-shown)) + label {
+    translate: 0 -1.5625rem;
+    scale: 0.75;
+    background-color: var(--md-field-bg);
+  }
+
+  @media (hover: hover) {
+    .md-field-filled .md-field-box:hover {
+      box-shadow: inset 0 -1px 0 var(--md-sys-color-on-surface);
+    }
+    .md-field-outlined .md-field-box:hover:not(:focus-within) {
+      box-shadow: inset 0 0 0 1px var(--md-sys-color-on-surface);
+    }
+  }
+
+  .md-field:is([data-invalid], :has(:user-invalid)) {
+    --md-field-accent: var(--md-sys-color-error);
+  }
+  .md-field:is([data-invalid], :has(:user-invalid)) .md-field-box > label {
+    color: var(--md-sys-color-error);
+  }
+  .md-field-filled:is([data-invalid], :has(:user-invalid)) .md-field-box {
+    box-shadow: inset 0 -1px 0 var(--md-sys-color-error);
+  }
+  .md-field-outlined:is([data-invalid], :has(:user-invalid)) .md-field-box {
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-error);
+  }
+  .md-field-outlined:is([data-invalid], :has(:user-invalid)) .md-field-box:focus-within {
+    box-shadow: inset 0 0 0 2px var(--md-sys-color-error);
+  }
+  .md-field-support,
+  .md-field-error {
+    padding-inline: 1rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.025rem;
+  }
+  .md-field-support {
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  /* The error has an icon as well as color, so it never relies on color alone. */
+  .md-field-error {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--md-sys-color-error);
+  }
+  .md-field:is([data-invalid], :has(:user-invalid)) .md-field-error {
+    display: flex;
+  }
+  .md-field:is([data-invalid], :has(:user-invalid)):has(.md-field-error) .md-field-support {
+    display: none;
+  }
+
+  /* Dialog on the native element. Opens with a spatial spring and a blurred
+     scrim; @starting-style and allow-discrete handle entry and exit. */
+  .md-dialog {
+    --md-field-bg: var(--md-sys-color-surface-container-high);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    inline-size: min(35rem, calc(100vw - 3rem));
+    max-block-size: calc(100dvh - 3rem);
+    border-radius: var(--radius-xl);
+    background-color: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface);
+    box-shadow: var(--shadow-3);
+    overscroll-behavior: contain;
+    opacity: 0;
+    scale: 0.92;
+    transition:
+      opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+      scale var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+      translate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+      display var(--md-spring-spatial-default-duration) allow-discrete,
+      overlay var(--md-spring-spatial-default-duration) allow-discrete;
+  }
+  .md-dialog[open] {
+    opacity: 1;
+    scale: 1;
+  }
+  @starting-style {
+    .md-dialog[open] {
+      opacity: 0;
+      scale: 0.92;
+    }
+  }
+  .md-dialog::backdrop {
+    background-color: color-mix(in srgb, var(--md-sys-color-scrim) 32%, transparent);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    overscroll-behavior: contain;
+    opacity: 0;
+    transition:
+      opacity var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow),
+      display var(--md-spring-effects-slow-duration) allow-discrete,
+      overlay var(--md-spring-effects-slow-duration) allow-discrete;
+  }
+  .md-dialog[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .md-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  /* Navigation sheet: slides in from the start edge. */
+  .md-dialog-sheet {
+    margin: 0;
+    margin-inline-end: auto;
+    inline-size: min(22.5rem, 85vw);
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+    border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+    opacity: 1;
+    scale: none;
+    translate: -100% 0;
+  }
+  .md-dialog-sheet[open] {
+    scale: none;
+    translate: 0 0;
+  }
+  @starting-style {
+    .md-dialog-sheet[open] {
+      translate: -100% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .md-dialog,
+    .md-dialog[open] {
+      scale: none;
+    }
+    .md-dialog-sheet {
+      translate: none;
+      opacity: 0;
+    }
+    .md-dialog-sheet[open] {
+      translate: none;
+      opacity: 1;
+    }
+    @starting-style {
+      .md-dialog-sheet[open] {
+        translate: none;
+        opacity: 0;
+      }
+    }
+  }
+
+  /* Shape morphs between two shapes from src/shape/shapes.ts. */
+  .md-shape-morph {
+    transition: clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+  }
 }
