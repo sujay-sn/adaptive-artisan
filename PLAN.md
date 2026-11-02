@@ -144,7 +144,19 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 
 ### Day 3: Personalization Hub
 
-FAB container transform. Hex input with swatch, wallpaper extraction (image in IndexedDB, seed in localStorage), variant picker, contrast slider, tonal palette viewer. Live preview of the real components. Font axis and icon axis playgrounds, motion scheme switch, sound toggle (off by default). Circular theme reveal. Everything persists.
+- [x] FAB container transform into the hub (a shared-element view transition), from the rail or the bottom corner on small screens
+- [x] Seed swatches, native color picker, and hex field
+- [x] Colors from an image: Material's quantizer and scorer pick up to four seeds; a downscaled copy stays in IndexedDB
+- [x] All nine scheme variants, and contrast at standard, medium, and high
+- [x] Tonal palette viewer
+- [x] Live preview of the real components
+- [x] Type playground on the full Google Sans Flex, loaded only when the hub opens
+- [x] Icon playground: fill, weight, grade, optical size
+- [x] Motion scheme switch, with a plot of the spring and a demo
+- [x] Sound effects (Web Audio), off by default
+- [x] Circular reveal for every theme change, in the hub and the hero
+- [x] Everything persists; the pre-paint script restores the motion scheme too
+- [ ] Check in a browser: open and close the hub from both FABs, every panel, light and dark, phone width, keyboard only
 
 ### Day 4: Hero and About
 
@@ -214,4 +226,6 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Springs run in CSS.** MD3 spring tokens become `linear()` easings at build time, so components need no animation JavaScript.
 - **Motion loads only where layout animation needs it.** Using it for the rail indicator pushed the bundle from 99 KB to 146 KB gzipped; a single CSS-sprung indicator does the same job.
 - **The top app bar's scrolled tint uses a scroll-state container query** (Chromium today). Other browsers keep a solid surface, which is always legible.
-- **Shapes are radial approximations** of the MD3 shape library, not exact ports, so every shape shares one point count and any two can morph.
+- **Shapes are radial approximations** of the MD3 shape library, not exact ports, so every shape shares one point count and any two can morph.- **Contrast is three choices, not a slider.** Standard, medium, and high are what Android offers and what the contrast tests cover.
+- **Sound works now rather than at polish time.** A toggle that does nothing is worse than no toggle, and synthesized Web Audio cues are a few lines.
+- **The hub is its own code chunk**, loaded on the first hover or focus of a FAB, so it costs nothing until someone reaches for it.
