@@ -483,6 +483,9 @@
     --md-field-bg: var(--md-sys-color-surface);
     --md-field-accent: var(--md-sys-color-primary);
     display: grid;
+    /* Rows keep their natural height. Without this, a field beside a taller
+       one in a grid row stretches, and the extra height lands in the input. */
+    align-content: start;
     gap: 0.25rem;
   }
   .md-field-box {
