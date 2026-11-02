@@ -133,3 +133,32 @@ export function themeStylesheet(spec: ThemeSpec): string {
 export function sameTheme(a: ThemeSpec, b: ThemeSpec): boolean {
   return a.seed.toLowerCase() === b.seed.toLowerCase() && a.variant === b.variant && a.contrast === b.contrast;
 }
+
+export const PALETTE_NAMES = ['primary', 'secondary', 'tertiary', 'neutral', 'neutralVariant', 'error'] as const;
+export type PaletteName = (typeof PALETTE_NAMES)[number];
+/** The tones Material shows when presenting a palette. */
+export const PALETTE_TONES = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100] as const;
+
+/** The six tonal palettes behind a theme, as hex at each standard tone. */
+export function tonalPalettes(spec: ThemeSpec): Record<PaletteName, string[]> {
+  const scheme = buildScheme(spec, false);
+  const palettes = {
+    primary: scheme.primaryPalette,
+    secondary: scheme.secondaryPalette,
+    tertiary: scheme.tertiaryPalette,
+    neutral: scheme.neutralPalette,
+    neutralVariant: scheme.neutralVariantPalette,
+    error: scheme.errorPalette,
+  };
+  const result = {} as Record<PaletteName, string[]>;
+  for (const name of PALETTE_NAMES) result[name] = PALETTE_TONES.map((tone) => hexFromArgb(palettes[name].tone(tone)));
+  return result;
+}
+
+/** Accepts '#abc', 'abc', '#aabbcc', or 'aabbcc' and returns '#AABBCC', or null for anything else. */
+export function normalizeHex(input: string): string | null {
+  const value = input.trim().replace(/^#/, '');
+  if (/^[0-9a-f]{3}$/i.test(value)) return `#${[...value].map((c) => c + c).join('')}`.toUpperCase();
+  if (/^[0-9a-f]{6}$/i.test(value)) return `#${value}`.toUpperCase();
+  return null;
+}

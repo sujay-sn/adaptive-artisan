@@ -25,6 +25,10 @@
           style.textContent = css;
           document.head.appendChild(style);
         }
+        var prefs = JSON.parse(localStorage.getItem('md-preferences') || 'null');
+        if (prefs && prefs.state && prefs.state.motionScheme === 'standard') {
+          document.documentElement.setAttribute('data-motion-scheme', 'standard');
+        }
       } catch (e) {}
     </script>
     <!-- md:icon-font -->
