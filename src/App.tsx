@@ -1,6 +1,5 @@
-import { education, experience, profile } from '@/content/profile';
+import { education, profile } from '@/content/profile';
 import { projects } from '@/content/projects';
-import { SKILL_CATEGORIES, skills } from '@/content/skills';
 import { HubFab, HubHost } from '@/hub/HubLaunchers';
 import { container } from '@/layout/container';
 import { NavigationRail } from '@/layout/NavigationRail';
@@ -8,77 +7,37 @@ import { Section } from '@/layout/Section';
 import { TopAppBar } from '@/layout/TopAppBar';
 import { useActiveSection } from '@/layout/useActiveSection';
 import { About } from '@/sections/About';
+import { Experience } from '@/sections/Experience';
 import { Hero } from '@/sections/Hero';
+import { graphNode } from '@/skills/graph';
+import { SkillsSection } from '@/skills/SkillsSection';
+import { useSkillStore } from '@/skills/store';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
 import { Chip } from '@/ui/Chip';
 
-// The page. Hero and About have their designed versions; the remaining
-// sections are straightforward layouts until their own redesigns land.
-
-function Skills() {
-  return (
-    <Section id="skills">
-      <div className="grid gap-10 medium:grid-cols-2 large:grid-cols-3">
-        {SKILL_CATEGORIES.map((category) => (
-          <div key={category.id}>
-            <h3 className="text-title-medium text-on-surface">{category.label}</h3>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {skills
-                .filter((skill) => skill.category === category.id)
-                .map((skill) => (
-                  <li key={skill.id}>
-                    <Chip label={skill.name} />
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-function Experience() {
-  return (
-    <Section id="experience">
-      <ol className="space-y-14">
-        {experience.map((job) => (
-          <li key={job.id} className="grid gap-2 expanded:grid-cols-[12rem_1fr] expanded:gap-10">
-            <p className="text-label-large text-on-surface-variant tabular-nums">{job.period}</p>
-            <div>
-              <h3 className="text-title-large text-on-surface">
-                {job.title}, {job.company}
-              </h3>
-              <p className="mt-1 text-body-medium text-on-surface-variant">
-                {job.type}, {job.location}
-              </p>
-              <p className="mt-4 max-w-[65ch] text-body-large text-on-surface">{job.summary}</p>
-              <ul className="mt-4 max-w-[65ch] list-disc space-y-2 ps-5 text-body-medium text-on-surface-variant marker:text-primary">
-                {job.highlights.map((highlight) => (
-                  <li key={highlight}>{highlight}</li>
-                ))}
-              </ul>
-              <ul className="mt-5 flex flex-wrap gap-2" aria-label="Technologies">
-                {job.technologies.map((technology) => (
-                  <li key={technology}>
-                    <Chip label={technology} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </Section>
-  );
-}
+// The page. Projects, Education, and Contact are straightforward layouts
+// until their own redesigns land; Projects already filters by skill.
 
 function Projects() {
+  const projectSkill = useSkillStore((state) => state.projectSkill);
+  const clearProjectSkill = useSkillStore((state) => state.clearProjectSkill);
+  const shown = projectSkill ? projects.filter((project) => project.skills.includes(projectSkill)) : projects;
+
   return (
     <Section id="projects">
+      {projectSkill && (
+        <div className="mb-6 flex flex-wrap items-center gap-3" role="status">
+          <p className="text-body-large text-on-surface">
+            Projects using <span className="font-medium text-primary">{graphNode(projectSkill)?.label}</span>
+          </p>
+          <Button variant="text" icon="close" onClick={clearProjectSkill}>
+            Show all projects
+          </Button>
+        </div>
+      )}
       <div className="grid gap-6 expanded:grid-cols-2">
-        {projects.map((project, index) => {
+        {shown.map((project, index) => {
           const featured = index === 0;
           return (
             <Card
@@ -195,7 +154,7 @@ export function App() {
         <main id="main">
           <Hero />
           <About />
-          <Skills />
+          <SkillsSection />
           <Experience />
           <Projects />
           <Education />
