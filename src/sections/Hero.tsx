@@ -30,8 +30,10 @@ export function Hero() {
 
   useEffect(() => {
     let cancelled = false;
-    // Wait for the display font, so the headline springs into its final shape rather than swapping mid-bloom.
-    void document.fonts.ready.then(() => {
+    // Wait for the display font, so the headline springs into its final shape
+    // rather than swapping mid-bloom, but never more than about a second.
+    const fontsOrTimeout = Promise.race([document.fonts.ready, new Promise((resolve) => window.setTimeout(resolve, 1200))]);
+    void fontsOrTimeout.then(() => {
       if (!cancelled) window.setTimeout(() => bloom(art.current), 250);
     });
     return () => {

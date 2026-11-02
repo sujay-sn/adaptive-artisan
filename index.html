@@ -29,12 +29,16 @@
         if (prefs && prefs.state && prefs.state.motionScheme === 'standard') {
           document.documentElement.setAttribute('data-motion-scheme', 'standard');
         }
-        // First visit this session: paint in monochrome, ready for the bloom.
-        if (!sessionStorage.getItem('md-bloomed') && 'startViewTransition' in document && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // First visit this session (or ?bloom to replay it): paint in monochrome, ready for the bloom.
+        var replay = /[?&]bloom(=|&|$)/.test(location.search);
+        if ((replay || !sessionStorage.getItem('md-bloomed')) && 'startViewTransition' in document && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
           var root = document.documentElement;
           root.setAttribute('data-bloom', '');
-          // Never leave the page in monochrome if the app fails to start.
-          setTimeout(function () { root.removeAttribute('data-bloom'); }, 4000);
+          // If the app never starts, don't leave the page in monochrome. Once it
+          // has started, the bloom owns the attribute.
+          setTimeout(function () {
+            if (!root.hasAttribute('data-app-started')) root.removeAttribute('data-bloom');
+          }, 5000);
         }
       } catch (e) {}
     </script>

@@ -12,6 +12,12 @@ const BLOOMED_KEY = 'md-bloomed';
 export function bloom(from: Element | null): void {
   const root = document.documentElement;
   if (!root.hasAttribute('data-bloom')) return;
+  // Browsers skip view transitions in hidden tabs, so a page opened in the
+  // background would mark the bloom as played without anyone seeing it.
+  if (document.visibilityState === 'hidden') {
+    document.addEventListener('visibilitychange', () => bloom(from), { once: true });
+    return;
+  }
   try {
     sessionStorage.setItem(BLOOMED_KEY, '1');
   } catch {

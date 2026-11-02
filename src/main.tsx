@@ -8,6 +8,9 @@ import { syncThemeAcrossTabs } from './theme/store';
 
 syncThemeAcrossTabs();
 
+// Tells the pre-paint script's safety timer that the bloom is in the app's hands now.
+document.documentElement.dataset.appStarted = '';
+
 // The component gallery (/?gallery) exists only in development builds.
 const Gallery = import.meta.env.DEV ? lazy(() => import('./dev/Gallery')) : null;
 const showGallery = Gallery !== null && new URLSearchParams(window.location.search).has('gallery');
