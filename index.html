@@ -29,6 +29,13 @@
         if (prefs && prefs.state && prefs.state.motionScheme === 'standard') {
           document.documentElement.setAttribute('data-motion-scheme', 'standard');
         }
+        // First visit this session: paint in monochrome, ready for the bloom.
+        if (!sessionStorage.getItem('md-bloomed') && 'startViewTransition' in document && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          var root = document.documentElement;
+          root.setAttribute('data-bloom', '');
+          // Never leave the page in monochrome if the app fails to start.
+          setTimeout(function () { root.removeAttribute('data-bloom'); }, 4000);
+        }
       } catch (e) {}
     </script>
     <!-- md:icon-font -->

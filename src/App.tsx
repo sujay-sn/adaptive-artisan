@@ -1,78 +1,20 @@
-import type { ReactNode } from 'react';
-import { education, experience, profile, sectionLabel, type SectionId } from '@/content/profile';
+import { education, experience, profile } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { SKILL_CATEGORIES, skills } from '@/content/skills';
+import { HubFab, HubHost } from '@/hub/HubLaunchers';
 import { container } from '@/layout/container';
 import { NavigationRail } from '@/layout/NavigationRail';
+import { Section } from '@/layout/Section';
 import { TopAppBar } from '@/layout/TopAppBar';
 import { useActiveSection } from '@/layout/useActiveSection';
-import { HubFab, HubHost } from '@/hub/HubLaunchers';
-import { ThemeControls } from '@/theme/ThemeControls';
+import { About } from '@/sections/About';
+import { Hero } from '@/sections/Hero';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
 import { Chip } from '@/ui/Chip';
 
-// The page on the real components. Each section is still a straightforward
-// layout; the designed hero, constellation, timeline, and project grid
-// replace these one by one.
-
-function Section({ id, children }: { id: SectionId; children: ReactNode }) {
-  return (
-    <section id={id} tabIndex={-1} aria-labelledby={`${id}-title`} className="py-16 expanded:py-24">
-      <div className={container}>
-        <h2 id={`${id}-title`} className="font-display text-headline-large text-on-surface expanded:text-display-small">
-          {sectionLabel(id)}
-        </h2>
-        <div className="mt-8 expanded:mt-12">{children}</div>
-      </div>
-    </section>
-  );
-}
-
-function Hero() {
-  return (
-    <section id="home" tabIndex={-1} aria-labelledby="home-title" className="flex min-h-[85svh] flex-col justify-end pt-16 pb-16 expanded:pt-24">
-      <div className={container}>
-        <h1 id="home-title" className="font-display text-hero text-primary [font-stretch:82%] rond-40">
-          <span className="block">Sujay</span>
-          <span className="block">S N</span>
-        </h1>
-        <p className="mt-8 text-title-large text-on-surface">
-          {profile.role} in {profile.location}
-        </p>
-        <p className="mt-3 max-w-[60ch] text-body-large text-on-surface-variant">{profile.summary}</p>
-        <div className="mt-10">
-          <ThemeControls />
-        </div>
-        <div className="mt-8 flex flex-wrap gap-3">
-          {profile.resumeUrl && (
-            <Button href={profile.resumeUrl} icon="description">
-              Resume
-            </Button>
-          )}
-          <Button href={profile.github} variant="outlined" icon="code">
-            GitHub
-          </Button>
-          <Button href={profile.linkedin} variant="outlined" icon="person">
-            LinkedIn
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function About() {
-  return (
-    <Section id="about">
-      <div className="max-w-[65ch] space-y-5 text-body-large text-on-surface">
-        {profile.about.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-      </div>
-    </Section>
-  );
-}
+// The page. Hero and About have their designed versions; the remaining
+// sections are straightforward layouts until their own redesigns land.
 
 function Skills() {
   return (

@@ -156,11 +156,19 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Sound effects (Web Audio), off by default
 - [x] Circular reveal for every theme change, in the hub and the hero
 - [x] Everything persists; the pre-paint script restores the motion scheme too
-- [ ] Check in a browser: open and close the hub from both FABs, every panel, light and dark, phone width, keyboard only
+- [x] Checked in a browser
 
 ### Day 4: Hero and About
 
-The bloom. Morphing shape background with cursor and scroll parallax, plus its pause control. Headline axes animate on load; letters respond to cursor proximity on hover-capable devices. Physics press feedback on actions. Avatar in a morphing frame with breathing idle and spring hover. Working resume link, with a document icon rather than a download icon since it opens in Drive. On large screens the hero type keeps growing past the current 176px cap and the shape cluster fills the right side, so the hero uses the full width.
+- [x] The bloom: first visits paint in monochrome, then color sweeps out from the shape cluster while the shapes and headline spring into place. Once per session, skipped under reduced motion, with a safety timer so the page never stays monochrome
+- [x] Shape cluster: four MD3 shapes in theme colors, morphing and turning, with cursor parallax and scroll parallax
+- [x] One pause control for all ambient motion, hero shapes and avatar alike (WCAG 2.2.2)
+- [x] Headline letters respond to the cursor on their own weight, width, and roundness (fine pointers only)
+- [x] Theme from an image straight from the hero, beside the swatches
+- [x] Hero type grows to 15rem on large screens, and the cluster fills the right column
+- [x] About: avatar in a morphing frame with breathing idle and spring hover, a monogram until a photo exists
+- [x] Resume links use a document icon
+- [ ] Check in a browser: a fresh tab for the bloom, cursor over the name and shapes, scroll, pause, reduced motion
 
 ### Day 5: Skills and Experience
 
@@ -228,4 +236,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **The top app bar's scrolled tint uses a scroll-state container query** (Chromium today). Other browsers keep a solid surface, which is always legible.
 - **Shapes are radial approximations** of the MD3 shape library, not exact ports, so every shape shares one point count and any two can morph.- **Contrast is three choices, not a slider.** Standard, medium, and high are what Android offers and what the contrast tests cover.
 - **Sound works now rather than at polish time.** A toggle that does nothing is worse than no toggle, and synthesized Web Audio cues are a few lines.
-- **The hub is its own code chunk**, loaded on the first hover or focus of a FAB, so it costs nothing until someone reaches for it.
+- **The hub is its own code chunk**, loaded on the first hover or focus of a FAB, so it costs nothing until someone reaches for it.- **The bloom is a view transition**: the same circular reveal as a theme change, starting from the monochrome scheme. That costs one snapshot instead of animating 49 color properties.
+- **One pause control** stops every ambient animation, as WCAG 2.2.2 requires for motion that runs longer than five seconds.

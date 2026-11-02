@@ -10,6 +10,8 @@ export interface Profile {
   linkedin: string;
   /** Google Drive share link to the resume PDF. */
   resumeUrl?: string;
+  /** Portrait for the About section. Until it exists, a monogram fills the frame. */
+  photo?: string;
   summary: string;
   about: string[];
 }
@@ -26,6 +28,7 @@ export const profile: Profile = {
   // TODO(sujay): placeholder. Replace with the Google Drive share link
   // ("Anyone with the link", Viewer) before launch.
   resumeUrl: 'https://drive.google.com/file/d/RESUME_FILE_ID/view',
+  // TODO(sujay): add a portrait to public/ and set photo: '/portrait.webp'.
   summary:
     "Master's student in Computer Software Engineering at Northeastern University, graduating December 2026. Nearly three years at Accenture building healthcare platforms, and most recently distributed pipelines and LLM automation at GeodeChain.",
   about: [

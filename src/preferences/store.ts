@@ -33,8 +33,11 @@ interface PreferencesState {
   sound: boolean;
   typeAxes: TypeAxes;
   iconAxes: IconAxes;
+  /** Pauses ambient motion: the hero shapes and the avatar's breathing (WCAG 2.2.2). */
+  ambientPaused: boolean;
   setMotionScheme: (scheme: MotionScheme) => void;
   setSound: (on: boolean) => void;
+  setAmbientPaused: (paused: boolean) => void;
   setTypeAxes: (patch: Partial<TypeAxes>) => void;
   setIconAxes: (patch: Partial<IconAxes>) => void;
   resetTypeAxes: () => void;
@@ -48,11 +51,13 @@ export const usePreferences = create<PreferencesState>()(
       sound: false,
       typeAxes: DEFAULT_TYPE_AXES,
       iconAxes: DEFAULT_ICON_AXES,
+      ambientPaused: false,
       setMotionScheme: (motionScheme) => {
         applyMotionScheme(motionScheme);
         set({ motionScheme });
       },
       setSound: (sound) => set({ sound }),
+      setAmbientPaused: (ambientPaused) => set({ ambientPaused }),
       setTypeAxes: (patch) => set((state) => ({ typeAxes: { ...state.typeAxes, ...patch } })),
       setIconAxes: (patch) => set((state) => ({ iconAxes: { ...state.iconAxes, ...patch } })),
       resetTypeAxes: () => set({ typeAxes: DEFAULT_TYPE_AXES }),
@@ -61,7 +66,7 @@ export const usePreferences = create<PreferencesState>()(
     {
       // Read by the pre-paint script in index.html. Keep the key in sync.
       name: 'md-preferences',
-      partialize: ({ motionScheme, sound, typeAxes, iconAxes }) => ({ motionScheme, sound, typeAxes, iconAxes }),
+      partialize: ({ motionScheme, sound, typeAxes, iconAxes, ambientPaused }) => ({ motionScheme, sound, typeAxes, iconAxes, ambientPaused }),
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<PreferencesState>;
         return {

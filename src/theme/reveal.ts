@@ -6,6 +6,13 @@ export interface RevealOrigin {
   y: number;
 }
 
+export interface RevealOptions {
+  /** Milliseconds for the circle to cover the page. */
+  duration?: number;
+  /** Play the theme sound cue, if sound is on. */
+  sound?: boolean;
+}
+
 export function originFromElement(element: Element | null): RevealOrigin | null {
   if (!element) return null;
   const rect = element.getBoundingClientRect();
@@ -19,8 +26,8 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
  * same-document view transition. Without view transitions, or with reduced
  * motion, the change just applies.
  */
-export function withThemeReveal(origin: RevealOrigin | null, apply: () => void): void {
-  playCue('theme');
+export function withThemeReveal(origin: RevealOrigin | null, apply: () => void, { duration = 650, sound = true }: RevealOptions = {}): void {
+  if (sound) playCue('theme');
   if (!origin || typeof document.startViewTransition !== 'function' || reducedMotion()) {
     apply();
     return;
@@ -36,7 +43,7 @@ export function withThemeReveal(origin: RevealOrigin | null, apply: () => void):
     .then(() => {
       root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: 650, easing: 'cubic-bezier(0.05, 0.7, 0.1, 1)', pseudoElement: '::view-transition-new(root)' },
+        { duration, easing: 'cubic-bezier(0.05, 0.7, 0.1, 1)', pseudoElement: '::view-transition-new(root)' },
       );
     })
     .catch(() => {

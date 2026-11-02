@@ -9,7 +9,7 @@
 // index.html marks both spots with comments so the output order is explicit.
 
 import type { Plugin } from 'vite';
-import { DEFAULT_THEME, themeStylesheet } from '../src/theme/engine.ts';
+import { DEFAULT_THEME, themeDeclarations, themeStylesheet } from '../src/theme/engine.ts';
 import { ICON_NAMES } from '../src/ui/icons.ts';
 import { springStylesheet } from '../src/motion/tokens.ts';
 
@@ -34,6 +34,8 @@ export function mdFoundation(): Plugin {
         }
         const theme = [
           `<style id="md-default-theme">\n${themeStylesheet(DEFAULT_THEME)}\n</style>`,
+          // First visits paint in the monochrome scheme until the bloom (src/theme/bloom.ts).
+          `<style id="md-bloom">\n:root[data-bloom] {\n${themeDeclarations({ ...DEFAULT_THEME, variant: 'monochrome' })}\n}\n</style>`,
           `<style id="md-motion">\n${springStylesheet()}\n</style>`,
         ].join('\n    ');
         const icons = [

@@ -88,7 +88,7 @@
 
   /* MD3 type scale. */
   --text-*: initial;
-  --text-hero: clamp(4.5rem, 15vw, 11rem);
+  --text-hero: clamp(4.5rem, 13vw, 15rem);
   --text-hero--line-height: 0.86;
   --text-hero--letter-spacing: -0.035em;
   --text-display-large: 3.5625rem;
@@ -934,5 +934,121 @@ html[data-hub-transition] .md-hub[open] {
   }
   .md-motion-puck[data-moved] {
     translate: calc(100cqi - 3.5rem) 0;
+  }
+}
+/* ------------------------------------------------------------------------
+   Hero. Letters take their axes from --hover (set per letter by the cursor)
+   on top of a base that the bloom starts thin, condensed, and fully round.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .hero {
+    view-timeline: --hero block;
+  }
+  .hero-name {
+    --hero-weight: 420;
+    --hero-stretch: 82%;
+    --hero-rond: 40;
+  }
+  html[data-bloom] .hero-name {
+    --hero-weight: 120;
+    --hero-stretch: 40%;
+    --hero-rond: 100;
+  }
+  .hero-letter {
+    font-weight: calc(var(--hero-weight) + var(--hover, 0) * 420);
+    font-stretch: calc(var(--hero-stretch) + var(--hover, 0) * 34%);
+    font-variation-settings: "ROND" calc(var(--hero-rond) + var(--hover, 0) * 60);
+    transition:
+      font-weight var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+      font-stretch var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+      font-variation-settings var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+  }
+
+  .hero-cluster {
+    position: relative;
+    aspect-ratio: 1;
+  }
+  .hero-shape {
+    position: absolute;
+    aspect-ratio: 1;
+    translate: calc(var(--px, 0) * var(--depth, 1) * -0.9rem) calc(var(--py, 0) * var(--depth, 1) * -0.9rem);
+    transition:
+      translate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+      scale var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+      opacity var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow);
+    transition-delay: 0s, calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms);
+    animation: hero-spin var(--spin, 90s) linear infinite;
+    animation-direction: var(--spin-direction, normal);
+  }
+  .hero-cluster[data-paused] .hero-shape {
+    animation-play-state: paused;
+  }
+  html[data-bloom] .hero-shape {
+    scale: 0.35;
+    opacity: 0;
+  }
+
+  /* Scroll parallax: the art drifts and fades as the hero leaves the viewport.
+     Decorative, so browsers without scroll-driven animations simply skip it. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      .hero-art {
+        animation: hero-drift linear both;
+        animation-timeline: --hero;
+        animation-range: exit 0% exit 100%;
+      }
+    }
+  }
+
+  /* Avatar: breathes at rest, and its frame morphs to another shape on hover. */
+  .md-avatar {
+    aspect-ratio: 1;
+    animation: md-breathe 7s ease-in-out infinite;
+  }
+  .md-avatar[data-paused] {
+    animation-play-state: paused;
+  }
+  .md-avatar-frame {
+    block-size: 100%;
+    clip-path: var(--avatar-rest);
+    transition:
+      clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+      scale var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+  }
+  @media (hover: hover) {
+    .md-avatar:hover .md-avatar-frame {
+      clip-path: var(--avatar-hover);
+      scale: 1.04;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-shape {
+      animation: none;
+      translate: none;
+    }
+    .hero-letter {
+      transition: none;
+    }
+    .md-avatar {
+      animation: none;
+    }
+  }
+}
+
+@keyframes hero-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+@keyframes hero-drift {
+  to {
+    translate: 0 22%;
+    opacity: 0.35;
+  }
+}
+@keyframes md-breathe {
+  50% {
+    scale: 1.025;
   }
 }
