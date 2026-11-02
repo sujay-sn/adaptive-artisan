@@ -168,11 +168,19 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Hero type grows to 15rem on large screens, and the cluster fills the right column
 - [x] About: avatar in a morphing frame with breathing idle and spring hover, a monogram until a photo exists
 - [x] Resume links use a document icon
-- [ ] Check in a browser: a fresh tab for the bloom, cursor over the name and shapes, scroll, pause, reduced motion
+- [x] Checked in a browser
 
 ### Day 5: Skills and Experience
 
-Constellation with d3-force (edges come from skills used together in the same role or project, never hand-drawn), draggable nodes that spring back, hover and focus highlighting related skills and projects, keyboard navigation, chart view as the accessible alternative. Experience timeline with storytelling reveal.
+- [x] Constellation on d3-force: categories anchor their skills, and lines join skills used together in a role or project, weighted by how often. Nothing is drawn by hand
+- [x] Drag a node and it springs back; select one and the graph reorganizes around it
+- [x] Hover or focus lights a skill's neighborhood; the detail panel shows where it was used and what with
+- [x] "See projects" filters Projects to that skill and glides there; a selection also marks matching roles in Experience
+- [x] Keyboard: one tab stop, arrow keys between nodes, Enter to select, Escape to clear
+- [x] List view as the accessible alternative, and the default on small screens
+- [x] Code-split: d3-force and the constellation load as the section nears the viewport
+- [x] Experience timeline: the line draws itself, and each card's parts arrive in reading order as it scrolls in
+- [ ] Check in a browser: drag, select, keyboard, See projects, list view, the timeline on scroll
 
 ### Day 6: Projects, Education, Contact, Footer
 
@@ -208,6 +216,7 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - [ ] Photo for the avatar
 - [ ] Screenshots or short screen recordings of each project
 - [ ] Repo links per project
+- [ ] Tag skills on roles and projects: about half the resume skills (Python, SQL, Git, Docker, and more) are not on any role or project yet, so they float off their category with no connections
 - [x] Project numbers come from the resume; unverified ones removed
 - [x] Graduation date: December 2026 (from the resume)
 - [x] Experience follows the resume: GeodeChain, the TA role, Accenture
@@ -237,4 +246,6 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Shapes are radial approximations** of the MD3 shape library, not exact ports, so every shape shares one point count and any two can morph.- **Contrast is three choices, not a slider.** Standard, medium, and high are what Android offers and what the contrast tests cover.
 - **Sound works now rather than at polish time.** A toggle that does nothing is worse than no toggle, and synthesized Web Audio cues are a few lines.
 - **The hub is its own code chunk**, loaded on the first hover or focus of a FAB, so it costs nothing until someone reaches for it.- **The bloom is a view transition**: the same circular reveal as a theme change, starting from the monochrome scheme. That costs one snapshot instead of animating 49 color properties.
-- **One pause control** stops every ambient animation, as WCAG 2.2.2 requires for motion that runs longer than five seconds.
+- **One pause control** stops every ambient animation, as WCAG 2.2.2 requires for motion that runs longer than five seconds.- **List view instead of a usage chart.** Counting uses would show zero beside about half the skills, Python included, which reflects missing tags rather than real experience.
+- **"See projects" is a button, not an automatic jump.** Clicking a node selects it; scrolling the page away on every click would make the graph impossible to explore.
+- **Experience cards have no hover state.** They are not interactive, and MD3 reserves state layers for things that respond to a click.
