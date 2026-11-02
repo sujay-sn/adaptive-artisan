@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { SECTIONS, type SectionId } from '@/content/profile';
+import { HubFab } from '@/hub/HubLaunchers';
 import { Icon } from '@/ui/Icon';
 
 /**
@@ -13,7 +14,15 @@ import { Icon } from '@/ui/Icon';
 export function NavigationRail({ active }: { active: SectionId }) {
   const activeIndex = Math.max(0, SECTIONS.findIndex((section) => section.id === active));
   return (
-    <nav aria-label="Sections" className="fixed inset-y-0 start-0 z-30 hidden w-24 bg-surface pt-11 expanded:block large:w-[13.75rem] large:px-3">
+    <nav aria-label="Sections" className="fixed inset-y-0 start-0 z-30 hidden w-24 bg-surface pt-6 expanded:block large:w-[13.75rem] large:px-3">
+      <div className="mb-10 flex justify-center large:justify-start large:px-1">
+        <div className="large:hidden">
+          <HubFab />
+        </div>
+        <div className="hidden large:block">
+          <HubFab extended />
+        </div>
+      </div>
       <div className="relative" style={{ '--rail-index': activeIndex } as CSSProperties}>
         <span
           aria-hidden="true"

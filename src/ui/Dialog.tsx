@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useId, useLayoutEffect, useRef, type ReactNode } from 'react';
 
 interface DialogProps {
   open: boolean;
@@ -24,7 +24,8 @@ export function Dialog({ open, onClose, title, description, children, actions, v
   const titleId = useId();
   const descriptionId = useId();
 
-  useEffect(() => {
+  // A layout effect, so the dialog opens in the same frame as the render that opened it.
+  useLayoutEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();

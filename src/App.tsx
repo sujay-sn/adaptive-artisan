@@ -6,6 +6,7 @@ import { container } from '@/layout/container';
 import { NavigationRail } from '@/layout/NavigationRail';
 import { TopAppBar } from '@/layout/TopAppBar';
 import { useActiveSection } from '@/layout/useActiveSection';
+import { HubFab, HubHost } from '@/hub/HubLaunchers';
 import { ThemeControls } from '@/theme/ThemeControls';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
@@ -244,6 +245,10 @@ export function App() {
       </a>
       <TopAppBar active={active} />
       <NavigationRail active={active} />
+      <div className="fixed end-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 expanded:hidden">
+        <HubFab />
+      </div>
+      <HubHost />
       <div className="expanded:ps-24 large:ps-[13.75rem]">
         <main id="main">
           <Hero />
