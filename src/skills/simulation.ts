@@ -1,4 +1,4 @@
-import { forceCollide, forceLink, forceManyBody, forceRadial, forceSimulation, forceX, forceY, type SimulationLinkDatum, type SimulationNodeDatum } from 'd3-force';
+import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY, type SimulationLinkDatum, type SimulationNodeDatum } from 'd3-force';
 import { SKILL_GRAPH, type GraphNode } from './graph';
 
 // The constellation's physics, kept outside React. The component renders the
@@ -12,6 +12,14 @@ interface SimLink extends SimulationLinkDatum<SimNode> {
   kind: 'category' | 'co-use';
   weight: number;
 }
+
+/** Below this canvas width, labels of rarely used skills stay hidden until lit. */
+export const QUIET_LABELS_BELOW = 1100;
+
+export const canvasHeight = (width: number) => Math.round(Math.min(860, Math.max(520, width * 0.7)));
+
+/** Skills whose label can stay hidden on a small canvas: used in fewer than two roles and projects. */
+export const hasQuietLabel = (node: GraphNode) => node.kind === 'skill' && node.usage < 2;
 
 export function nodeRadius(node: GraphNode): number {
   return node.kind === 'category' ? 22 : 5 + Math.min(node.usage, 5) * 2;
@@ -72,23 +80,36 @@ export function createConstellation({ node, link, reducedMotion }: Options): Con
 
   const touchesFocus = (l: SimLink) => focus !== null && (endpointId(l.source) === focus || endpointId(l.target) === focus);
 
+  // Categories sit on an ellipse that fills the canvas, and each skill gathers
+  // round its category. Co-use links are mostly visual: strong enough to bend
+  // the layout toward real connections, too weak to knot it into a hairball.
+  const categories = nodes.filter((n) => n.kind === 'category');
+  const anchors = new Map<string, { x: number; y: number }>();
+  const anchorOf = (d: SimNode) => anchors.get(d.category) ?? { x: width / 2, y: height / 2 };
+
   const configure = () => {
     const cx = width / 2;
     const cy = height / 2;
-    const ring = Math.min(width, height) * 0.34;
+    categories.forEach((category, index) => {
+      const angle = -Math.PI / 2 + (index / categories.length) * Math.PI * 2;
+      anchors.set(category.category, { x: cx + Math.cos(angle) * width * 0.36, y: cy + Math.sin(angle) * height * 0.34 });
+    });
+    const pull = (d: SimNode) => (d.id === focus ? 0.4 : d.kind === 'category' ? (focus ? 0.2 : 0.5) : 0.06);
+    // Clusters grow with the canvas, so big screens get breathing room rather than more empty space.
+    const scale = Math.min(1.7, Math.max(0.85, Math.min(width, height) / 560));
     simulation
       .force(
         'link',
         forceLink<SimNode, SimLink>(links)
           .id((d) => d.id)
-          .distance((l) => (l.kind === 'category' ? 64 : touchesFocus(l) ? 90 : 150))
-          .strength((l) => (l.kind === 'category' ? 0.5 : Math.min(0.3, 0.04 * l.weight) * (touchesFocus(l) ? 5 : 1))),
+          .distance((l) => (l.kind === 'category' ? 52 * scale : touchesFocus(l) ? 110 : 160 * scale))
+          .strength((l) => (l.kind === 'category' ? 0.8 : touchesFocus(l) ? 0.25 : Math.min(0.05, 0.015 * l.weight))),
       )
-      .force('charge', forceManyBody<SimNode>().strength((d) => (d.kind === 'category' ? -380 : -60)))
-      .force('collide', forceCollide<SimNode>().radius((d) => d.radius + (d.kind === 'category' ? 24 : 10)).strength(0.85))
-      .force('ring', forceRadial<SimNode>(ring, cx, cy).strength((d) => (d.kind === 'category' && focus === null ? 0.4 : 0)))
-      .force('x', forceX<SimNode>(cx).strength((d) => (d.id === focus ? 0.35 : 0.035)))
-      .force('y', forceY<SimNode>(cy).strength((d) => (d.id === focus ? 0.35 : 0.05)));
+      .force('charge', forceManyBody<SimNode>().strength((d) => (d.kind === 'category' ? -260 : -40)).distanceMax(260))
+      // Labels are much wider than dots, so a skill's collision radius follows its label length.
+      .force('collide', forceCollide<SimNode>().radius((d) => (d.kind === 'category' ? d.radius + 34 : Math.max(d.radius + 18, d.label.length * 2.8))).strength(0.9))
+      .force('x', forceX<SimNode>((d) => (d.id === focus ? cx : anchorOf(d).x)).strength(pull))
+      .force('y', forceY<SimNode>((d) => (d.id === focus ? cy : anchorOf(d).y)).strength(pull));
   };
 
   // With reduced motion, the layout is solved instantly and drawn once.

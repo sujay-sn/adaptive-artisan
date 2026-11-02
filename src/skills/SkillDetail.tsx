@@ -67,12 +67,12 @@ function CategoryInfo({ node, selected }: { node: GraphNode; selected: boolean }
 }
 
 /**
- * What the active skill was used in and with. On large screens it follows
+ * What the active skill was used in and with. On extra-large screens it follows
  * the pointer; elsewhere it shows only the selection, so the layout never
  * shifts under the cursor.
  */
 export function SkillDetail({ className = '' }: { className?: string }) {
-  const followsHover = useMediaQuery('(width >= 75rem)');
+  const followsHover = useMediaQuery('(width >= 100rem)');
   const hovered = useSkillStore((state) => state.hovered);
   const selected = useSkillStore((state) => state.selected);
   const id = (followsHover ? hovered : null) ?? selected;

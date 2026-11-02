@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 import { categoryLabel, neighborhood, SKILL_GRAPH, type GraphNode } from './graph';
-import { createConstellation, nodeRadius, type ConstellationController } from './simulation';
+import { canvasHeight, createConstellation, hasQuietLabel, nodeRadius, QUIET_LABELS_BELOW, type ConstellationController } from './simulation';
 import { useSkillStore } from './store';
 
 // The three accent palettes, rotated through the categories.
@@ -50,7 +50,7 @@ export default function Constellation() {
     const observer = new ResizeObserver(([entry]) => {
       if (!entry) return;
       const width = Math.round(entry.contentRect.width);
-      setSize({ width, height: Math.round(Math.min(760, Math.max(480, width * 0.68))) });
+      setSize({ width, height: canvasHeight(width) });
     });
     observer.observe(element);
     return () => observer.disconnect();
@@ -159,6 +159,8 @@ export default function Constellation() {
 
   const active = hovered ?? selected;
   const lit = active ? neighborhood(active) : null;
+  // On smaller canvases, rarely used skills keep their labels hidden until lit, so the rest stay readable.
+  const quiet = size !== null && size.width < QUIET_LABELS_BELOW;
 
   return (
     <div ref={wrapper} className="w-full">
@@ -195,6 +197,7 @@ export default function Constellation() {
                 node.id === active ? 'is-active' : '',
                 node.id === selected ? 'is-selected' : '',
                 lit && !lit.has(node.id) ? 'is-dim' : '',
+                quiet && hasQuietLabel(node) && !lit?.has(node.id) ? 'is-quiet' : '',
               ].join(' ');
               return (
                 <g

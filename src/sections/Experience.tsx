@@ -25,7 +25,7 @@ export function Experience() {
         {experience.map((job) => {
           const match = selected !== null && job.skills.includes(selected);
           return (
-            <li key={job.id} className="relative grid gap-3 ps-8 expanded:grid-cols-[11rem_minmax(0,1fr)] expanded:gap-10 expanded:ps-0">
+            <li key={job.id} className="md-timeline-item relative grid gap-3 ps-8 expanded:grid-cols-[11rem_minmax(0,1fr)] expanded:gap-10 expanded:ps-0">
               <span className="md-timeline-dot" aria-hidden="true" />
               <p className="md-story pt-0.5 text-label-large text-on-surface-variant tabular-nums" style={story(0)}>
                 {job.period}

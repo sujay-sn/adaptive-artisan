@@ -1141,11 +1141,15 @@ html[data-hub-transition] .md-hub[open] {
     stroke: var(--md-sys-color-surface);
     stroke-width: 4px;
     stroke-linejoin: round;
+    transition: opacity var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast);
   }
   .md-constellation-node.is-category .md-constellation-label {
     fill: var(--md-sys-color-on-surface);
     font-size: 0.875rem;
     font-weight: 600;
+  }
+  .md-constellation-node.is-quiet .md-constellation-label {
+    opacity: 0;
   }
   .md-constellation-node:is(.is-active, .is-selected) .md-constellation-label {
     fill: var(--md-sys-color-on-surface);
@@ -1155,10 +1159,17 @@ html[data-hub-transition] .md-hub[open] {
   .md-timeline {
     position: relative;
   }
-  .md-timeline::before {
+  .md-timeline {
+    --md-timeline-gap: 2.5rem;
+  }
+  .md-timeline-item {
+    view-timeline: --md-timeline-item block;
+  }
+  /* Each role draws its own segment, from its dot down to the next one. */
+  .md-timeline-item:not(:last-child)::before {
     content: "";
     position: absolute;
-    inset-block: 0.5rem 0;
+    inset-block: 1.25rem calc(-1 * var(--md-timeline-gap) - 0.3125rem);
     inset-inline-start: calc(0.5rem - 1px);
     inline-size: 2px;
     border-radius: 1px;
@@ -1176,7 +1187,10 @@ html[data-hub-transition] .md-hub[open] {
     box-shadow: 0 0 0 4px var(--md-sys-color-surface);
   }
   @media (width >= 52.5rem) {
-    .md-timeline::before {
+    .md-timeline {
+      --md-timeline-gap: 3.5rem;
+    }
+    .md-timeline-item::before {
       inset-inline-start: calc(11rem + 1.25rem - 1px);
     }
     .md-timeline-dot {
@@ -1194,10 +1208,15 @@ html[data-hub-transition] .md-hub[open] {
         animation-timeline: view();
         animation-range: entry calc(4% + var(--i, 0) * 4%) entry calc(50% + var(--i, 0) * 4%);
       }
-      .md-timeline::before {
+      .md-timeline-item:not(:last-child)::before {
         animation: md-timeline-draw linear both;
-        animation-timeline: view();
-        animation-range: entry 10% cover 55%;
+        animation-timeline: --md-timeline-item;
+        animation-range: cover 8% cover 70%;
+      }
+      .md-timeline-dot {
+        animation: md-dot-in linear both;
+        animation-timeline: --md-timeline-item;
+        animation-range: entry 10% entry 40%;
       }
     }
   }
@@ -1212,5 +1231,10 @@ html[data-hub-transition] .md-hub[open] {
 @keyframes md-timeline-draw {
   from {
     scale: 1 0;
+  }
+}
+@keyframes md-dot-in {
+  from {
+    scale: 0;
   }
 }

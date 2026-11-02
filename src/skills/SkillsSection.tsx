@@ -36,7 +36,7 @@ export function SkillsSection() {
         </p>
         <ChoiceChips legend="View" name="skills-view" value={view} options={VIEWS} onChange={(value) => setChoice(value)} />
       </div>
-      <div className="mt-8 grid items-start gap-6 large:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="mt-8 grid items-start gap-6 xlarge:grid-cols-[minmax(0,1fr)_20rem]">
         <div ref={holder} className="min-w-0">
           {view === 'list' ? (
             <SkillList />
@@ -48,7 +48,8 @@ export function SkillsSection() {
             <Placeholder />
           )}
         </div>
-        <SkillDetail className="sticky top-[4.75rem] z-10 max-large:order-first expanded:top-6" />
+        {/* Beside the graph only on extra-large screens; above it elsewhere, so the graph gets the full width. */}
+        <SkillDetail className="z-10 max-expanded:sticky max-expanded:top-[4.75rem] max-xlarge:order-first xlarge:sticky xlarge:top-6" />
       </div>
     </Section>
   );
