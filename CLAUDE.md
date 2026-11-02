@@ -7,6 +7,7 @@ Read `PLAN.md` first. It is the locked plan; `idea.txt` (in the Claude project) 
 - `npm run dev` / `npm run build` / `npm run preview`
 - `npm test` runs Vitest, `npm run typecheck`, `npm run lint`
 - `npm run fonts` rebuilds the display font subset in `public/fonts`
+- Restart `npm run dev` after changing `scripts/vite-plugin-md-foundation.ts` or anything it imports (the theme engine, motion tokens, icon list). Vite does not always reload build plugins on its own, so the dev page can serve a stale shell.
 
 The dev machine has `NODE_ENV=production` set globally. `.npmrc` forces devDependencies to install; if a tool misbehaves, clear `NODE_ENV` for the shell first.
 

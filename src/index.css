@@ -949,6 +949,11 @@ html[data-hub-transition] .md-hub[open] {
     --hero-stretch: 82%;
     --hero-rond: 40;
   }
+  /* The monochrome scheme leaves the seed swatches (and any photo) in color,
+     so the page is also desaturated until the bloom sweeps color back in. */
+  html[data-bloom] body {
+    filter: grayscale(1);
+  }
   html[data-bloom] .hero-name {
     --hero-weight: 120;
     --hero-stretch: 40%;
