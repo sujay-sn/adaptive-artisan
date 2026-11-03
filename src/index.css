@@ -1165,8 +1165,9 @@ html[data-hub-transition] .md-hub[open] {
   .md-timeline-item {
     view-timeline: --md-timeline-item block;
   }
-  /* Each role draws its own segment, from its dot down to the next one. */
-  .md-timeline-item:not(:last-child)::before {
+  /* Each role draws its own segment, from its dot down to the next one. The
+     last role's segment runs down its own card and fades out. */
+  .md-timeline-item::before {
     content: "";
     position: absolute;
     inset-block: 1.25rem calc(-1 * var(--md-timeline-gap) - 0.3125rem);
@@ -1175,6 +1176,10 @@ html[data-hub-transition] .md-hub[open] {
     border-radius: 1px;
     background: linear-gradient(var(--md-sys-color-primary), var(--md-sys-color-outline-variant));
     transform-origin: top;
+  }
+  .md-timeline-item:last-child::before {
+    inset-block-end: 0;
+    background: linear-gradient(var(--md-sys-color-primary), transparent);
   }
   .md-timeline-dot {
     position: absolute;
@@ -1208,7 +1213,7 @@ html[data-hub-transition] .md-hub[open] {
         animation-timeline: view();
         animation-range: entry calc(4% + var(--i, 0) * 4%) entry calc(50% + var(--i, 0) * 4%);
       }
-      .md-timeline-item:not(:last-child)::before {
+      .md-timeline-item::before {
         animation: md-timeline-draw linear both;
         animation-timeline: --md-timeline-item;
         animation-range: cover 8% cover 70%;
