@@ -1179,7 +1179,7 @@ html[data-hub-transition] .md-hub[open] {
   }
   .md-timeline-item:last-child::before {
     inset-block-end: 0;
-    background: linear-gradient(var(--md-sys-color-primary), transparent);
+    background: linear-gradient(var(--md-sys-color-primary), var(--md-sys-color-outline-variant) 70%, transparent);
   }
   .md-timeline-dot {
     position: absolute;
@@ -1233,9 +1233,12 @@ html[data-hub-transition] .md-hub[open] {
     translate: 0 1.25rem;
   }
 }
+/* A clip rather than a scale, so the gradient stays put and is uncovered top
+   down. Scaling squeezed the last segment's fade along with it, which made a
+   half-drawn line look finished. */
 @keyframes md-timeline-draw {
   from {
-    scale: 1 0;
+    clip-path: inset(0 0 100% 0);
   }
 }
 @keyframes md-dot-in {
