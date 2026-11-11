@@ -1,3 +1,4 @@
+import type { YearMonth } from '@/lib/degreeProgress';
 import type { IconName } from '@/ui/icons';
 
 export interface Profile {
@@ -128,6 +129,9 @@ export interface Degree {
   school: string;
   location: string;
   period: string;
+  /** First and last months, which drive the progress bar and the completed state. */
+  start: YearMonth;
+  end: YearMonth;
   gpa: string;
   summary?: string;
   coursework: string[];
@@ -140,6 +144,8 @@ export const education: Degree[] = [
     school: 'Northeastern University',
     location: 'Boston, MA',
     period: 'Sept 2024 to Dec 2026',
+    start: '2024-09',
+    end: '2026-12',
     gpa: '3.72 / 4.0',
     coursework: [
       'Program Structure and Algorithms',
@@ -158,6 +164,8 @@ export const education: Degree[] = [
     school: 'Bapuji Institute of Engineering and Technology',
     location: 'Davanagere, India',
     period: 'Sept 2017 to Jul 2021',
+    start: '2017-09',
+    end: '2021-07',
     gpa: '3.5 / 4.0',
     coursework: ['Computer Organization', 'Computer Networks', 'Operating Systems', 'Data Structures and Algorithms'],
   },
