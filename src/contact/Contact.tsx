@@ -108,7 +108,7 @@ export function Contact() {
           </div>
         </div>
 
-        <Card variant="filled" className="rounded-xl p-6 [--md-field-bg:var(--md-sys-color-surface-container-highest)] expanded:p-8">
+        <Card variant="filled" className="rounded-xl p-6 expanded:p-8">
           {status === 'sent' ? (
             <Sent onReset={reset} />
           ) : (

@@ -480,8 +480,9 @@
   /* Text fields. The placeholder is a single space so :placeholder-shown
      means "empty", which floats the label without JavaScript. */
   .md-field {
-    --md-field-bg: var(--md-sys-color-surface);
     --md-field-accent: var(--md-sys-color-primary);
+    /* MD3 medium shape: the spec's 4px default reads as square at this size. */
+    --md-field-radius: 0.75rem;
     display: grid;
     /* Rows keep their natural height. Without this, a field beside a taller
        one in a grid row stretches, and the extra height lands in the input. */
@@ -538,7 +539,7 @@
   }
 
   .md-field-filled .md-field-box {
-    border-radius: 0.25rem 0.25rem 0 0;
+    border-radius: var(--md-field-radius) var(--md-field-radius) 0 0;
     background-color: var(--md-sys-color-surface-container-highest);
     box-shadow: inset 0 -1px 0 var(--md-sys-color-on-surface-variant);
   }
@@ -564,31 +565,76 @@
     scale: 0.75;
   }
 
+  /* The outline is a fieldset laid over the box. Its legend is the floated
+     label's width at 75% scale (same text, same padding scaled), and the
+     browser leaves a gap in the border for it, so no background patch is
+     needed and the notch is transparent on any surface. The legend is 11px
+     tall and the fieldset starts 5px up, which puts the border on the box's
+     top edge, through the middle of the floated label. */
   .md-field-outlined .md-field-box {
-    border-radius: 0.25rem;
-    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline);
-    transition: box-shadow var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast);
+    border-radius: var(--md-field-radius);
   }
-  .md-field-outlined .md-field-box:focus-within {
-    box-shadow: inset 0 0 0 2px var(--md-field-accent);
+  .md-field-outline {
+    position: absolute;
+    inset: -5px 0 0;
+    margin: 0;
+    /* The legend sits inside the border, so the padding gives back its width
+       to start the notch exactly where the label starts. */
+    padding: 0 calc(0.75rem - 1px);
+    min-inline-size: 0;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-field-radius);
+    pointer-events: none;
+    transition: border-color var(--md-spring-effects-fast-duration) var(--md-spring-effects-fast);
+  }
+  .md-field-outline > legend {
+    display: block;
+    float: none;
+    inline-size: auto;
+    max-inline-size: 0.01px;
+    block-size: 11px;
+    padding: 0;
+    overflow: hidden;
+    visibility: hidden;
+    white-space: nowrap;
+    /* Match the floated label exactly: it is 16px text scaled to 75%, so it
+       keeps 16px letterforms and spacing. Real 12px text would switch to the
+       font's wider small optical size and open the notch too far. */
+    font-size: 0.75rem;
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" 16;
+    letter-spacing: calc(0.03125rem * 0.75);
+    transition: max-inline-size 50ms linear;
+  }
+  .md-field-outline > legend > span {
+    display: inline-block;
+    padding-inline: 0.1875rem;
+  }
+  .md-field-outlined .md-field-box:focus-within > .md-field-outline {
+    border-width: 2px;
+    border-color: var(--md-field-accent);
+    padding-inline: calc(0.75rem - 2px);
   }
   .md-field-outlined .md-field-box > label {
     inset-inline-start: 0.75rem;
     padding-inline: 0.25rem;
   }
-  /* Floated onto the outline, with a background to cut the line behind it. */
+  /* Floated onto the outline; the legend opens the notch behind it. */
   .md-field-outlined .md-field-box > :is(input, textarea):is(:focus, :not(:placeholder-shown)) + label {
     translate: 0 -1.5625rem;
     scale: 0.75;
-    background-color: var(--md-field-bg);
+  }
+  .md-field-outlined .md-field-box > :is(input, textarea):is(:focus, :not(:placeholder-shown)) ~ .md-field-outline > legend {
+    max-inline-size: 100%;
+    transition: max-inline-size 100ms linear 50ms;
   }
 
   @media (hover: hover) {
     .md-field-filled .md-field-box:hover {
       box-shadow: inset 0 -1px 0 var(--md-sys-color-on-surface);
     }
-    .md-field-outlined .md-field-box:hover:not(:focus-within) {
-      box-shadow: inset 0 0 0 1px var(--md-sys-color-on-surface);
+    .md-field-outlined:not([data-invalid], :has(:user-invalid)) .md-field-box:hover:not(:focus-within) > .md-field-outline {
+      border-color: var(--md-sys-color-on-surface);
     }
   }
 
@@ -601,11 +647,8 @@
   .md-field-filled:is([data-invalid], :has(:user-invalid)) .md-field-box {
     box-shadow: inset 0 -1px 0 var(--md-sys-color-error);
   }
-  .md-field-outlined:is([data-invalid], :has(:user-invalid)) .md-field-box {
-    box-shadow: inset 0 0 0 1px var(--md-sys-color-error);
-  }
-  .md-field-outlined:is([data-invalid], :has(:user-invalid)) .md-field-box:focus-within {
-    box-shadow: inset 0 0 0 2px var(--md-sys-color-error);
+  .md-field-outlined:is([data-invalid], :has(:user-invalid)) .md-field-outline {
+    border-color: var(--md-sys-color-error);
   }
   .md-field-support,
   .md-field-error {

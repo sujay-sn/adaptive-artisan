@@ -47,6 +47,18 @@ function FieldShell({
           {label}
           {required && <span aria-hidden="true"> *</span>}
         </label>
+        {/* The outline, drawn by a fieldset so its legend can cut a real,
+            transparent notch for the floated label over any background. */}
+        {variant === 'outlined' && (
+          <fieldset className="md-field-outline" aria-hidden="true">
+            <legend>
+              <span>
+                {label}
+                {required && ' *'}
+              </span>
+            </legend>
+          </fieldset>
+        )}
       </div>
       {supportingText && (
         <p id={`${id}-support`} className="md-field-support">
