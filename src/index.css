@@ -1211,14 +1211,29 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   }
 
   /* The timeline draws itself as each role scrolls through. Decorative, so
-     browsers without scroll-driven animations show the finished line. */
+     browsers without scroll-driven animations show the finished line.
+     The line's tip sits on a reading line 60% down the viewport. Both ends
+     of the range count from the moment the role's top edge enters at the
+     bottom (entry-crossing 0): it starts once the top of the line has risen
+     40vh, and finishes once the bottom of the line has, which is the role's
+     height (100%) plus the stretch down to the next dot. Scroll and drawing
+     then move at the same rate, so each segment meets the next dot as that
+     dot reaches the reading line. (A `cover` range spans the whole trip
+     through the viewport, about twice the screen for a tall role, so the
+     line lagged and stopped short of the next dot while you read.) */
   @media (prefers-reduced-motion: no-preference) {
     @supports ((animation-timeline: view()) and (animation-range: entry)) {
 
       .md-timeline-item::before {
         animation: md-timeline-draw linear both;
         animation-timeline: --md-timeline-item;
-        animation-range: cover 8% cover 70%;
+        animation-range:
+          entry-crossing calc(40vh + 1.25rem)
+          entry-crossing calc(100% + 40vh + var(--md-timeline-gap) + 0.3125rem);
+      }
+      /* The last line stops at its own role's bottom edge. */
+      .md-timeline-item:last-child::before {
+        animation-range: entry-crossing calc(40vh + 1.25rem) entry-crossing calc(100% + 40vh);
       }
       .md-timeline-dot {
         animation: md-dot-in linear both;
