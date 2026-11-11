@@ -1,9 +1,14 @@
+import { useRef } from 'react';
 import { profile, SECTIONS } from '@/content/profile';
 import { RoomArt, RoomLights } from '@/footer/Room';
 import { clockLabel, routineAt, skyAt, STATIONS } from '@/footer/routine';
 import { useBostonTime } from '@/footer/useBostonTime';
+import { WalkingPerson } from '@/footer/WalkingPerson';
+import { useMediaQuery } from '@/lib/useMediaQuery';
+import { useNearViewport } from '@/lib/useNearViewport';
+import { usePreferences } from '@/preferences/store';
 import { Button } from '@/ui/Button';
-import type { CSSProperties } from 'react';
+import { IconButton } from '@/ui/IconButton';
 import { container } from './container';
 
 const LINK =
@@ -20,16 +25,27 @@ export function Footer() {
   const block = routineAt(time);
   const sky = skyAt(time);
 
+  const footer = useRef<HTMLElement>(null);
+  const room = useRef<HTMLDivElement>(null);
+  // He walks in once the footer is a good way onto the screen, not as it peeks in.
+  const started = useNearViewport(footer, '0px 0px -30% 0px');
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const paused = usePreferences((state) => state.ambientPaused);
+  const setPaused = usePreferences((state) => state.setAmbientPaused);
+
   return (
     <footer
+      ref={footer}
       className="md-footer relative isolate mx-3 mb-24 grid overflow-hidden rounded-[2rem] bg-surface-container text-on-surface expanded:mx-6 expanded:mb-6"
       data-sky={sky}
       data-block={block.id}
+      data-paused={paused ? '' : undefined}
     >
-      <div className="md-room" style={{ '--cam': STATIONS[block.id] / 1600 } as CSSProperties} aria-hidden="true">
+      <div ref={room} className="md-room" aria-hidden="true">
         <div className="md-room-camera">
           <svg viewBox="0 0 1600 620" className="block size-full">
             <RoomArt time={time} sky={sky} />
+            <WalkingPerson station={STATIONS[block.id]} started={started} still={reducedMotion} paused={paused} room={room} />
           </svg>
           <svg viewBox="0 0 1600 620" className="md-room-lights absolute inset-0 size-full">
             <RoomLights />
@@ -45,7 +61,7 @@ export function Footer() {
           <p className="mt-2 font-display text-title-large text-on-surface-variant">
             {profile.role} in {profile.location}
           </p>
-          <p className="mt-6 max-w-[22rem] text-body-medium text-on-surface-variant">
+          <p className="mt-6 text-body-medium text-on-surface-variant">
             &copy; {new Date().getFullYear()}. Built as a working Material 3 Expressive system.
           </p>
         </div>
@@ -91,9 +107,26 @@ export function Footer() {
             <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(time)} in Boston.</span>{' '}
             <span className="text-title-small">{block.caption}</span>
           </p>
-          <Button href="#home" variant="tonal" icon="arrow_upward" className="shrink-0">
-            Back to top
-          </Button>
+          <div className="flex shrink-0 items-center gap-1">
+            {!reducedMotion && (
+              <IconButton
+                icon={paused ? 'play_arrow' : 'pause'}
+                label={paused ? 'Play animations' : 'Pause animations'}
+                onClick={() => setPaused(!paused)}
+              />
+            )}
+            {/* On a phone the label would squeeze the caption, so it becomes an icon. */}
+            <IconButton
+              icon="arrow_upward"
+              label="Back to top"
+              variant="tonal"
+              className="medium:hidden"
+              onClick={() => (window.location.hash = 'home')}
+            />
+            <Button href="#home" variant="tonal" icon="arrow_upward" className="max-medium:hidden">
+              Back to top
+            </Button>
+          </div>
         </div>
       </div>
     </footer>

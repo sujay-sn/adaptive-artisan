@@ -198,7 +198,7 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animation. Prerendered HTML, Open Graph, structured data. Accessibility, performance, and cross-browser passes. Lighthouse.
 
 - [x] Footer room on Boston time: the whole footer is the room, content on its wall, a real sky in the window, a wall clock, night dimming with lamp and TV light, and a phone crop around the current station
-- [ ] Full-body character who walks in from the door to the current station when the footer arrives, and on to the next one when a block changes
+- [x] Full-body character who walks in from the door to the current station when the footer arrives, and on to the next one when a block changes
 - [ ] Poses at each station: lifting, at the desk (coursework and projects), tea at the counter, gaming on the couch, asleep
 
 ## Before launch
@@ -278,3 +278,4 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **The footer is the room, and text never sits on furniture.** Content gets its own band of wall; the room rises into it only by its empty top strip, and the bar floats on a strip of floor in front of everything.
 - **Night dims the room, not the wall behind the text.** The dimming fades in from the room's top, so the content keeps full contrast while lamp and TV light glow above it.
 - **The window's sky uses natural colors, not the theme.** It shows Boston's actual sky, which is still daylight when someone browses in dark mode.
+- **The walk is keyframed joints, not a library.** Each limb pivots at its own joint, legs spend 60% of the cycle planted, and travel speed matches the stride; the Web Animations API sequences walk then stop and pans the phone crop through a registered --cam property.

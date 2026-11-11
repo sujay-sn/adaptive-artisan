@@ -1443,6 +1443,120 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     }
   }
 }
+/* Registered so the phone crop can animate smoothly as Sujay walks. */
+@property --cam {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* ------------------------------------------------------------------------
+   Sujay walking (src/footer/Person.tsx). Every limb rotates about its own
+   joint. A leg spends 60% of the cycle planted, pushing back, then swings
+   forward with the knee bending mid-swing; the arms swing opposite the legs,
+   and the body dips at each heel strike and rises over the planted foot.
+   The stride matches SPEED in WalkingPerson.tsx, so his feet don't skate.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .md-person {
+    --walk: 0.8s;
+  }
+  .md-person :is(.md-leg, .md-shin, .md-arm, .md-forearm, .md-upper) {
+    transform-box: view-box;
+    transform-origin: 0 0;
+  }
+  /* Standing: feet a little apart, so in profile he doesn't read as one-legged. */
+  .md-person .md-leg-front {
+    rotate: -6deg;
+  }
+  .md-person .md-leg-back {
+    rotate: 7deg;
+  }
+  .md-person .md-forearm {
+    rotate: -8deg;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .md-person[data-walking] .md-leg {
+      animation: md-walk-thigh var(--walk) infinite;
+    }
+    .md-person[data-walking] .md-shin {
+      animation: md-walk-shin var(--walk) infinite;
+    }
+    .md-person[data-walking] .md-arm {
+      animation: md-walk-arm var(--walk) infinite;
+    }
+    .md-person[data-walking] .md-forearm {
+      rotate: -20deg;
+    }
+    .md-person[data-walking] .md-upper {
+      animation: md-walk-bob calc(var(--walk) / 2) infinite;
+    }
+    /* The far side runs half a cycle behind the near side. */
+    .md-person[data-walking] :is(.md-leg-back, .md-shin-back, .md-arm-back) {
+      animation-delay: calc(var(--walk) / -2);
+    }
+    .md-footer[data-paused] .md-person * {
+      animation-play-state: paused;
+    }
+  }
+}
+@keyframes md-walk-thigh {
+  0% {
+    rotate: -26deg;
+    animation-timing-function: linear;
+  }
+  60% {
+    rotate: 26deg;
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    rotate: -26deg;
+  }
+}
+@keyframes md-walk-shin {
+  0% {
+    rotate: 2deg;
+  }
+  55% {
+    rotate: 6deg;
+    animation-timing-function: ease-out;
+  }
+  75% {
+    rotate: 55deg;
+    animation-timing-function: ease-in;
+  }
+  92% {
+    rotate: 6deg;
+  }
+  100% {
+    rotate: 2deg;
+  }
+}
+@keyframes md-walk-arm {
+  0% {
+    rotate: 22deg;
+    animation-timing-function: ease-in-out;
+  }
+  60% {
+    rotate: -22deg;
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    rotate: 22deg;
+  }
+}
+@keyframes md-walk-bob {
+  0%,
+  100% {
+    translate: 0 2px;
+    animation-timing-function: ease-out;
+  }
+  60% {
+    translate: 0 -2.5px;
+    animation-timing-function: ease-in;
+  }
+}
+
 /* A clip rather than a scale, so the gradient stays put and is uncovered top
    down. Scaling squeezed the last segment's fade along with it, which made a
    half-drawn line look finished. Both ends are inset() on purpose: an implicit
