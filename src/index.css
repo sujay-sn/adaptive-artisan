@@ -1334,8 +1334,11 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   .md-footer {
     grid-template-areas: "content" "room" "bar";
     /* No hard top edge: the footer starts as the page's own surface and
-       deepens into the wall color before the room begins. */
-    background-image: linear-gradient(var(--md-sys-color-surface), var(--md-sys-color-surface-container) min(60%, 14rem));
+       deepens into the wall color before the room begins. Dark surfaces sit
+       closer together, so the dark wall is one tone higher to travel as far. */
+    --md-wall: light-dark(var(--md-sys-color-surface-container), var(--md-sys-color-surface-container-high));
+    background-color: var(--md-wall);
+    background-image: linear-gradient(var(--md-sys-color-surface), var(--md-wall) min(60%, 14rem));
     /* Off screen, the browser skips the footer's rendering entirely. */
     content-visibility: auto;
     contain-intrinsic-size: auto none auto 40rem;
