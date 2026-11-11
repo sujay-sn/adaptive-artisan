@@ -22,7 +22,7 @@ export function RoomArt({ time, sky, block }: { time: BostonTime; sky: Sky; bloc
       <FloorPlant />
       <Kitchen />
       <WallClock time={time} />
-      <Lounge />
+      <Lounge gaming={block === 'gaming'} />
       <Bed />
     </>
   );
@@ -269,39 +269,59 @@ function WallClock({ time }: { time: BostonTime }) {
   const minuteAngle = time.minute * 6;
   return (
     <g>
-      <circle cx="1180" cy="300" r="28" fill={c('surface-container-lowest')} stroke={c('outline')} strokeWidth="4" />
+      <circle cx="1236" cy="300" r="28" fill={c('surface-container-lowest')} stroke={c('outline')} strokeWidth="4" />
       <g stroke={c('on-surface')} strokeLinecap="round">
-        <path d="M1180 300 V284" strokeWidth="4" transform={`rotate(${hourAngle} 1180 300)`} />
-        <path d="M1180 300 V278" strokeWidth="2.5" transform={`rotate(${minuteAngle} 1180 300)`} />
+        <path d="M1236 300 V284" strokeWidth="4" transform={`rotate(${hourAngle} 1236 300)`} />
+        <path d="M1236 300 V278" strokeWidth="2.5" transform={`rotate(${minuteAngle} 1236 300)`} />
       </g>
-      <circle cx="1180" cy="300" r="3" fill={c('primary')} />
+      <circle cx="1236" cy="300" r="3" fill={c('primary')} />
     </g>
   );
 }
 
-function Lounge() {
+/** The TV is an object, not UI, so its colors are fixed: dark in either theme. */
+const TV = { bezel: '#1d2024', off: '#2b3136', stand: '#3a3f44', game: '#1b2a4a', coin: '#ffd76a' };
+const TV_SCREEN = '1294,357 1330,347 1330,425 1294,418';
+
+/**
+ * Couch and TV. The couch is sized so that seated, his feet reach the floor;
+ * the TV is turned three-quarters so the screen shows. While he's gaming the
+ * screen runs a tiny platformer and the controller is in his hands (Person).
+ */
+function Lounge({ gaming }: { gaming: boolean }) {
   return (
     <g>
       {/* Couch, in profile, facing the TV */}
       <g fill={c('primary-container')}>
-        <rect x="1086" y="362" width="34" height="92" rx="16" />
-        <rect x="1086" y="418" width="164" height="36" rx="12" />
-        <rect x="1228" y="398" width="26" height="56" rx="12" />
+        <rect x="1086" y="380" width="32" height="90" rx="15" />
+        <rect x="1086" y="448" width="168" height="22" rx="10" />
+        <rect x="1230" y="420" width="24" height="50" rx="11" />
       </g>
-      <rect x="1116" y="404" width="116" height="18" rx="9" fill={c('surface-container-lowest')} opacity="0.55" />
-      <circle cx="1130" cy="394" r="14" fill={c('tertiary-container')} />
-      <rect x="1096" y="454" width="8" height="16" rx="3" fill={c('outline')} />
-      <rect x="1236" y="454" width="8" height="16" rx="3" fill={c('outline')} />
-      {/* TV on a low stand, seen nearly side-on */}
-      <rect x="1280" y="430" width="56" height="40" rx="6" fill={c('secondary-container')} />
-      <rect x="1302" y="418" width="12" height="12" fill={c('outline')} />
-      <path d="M1296 336 L1312 330 L1312 420 L1296 414 Z" fill={c('on-surface')} />
-      {/* Controller resting on the arm */}
-      <rect x="1230" y="390" width="22" height="10" rx="5" fill={c('on-surface-variant')} />
+      <rect x="1114" y="436" width="120" height="14" rx="7" fill={c('surface-container-lowest')} opacity="0.55" />
+      <circle cx="1126" cy="424" r="12" fill={c('tertiary-container')} />
+      {!gaming && <rect x="1232" y="412" width="22" height="9" rx="4.5" fill={c('on-surface-variant')} />}
+      {/* TV on a low stand */}
+      <rect x="1282" y="438" width="56" height="32" rx="6" fill={c('secondary-container')} />
+      <rect x="1304" y="428" width="10" height="10" fill={TV.stand} />
+      <polygon points="1290,352 1334,340 1334,430 1290,422" fill={TV.bezel} />
+      <polygon points={TV_SCREEN} fill={TV.off} />
+      {gaming && (
+        <g>
+          <clipPath id="md-room-tv-screen">
+            <polygon points={TV_SCREEN} />
+          </clipPath>
+          <g clipPath="url(#md-room-tv-screen)">
+            <rect x="1290" y="340" width="44" height="90" fill={TV.game} />
+            <rect x="1290" y="404" width="44" height="26" fill={c('primary')} />
+            <rect x="1316" y="388" width="14" height="5" rx="2" fill={c('primary-container')} />
+            <circle className="md-game-coin" cx="1323" cy="378" r="3" fill={TV.coin} />
+            <rect className="md-game-player" x="1302" y="396" width="7" height="8" rx="2" fill={c('tertiary-container')} />
+          </g>
+        </g>
+      )}
     </g>
   );
 }
-
 function Bed() {
   return (
     <g>
@@ -329,7 +349,7 @@ export function RoomLights() {
         <stop offset="1" stopColor="#a8d8ff" stopOpacity="0" />
       </radialGradient>
       <ellipse className="md-room-light md-room-light-lamp" cx="598" cy="372" rx="150" ry="110" fill="url(#md-room-lamp)" />
-      <ellipse className="md-room-light md-room-light-tv" cx="1270" cy="378" rx="150" ry="100" fill="url(#md-room-tv)" />
+      <ellipse className="md-room-light md-room-light-tv" cx="1262" cy="392" rx="150" ry="100" fill="url(#md-room-tv)" />
     </>
   );
 }

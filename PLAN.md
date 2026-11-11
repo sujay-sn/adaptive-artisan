@@ -200,7 +200,8 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Footer room on Boston time: the whole footer is the room, content on its wall, a real sky in the window, a wall clock, night dimming with lamp and TV light, and a phone crop around the current station
 - [x] Full-body character who walks in from the door to the current station when the footer arrives, and on to the next one when a block changes
 - [x] Desk pose (coursework and projects): seated and typing, code typing onto the monitor, coffee on the desk in the morning
-- [ ] Poses: lifting at the gym corner, tea at the counter, gaming on the couch, asleep
+- [x] Couch pose (gaming): seated with a controller, a platformer on a three-quarter TV, lit by its glow
+- [ ] Poses: tea at the counter, lifting at the gym corner, asleep
 
 ## Before launch
 

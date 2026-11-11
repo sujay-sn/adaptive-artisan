@@ -20,21 +20,21 @@ export const STATIONS: Record<RoutineId, number> = {
   study: 461,
   projects: 461,
   tea: 920,
-  gaming: 1170,
+  gaming: 1150,
   sleep: 1480,
 };
 
 export const TIME_ZONE = 'America/New_York';
 
 /** How he settles once he reaches a station. Blocks without a pose drawn yet stand. */
-export type Pose = 'stand' | 'desk';
+export type Pose = 'stand' | 'desk' | 'couch';
 
 export const POSES: Record<RoutineId, Pose> = {
   gym: 'stand',
   study: 'desk',
   projects: 'desk',
   tea: 'stand',
-  gaming: 'stand',
+  gaming: 'couch',
   sleep: 'stand',
 };
 

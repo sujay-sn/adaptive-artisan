@@ -1512,6 +1512,41 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     transform-origin: left center;
   }
 
+  /* On the couch: sunk a little lower than at the desk, knees up, feet on
+     the floor, both hands on the controller in front of his chest. */
+  .md-person .md-controller {
+    opacity: 0;
+  }
+  .md-person[data-pose="couch"] .md-controller {
+    opacity: 1;
+  }
+  .md-person[data-pose="couch"] :is(.md-leg, .md-upper) {
+    translate: 0 30px;
+  }
+  .md-person[data-pose="couch"] .md-leg {
+    rotate: -94deg;
+  }
+  .md-person[data-pose="couch"] .md-shin {
+    rotate: 94deg;
+  }
+  .md-person[data-pose="couch"] .md-leg-back {
+    rotate: -96deg;
+  }
+  .md-person[data-pose="couch"] .md-shin-back {
+    rotate: 108deg;
+  }
+  .md-person[data-pose="couch"] .md-arm {
+    rotate: -25deg;
+  }
+  .md-person[data-pose="couch"] .md-forearm {
+    rotate: -75deg;
+  }
+  .md-game-player,
+  .md-game-coin {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     /* Settling into a pose and getting up again. */
     .md-person:not([data-walking]) :is(.md-leg, .md-shin, .md-arm, .md-forearm, .md-upper) {
@@ -1533,7 +1568,23 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
       animation: md-code-type 9s infinite both;
       animation-delay: calc(var(--i, 0) * 0.6s);
     }
-    .md-footer[data-paused] :is(.md-blink, .md-code) {
+    /* Gaming: thumbs working the controller, a player hopping for a coin on screen. */
+    .md-person[data-pose="couch"] .md-forearm {
+      animation: md-thumbs 0.22s ease-in-out infinite alternate;
+    }
+    .md-person[data-pose="couch"] .md-arm-back .md-forearm {
+      animation-delay: -0.11s;
+    }
+    .md-person[data-pose="couch"] .md-controller {
+      transition: opacity 0.2s ease 0.25s;
+    }
+    .md-game-player {
+      animation: md-game-jump 1.1s infinite;
+    }
+    .md-game-coin {
+      animation: md-game-coin 1.1s infinite;
+    }
+    .md-footer[data-paused] :is(.md-blink, .md-code, .md-game-player, .md-game-coin) {
       animation-play-state: paused;
     }
     .md-person[data-walking] .md-leg {
@@ -1611,6 +1662,42 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   }
   to {
     rotate: -42deg;
+  }
+}
+@keyframes md-thumbs {
+  from {
+    rotate: -72deg;
+  }
+  to {
+    rotate: -78deg;
+  }
+}
+@keyframes md-game-jump {
+  0%,
+  55%,
+  100% {
+    translate: 0 0;
+    animation-timing-function: ease-out;
+  }
+  30% {
+    translate: 0 -14px;
+    animation-timing-function: ease-in;
+  }
+}
+@keyframes md-game-coin {
+  0%,
+  20%,
+  100% {
+    scale: 1;
+  }
+  30% {
+    scale: 0;
+  }
+  70% {
+    scale: 0;
+  }
+  80% {
+    scale: 1.2;
   }
 }
 @keyframes md-blink {

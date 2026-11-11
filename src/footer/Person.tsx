@@ -14,6 +14,7 @@ const JEANS = '#3a4763';
 const JEANS_BACK = '#2c3650';
 const SHOE = '#f1f0ec';
 const SOLE = '#b9b6ae';
+const CONTROLLER = '#2a2d31';
 
 const HOODIE = 'var(--md-sys-color-primary)';
 const HOOD = 'color-mix(in srgb, var(--md-sys-color-primary) 72%, black)';
@@ -110,6 +111,12 @@ export function Person() {
         <path d="M15 -122 L14 -105" stroke={STRINGS} strokeWidth="2.2" strokeLinecap="round" />
         <g transform="translate(3 -158)">
           <Head />
+        </g>
+        {/* Only shown on the couch (md-controller in index.css), held where both hands meet. */}
+        <g className="md-controller">
+          <rect x="31" y="-103" width="24" height="11" rx="5.5" fill={CONTROLLER} />
+          <circle cx="49" cy="-99" r="1.6" fill="var(--md-sys-color-tertiary-container)" />
+          <circle cx="37" cy="-99" r="1.6" fill="var(--md-sys-color-primary-container)" />
         </g>
         <Arm side="front" />
       </g>
