@@ -741,17 +741,23 @@ html[data-theme-reveal]::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
-html[data-hub-transition] .md-hub[open] {
+html[data-container-transform="hub-surface"] .md-hub[open] {
   view-transition-name: hub-surface;
 }
-::view-transition-group(hub-surface) {
+html[data-container-transform="project-surface"] .md-project-dialog[open] {
+  view-transition-name: project-surface;
+}
+::view-transition-group(hub-surface),
+::view-transition-group(project-surface) {
   animation-duration: var(--md-spring-spatial-default-duration);
   animation-timing-function: var(--md-spring-spatial-default);
   overflow: clip;
   border-radius: var(--radius-xl);
 }
 ::view-transition-old(hub-surface),
-::view-transition-new(hub-surface) {
+::view-transition-new(hub-surface),
+::view-transition-old(project-surface),
+::view-transition-new(project-surface) {
   block-size: 100%;
   object-fit: cover;
   object-position: top left;
@@ -788,8 +794,9 @@ html[data-hub-transition] .md-hub[open] {
   .md-hub::backdrop {
     backdrop-filter: none;
   }
-  html[data-hub-transition] .md-hub,
-  html[data-hub-transition] .md-hub::backdrop {
+  /* During a container transform, the view transition does the animating. */
+  html[data-container-transform] .md-dialog,
+  html[data-container-transform] .md-dialog::backdrop {
     transition: none;
   }
   @media (width < 52.5rem) {
@@ -1244,5 +1251,119 @@ html[data-hub-transition] .md-hub[open] {
 @keyframes md-dot-in {
   from {
     scale: 0;
+  }
+}
+/* ------------------------------------------------------------------------
+   Projects: generated covers, the detail dialog, and its staggered entry.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .md-cover {
+    isolation: isolate;
+  }
+  .md-cover-shape {
+    position: absolute;
+    aspect-ratio: 1;
+    transition:
+      clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+      rotate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+  }
+  .md-cover-shape-a {
+    inline-size: 58%;
+    inset-inline-end: -10%;
+    inset-block-start: -22%;
+    clip-path: var(--cover-a);
+  }
+  .md-cover-shape-b {
+    inline-size: 30%;
+    inset-inline-end: 34%;
+    inset-block-end: -14%;
+    clip-path: var(--cover-b);
+  }
+  .md-cover-initials {
+    position: absolute;
+    inset-inline-start: 1.5rem;
+    inset-block-end: 1rem;
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    line-height: 1;
+    font-weight: 500;
+    font-stretch: 80%;
+  }
+  @media (hover: hover) {
+    .md-project-card:hover .md-cover-shape-a {
+      clip-path: var(--cover-a-hover);
+      rotate: 14deg;
+    }
+    .md-project-card:hover .md-cover-shape-b {
+      clip-path: var(--cover-b-hover);
+      rotate: -10deg;
+    }
+  }
+  .md-project-card:focus-within .md-cover-shape-a {
+    clip-path: var(--cover-a-hover);
+    rotate: 14deg;
+  }
+  .md-project-card:focus-within .md-cover-shape-b {
+    clip-path: var(--cover-b-hover);
+    rotate: -10deg;
+  }
+
+  .md-project-dialog {
+    inline-size: min(70rem, calc(100vw - 3rem));
+    block-size: min(48rem, calc(100dvh - 3rem));
+    max-inline-size: none;
+    max-block-size: none;
+    overflow: hidden;
+  }
+  .md-project-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Closes at once; with view transitions, the card morph covers the exit. */
+  .md-project-dialog:not([open]) {
+    transition: none;
+  }
+  @media (width < 52.5rem) {
+    .md-project-dialog {
+      inline-size: 100vw;
+      block-size: 100dvh;
+      margin: 0;
+      border-radius: 0;
+    }
+  }
+  .md-project-dialog .md-stagger {
+    transition:
+      opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
+      translate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+    transition-delay: calc(80ms + var(--i, 0) * 45ms);
+  }
+  @starting-style {
+    .md-project-dialog[open] .md-stagger {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+
+  /* Contact: the success badge springs in. */
+  .md-sent-badge {
+    animation: md-pop var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .md-cover-shape {
+      transition: none;
+    }
+    .md-project-dialog .md-stagger {
+      translate: none;
+    }
+    .md-sent-badge {
+      animation: none;
+    }
+  }
+}
+
+@keyframes md-pop {
+  from {
+    scale: 0;
+    rotate: -90deg;
   }
 }

@@ -17,6 +17,13 @@ export interface Project {
   challenges: string[];
   repoUrl?: string;
   demoUrl?: string;
+  /** Cover media. Until a project has some, its cover is generated from MD3 shapes. */
+  media?: {
+    /** A screenshot, also the video's first frame. */
+    poster: string;
+    /** A short muted loop, played while the card is hovered or focused. */
+    video?: string;
+  };
 }
 
 // TODO(sujay): add repo and demo URLs (the resume links Burrow's GitHub and

@@ -31,6 +31,7 @@ export const ICON_NAMES = [
   'play_arrow',
   'school',
   'send',
+  'share',
   'work',
 ] as const;
 
