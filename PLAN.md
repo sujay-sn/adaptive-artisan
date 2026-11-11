@@ -180,11 +180,18 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] List view as the accessible alternative, and the default on small screens
 - [x] Code-split: d3-force and the constellation load as the section nears the viewport
 - [x] Experience timeline: the line draws itself, and each card's parts arrive in reading order as it scrolls in
-- [ ] Check in a browser: drag, select, keyboard, See projects, list view, the timeline on scroll
+- [x] Checked in a browser
 
 ### Day 6: Projects, Education, Contact, Footer
 
-Rich cards with animated thumbnails, filter chips with layout animation, shared-element dialog, deep links per project. Education with coursework chips. Contact form with animated fields and a serverless backend plus spam protection. Footer with back to top.
+- [x] Project cards with covers: generated MD3 shape art that morphs on hover, replaced by a screenshot and a hover-played loop once a project has `media`
+- [x] Filter chips (shared with the constellation's "See projects"), with Motion layout animations loaded after the page renders
+- [x] Card-to-dialog container transform; a two-pane dialog whose content arrives in reading order
+- [x] Deep links: `?project=id` opens a project, the back button closes it, and the dialog can share its link
+- [x] Education as cards with coursework chips, revealed as they scroll in
+- [x] Contact form: inline validation instead of browser bubbles, focus on the first field to fix, honeypot and time-trap spam checks, a morphing loading indicator, and a success state. Hands the message to the visitor's email app until a backend exists
+- [x] Footer with contact links and back to top
+- [ ] Check in a browser: filter, open and close a project (button, Esc, back), a deep link, the contact form, keyboard only
 
 ### Day 7: Polish and ship
 
@@ -196,6 +203,7 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [ ] Choose the host (Vercel, Netlify, or Cloudflare Pages) and connect the repo: build `npm run build`, output `dist`, Node 22
 - [ ] Replace the placeholder resume link with the real Google Drive link and confirm it opens without a sign-in
 - [ ] Point the domain at the host and set the canonical URL and Open Graph URLs to it
+- [ ] Contact backend: a serverless function on the host with server-side validation and a spam check, then set `VITE_CONTACT_ENDPOINT`
 
 ## Quality bar
 
@@ -214,7 +222,7 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 
 - [ ] Resume: Google Drive share link ("Anyone with the link", Viewer). A placeholder sits in `src/content/profile.ts` until launch
 - [ ] Photo for the avatar
-- [ ] Screenshots or short screen recordings of each project
+- [ ] Screenshots or short screen recordings of each project (they go in `media` in `src/content/projects.ts`)
 - [ ] Repo links per project
 - [ ] Tag skills on roles and projects: about half the resume skills (Python, SQL, Git, Docker, and more) are not on any role or project yet, so they float off their category with no connections
 - [x] Project numbers come from the resume; unverified ones removed
@@ -248,4 +256,6 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **The hub is its own code chunk**, loaded on the first hover or focus of a FAB, so it costs nothing until someone reaches for it.- **The bloom is a view transition**: the same circular reveal as a theme change, starting from the monochrome scheme. That costs one snapshot instead of animating 49 color properties.
 - **One pause control** stops every ambient animation, as WCAG 2.2.2 requires for motion that runs longer than five seconds.- **List view instead of a usage chart.** Counting uses would show zero beside about half the skills, Python included, which reflects missing tags rather than real experience.
 - **"See projects" is a button, not an automatic jump.** Clicking a node selects it; scrolling the page away on every click would make the graph impossible to explore.
-- **Experience cards have no hover state.** They are not interactive, and MD3 reserves state layers for things that respond to a click.- **The constellation layout is measured, not eyeballed.** A headless test solves the layout at three widths and counts colliding labels; it fails if clutter creeps back. Below 1100px, skills used once show their labels only when lit.
+- **Experience cards have no hover state.** They are not interactive, and MD3 reserves state layers for things that respond to a click.- **The constellation layout is measured, not eyeballed.** A headless test solves the layout at three widths and counts colliding labels; it fails if clutter creeps back. Below 1100px, skills used once show their labels only when lit.- **One container transform for every dialog.** The hub and the project dialog share `src/lib/containerTransform.ts`; CSS names a dialog only during its own transform.
+- **Motion's layout features load after first render.** Cards render as plain elements immediately, and the grid starts animating once the features arrive.
+- **The contact form works before a backend exists.** Without `VITE_CONTACT_ENDPOINT`, it opens the visitor's email app with the message filled in.
