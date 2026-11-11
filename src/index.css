@@ -1210,16 +1210,11 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     }
   }
 
-  /* Storytelling reveal: each part of a card arrives in reading order as it
-     scrolls in, staggered by --i, and the timeline draws itself. Decorative,
-     so browsers without scroll-driven animations show everything at once. */
+  /* The timeline draws itself as each role scrolls through. Decorative, so
+     browsers without scroll-driven animations show the finished line. */
   @media (prefers-reduced-motion: no-preference) {
     @supports ((animation-timeline: view()) and (animation-range: entry)) {
-      .md-story {
-        animation: md-story-in linear both;
-        animation-timeline: view();
-        animation-range: entry calc(4% + var(--i, 0) * 4%) entry calc(50% + var(--i, 0) * 4%);
-      }
+
       .md-timeline-item::before {
         animation: md-timeline-draw linear both;
         animation-timeline: --md-timeline-item;
@@ -1234,10 +1229,23 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   }
 }
 
-@keyframes md-story-in {
-  from {
-    opacity: 0;
-    translate: 0 1.25rem;
+/* ------------------------------------------------------------------------
+   Reveal on arrival (src/lib/useReveal.ts): a short rise and fade on springs,
+   staggered by --i. Content is hidden only once the app has started, so the
+   page reads fine without JavaScript, and never under reduced motion.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .md-reveal {
+    transition:
+      opacity var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow),
+      translate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+    transition-delay: calc(var(--i, 0) * 70ms);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-app-started] .md-reveal:not([data-revealed]) {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
   }
 }
 /* A clip rather than a scale, so the gradient stays put and is uncovered top

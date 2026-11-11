@@ -28,10 +28,10 @@ const TONES: Record<Exclude<CardTone, 'surface'>, string> = {
 /** MD3 card. Pass a rounded-* class to change its shape; it defaults to medium (12px). */
 export function Card({ as: Tag = 'div', variant = 'filled', tone = 'surface', interactive = false, className = '', children, ...rest }: CardProps) {
   const fill = tone === 'surface' ? SURFACES[variant] : TONES[tone];
-  const hover = interactive ? `state-layer cursor-pointer ${variant === 'elevated' ? 'hover:shadow-2' : 'hover:shadow-1'}` : '';
+  const hover = interactive ? `state-layer cursor-pointer transition-shadow ${variant === 'elevated' ? 'hover:shadow-2' : 'hover:shadow-1'}` : '';
   const shape = className.includes('rounded') ? '' : 'rounded-md';
   return (
-    <Tag {...rest} className={`transition-shadow ${shape} ${fill} ${hover} ${className}`}>
+    <Tag {...rest} className={`${shape} ${fill} ${hover} ${className}`}>
       {children}
     </Tag>
   );

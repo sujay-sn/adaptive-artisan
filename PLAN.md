@@ -74,7 +74,7 @@ MD3 Expressive spring tokens (damping ratio, stiffness). Spatial springs may ove
 | Standard | 0.9 / 1400 | 0.9 / 700 | 0.9 / 300 | 1 / 3800 | 1 / 1600 | 1 / 800 |
 
 - Every interaction animation is an interruptible spring.
-- One shared reveal grammar for section content: short rise and fade, staggered in reading order, capped. CSS scroll-driven animations, feature-detected, no fallback (decorative).
+- One shared reveal grammar for section content: a short rise and fade on springs, staggered in reading order, played once as each element comes into view. Time-based rather than scroll-linked, so it plays however you arrive. Content is hidden only after JavaScript starts. The timeline line is the one scroll-linked effect.
 - Compositor properties only: transform, opacity, clip-path.
 - Reduced motion handled per component. Spatial motion becomes crossfades. The hero's ambient shapes get a visible pause control (WCAG 2.2.2). No global duration override.
 - View transitions for the theme reveal and card-to-dialog morph, with focus moved to the dialog heading after. Grid filtering uses Motion layout animations.
@@ -258,4 +258,4 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **"See projects" is a button, not an automatic jump.** Clicking a node selects it; scrolling the page away on every click would make the graph impossible to explore.
 - **Experience cards have no hover state.** They are not interactive, and MD3 reserves state layers for things that respond to a click.- **The constellation layout is measured, not eyeballed.** A headless test solves the layout at three widths and counts colliding labels; it fails if clutter creeps back. Below 1100px, skills used once show their labels only when lit.- **One container transform for every dialog.** The hub and the project dialog share `src/lib/containerTransform.ts`; CSS names a dialog only during its own transform.
 - **Motion's layout features load after first render.** Cards render as plain elements immediately, and the grid starts animating once the features arrive.
-- **The contact form works before a backend exists.** Without `VITE_CONTACT_ENDPOINT`, it opens the visitor's email app with the message filled in.
+- **The contact form works before a backend exists.** Without `VITE_CONTACT_ENDPOINT`, it opens the visitor's email app with the message filled in.- **Reveals are time-based, not scroll-linked.** Tied to scroll position, a reveal never played after a nav jump and finished within a few pixels on short elements. An IntersectionObserver now starts a spring transition on arrival, which also works in Firefox.

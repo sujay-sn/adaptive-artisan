@@ -7,7 +7,7 @@ import { Card } from '@/ui/Card';
 import { Chip } from '@/ui/Chip';
 import { Icon } from '@/ui/Icon';
 
-/** Stagger index for the storytelling reveal (see .md-story in index.css). */
+/** Stagger index for the reveal, so a card arrives in reading order (see .md-reveal in index.css). */
 const story = (index: number) => ({ '--i': index }) as CSSProperties;
 
 /**
@@ -27,11 +27,11 @@ export function Experience() {
           return (
             <li key={job.id} className="md-timeline-item relative grid gap-3 ps-8 expanded:grid-cols-[11rem_minmax(0,1fr)] expanded:gap-10 expanded:ps-0">
               <span className="md-timeline-dot" aria-hidden="true" />
-              <p className="md-story pt-0.5 text-label-large text-on-surface-variant tabular-nums" style={story(0)}>
+              <p className="md-reveal pt-0.5 text-label-large text-on-surface-variant tabular-nums" style={story(0)}>
                 {job.period}
               </p>
               <Card variant="outlined" className={`rounded-xl p-6 expanded:p-8 ${match ? 'ring-2 ring-primary' : ''}`}>
-                <div className="md-story" style={story(1)}>
+                <div className="md-reveal" style={story(1)}>
                   <h3 className="text-title-large text-on-surface">
                     {job.title}, {job.company}
                   </h3>
@@ -45,17 +45,17 @@ export function Experience() {
                     Uses {skillName}
                   </p>
                 )}
-                <p className="md-story mt-4 max-w-[65ch] text-body-large text-on-surface" style={story(2)}>
+                <p className="md-reveal mt-4 max-w-[65ch] text-body-large text-on-surface" style={story(2)}>
                   {job.summary}
                 </p>
                 <ul className="mt-4 max-w-[65ch] list-disc space-y-2 ps-5 text-body-medium text-on-surface-variant marker:text-primary">
                   {job.highlights.map((highlight, index) => (
-                    <li key={highlight} className="md-story" style={story(3 + index)}>
+                    <li key={highlight} className="md-reveal" style={story(3 + index)}>
                       {highlight}
                     </li>
                   ))}
                 </ul>
-                <ul className="md-story mt-5 flex flex-wrap gap-2" aria-label="Technologies" style={story(3 + job.highlights.length)}>
+                <ul className="md-reveal mt-5 flex flex-wrap gap-2" aria-label="Technologies" style={story(3 + job.highlights.length)}>
                   {job.technologies.map((technology) => (
                     <li key={technology}>
                       <Chip label={technology} />
