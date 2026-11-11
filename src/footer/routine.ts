@@ -11,25 +11,63 @@ export const ROUTINE = [
 export type RoutineBlock = (typeof ROUTINE)[number];
 export type RoutineId = RoutineBlock['id'];
 
+/**
+ * Where each block happens along the room, in its 1600-unit-wide coordinates.
+ * On a phone the room is cropped, and these are what the crop centers on.
+ */
+export const STATIONS: Record<RoutineId, number> = {
+  gym: 265,
+  study: 480,
+  projects: 480,
+  tea: 920,
+  gaming: 1170,
+  sleep: 1480,
+};
+
 export const TIME_ZONE = 'America/New_York';
 
-const hourFormat = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hourCycle: 'h23', timeZone: TIME_ZONE });
-const clockFormat = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: TIME_ZONE });
-
-/** The hour in Boston, 0 to 23. Daylight saving comes from the time zone database. */
-export function bostonHour(date: Date): number {
-  return Number(hourFormat.formatToParts(date).find((part) => part.type === 'hour')?.value ?? 0) % 24;
+export interface BostonTime {
+  hour: number;
+  minute: number;
 }
 
-/** The block Sujay is in at `date`. */
-export function routineAt(date: Date): RoutineBlock {
-  const hour = bostonHour(date);
+const partsFormat = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric', hourCycle: 'h23', timeZone: TIME_ZONE });
+
+/** The time in Boston. Daylight saving comes from the time zone database. */
+export function bostonTime(date: Date): BostonTime {
+  const parts = partsFormat.formatToParts(date);
+  const value = (type: string) => Number(parts.find((part) => part.type === type)?.value ?? 0);
+  return { hour: value('hour') % 24, minute: value('minute') };
+}
+
+/** The block Sujay is in at `time`. */
+export function routineAt(time: BostonTime): RoutineBlock {
   let current: RoutineBlock = ROUTINE[0];
-  for (const block of ROUTINE) if (hour >= block.from) current = block;
+  for (const block of ROUTINE) if (time.hour >= block.from) current = block;
   return current;
 }
 
+export type Sky = 'dawn' | 'day' | 'dusk' | 'night';
+
+/** What the window shows. Fixed hours that roughly average Boston through the year. */
+export function skyAt(time: BostonTime): Sky {
+  const { hour } = time;
+  if (hour >= 5 && hour < 7) return 'dawn';
+  if (hour >= 7 && hour < 16) return 'day';
+  if (hour >= 16 && hour < 19) return 'dusk';
+  return 'night';
+}
+
 /** "3:12 PM". */
-export function bostonClock(date: Date): string {
-  return clockFormat.format(date);
+export function clockLabel({ hour, minute }: BostonTime): string {
+  return `${hour % 12 || 12}:${String(minute).padStart(2, '0')} ${hour < 12 ? 'AM' : 'PM'}`;
+}
+
+/** Reads `?time=21:30`, for previewing other hours. Returns null when absent or malformed. */
+export function parseTimeOverride(search: string): BostonTime | null {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(new URLSearchParams(search).get('time') ?? '');
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  return hour < 24 && minute < 60 ? { hour, minute } : null;
 }
