@@ -2,7 +2,9 @@ import type { ButtonHTMLAttributes, Ref } from 'react';
 import { Icon } from './Icon';
 import type { IconName } from './icons';
 
-const SHELL = 'inline-flex h-8 shrink-0 items-center rounded-sm text-label-large select-none';
+// A minimum height rather than a fixed one: a label too long for a narrow
+// screen wraps inside the outline instead of spilling through it.
+const SHELL = 'inline-flex min-h-8 max-w-full shrink-0 items-center rounded-sm py-1.5 text-label-large select-none';
 const OUTLINED = 'text-on-surface-variant shadow-[inset_0_0_0_1px_var(--md-sys-color-outline-variant)]';
 
 interface ChipProps {
