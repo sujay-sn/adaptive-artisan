@@ -1547,12 +1547,104 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     transform-origin: center;
   }
 
+  /* Props in his hands, and the ones they leave missing from the room. */
+  .md-person :is(.md-mug, .md-dumbbell) {
+    opacity: 0;
+  }
+  .md-person[data-pose="tea"] .md-mug,
+  .md-person[data-pose="gym"] .md-dumbbell {
+    opacity: 1;
+  }
+  .md-room:has(.md-person[data-pose="tea"]) .md-counter-mug,
+  .md-room:has(.md-person[data-pose="gym"]) .md-rack-top {
+    opacity: 0;
+  }
+
+  /* Tea: standing at the counter, mug held at his chest. */
+  .md-person[data-pose="tea"] .md-arm-front {
+    rotate: -20deg;
+  }
+  .md-person[data-pose="tea"] .md-arm-front .md-forearm {
+    rotate: -100deg;
+  }
+  .md-mug-steam path {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* Gym: curling a dumbbell (held mid-curl under reduced motion). */
+  .md-person[data-pose="gym"] .md-arm-front {
+    rotate: 3deg;
+  }
+  .md-person[data-pose="gym"] .md-arm-front .md-forearm {
+    rotate: -70deg;
+  }
+
+  /* Asleep: tipped back onto the bed about his feet, raised to the mattress,
+     limbs straight, eyes closed, blanket up, desk lamp off. */
+  .md-person .md-person-body {
+    transform-box: view-box;
+    transform-origin: 0 0;
+  }
+  .md-person[data-pose="sleep"] .md-person-body {
+    translate: 14px -76px;
+    rotate: -90deg;
+  }
+  .md-person[data-pose="sleep"] .md-glasses {
+    opacity: 0;
+  }
+  .md-person[data-pose="sleep"] :is(.md-leg, .md-shin, .md-arm, .md-forearm) {
+    rotate: 0deg;
+  }
+  .md-person[data-pose="sleep"] .md-blink {
+    scale: 1 0.15;
+  }
+  .md-sleep {
+    opacity: 0;
+  }
+  .md-room:has(.md-person[data-pose="sleep"]) .md-sleep {
+    opacity: 1;
+  }
+  .md-room:has(.md-person[data-pose="sleep"]) .md-bed-folded {
+    opacity: 0;
+  }
+  .md-footer[data-block="sleep"] .md-room-light-lamp {
+    opacity: 0;
+  }
+  .md-zzz text {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     /* Settling into a pose and getting up again. */
-    .md-person:not([data-walking]) :is(.md-leg, .md-shin, .md-arm, .md-forearm, .md-upper) {
+    .md-person:not([data-walking]) :is(.md-leg, .md-shin, .md-arm, .md-forearm, .md-upper, .md-person-body) {
       transition:
         rotate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
         translate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+    }
+    .md-person :is(.md-mug, .md-dumbbell),
+    .md-room :is(.md-counter-mug, .md-rack-top, .md-bed-folded) {
+      transition: opacity 0.2s ease 0.2s;
+    }
+    .md-sleep {
+      transition: opacity 0.4s ease 0.4s;
+    }
+    .md-person[data-pose="sleep"] .md-blink {
+      animation: none;
+    }
+    .md-person[data-pose="gym"] .md-arm-front .md-forearm {
+      animation: md-curl 1.8s ease-in-out infinite;
+    }
+    .md-mug-steam path {
+      animation: md-steam 2.4s ease-in-out infinite;
+    }
+    .md-mug-steam path + path {
+      animation-delay: -1.2s;
+    }
+    .md-zzz text {
+      animation: md-zzz 3s ease-in-out infinite;
+      animation-delay: calc(var(--i, 0) * 0.6s);
     }
     .md-person .md-blink {
       animation: md-blink 5.5s infinite;
@@ -1584,7 +1676,7 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     .md-game-coin {
       animation: md-game-coin 1.1s infinite;
     }
-    .md-footer[data-paused] :is(.md-blink, .md-code, .md-game-player, .md-game-coin) {
+    .md-footer[data-paused] :is(.md-blink, .md-code, .md-game-player, .md-game-coin, .md-zzz text) {
       animation-play-state: paused;
     }
     .md-person[data-walking] .md-leg {
@@ -1662,6 +1754,42 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   }
   to {
     rotate: -42deg;
+  }
+}
+@keyframes md-curl {
+  0%,
+  100% {
+    rotate: -6deg;
+  }
+  45%,
+  55% {
+    rotate: -140deg;
+  }
+}
+@keyframes md-steam {
+  0% {
+    opacity: 0;
+    translate: 0 4px;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+@keyframes md-zzz {
+  0% {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 6px -10px;
   }
 }
 @keyframes md-thumbs {

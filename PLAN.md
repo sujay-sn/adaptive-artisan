@@ -201,7 +201,7 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Full-body character who walks in from the door to the current station when the footer arrives, and on to the next one when a block changes
 - [x] Desk pose (coursework and projects): seated and typing, code typing onto the monitor, coffee on the desk in the morning
 - [x] Couch pose (gaming): seated with a controller, a platformer on a three-quarter TV, lit by its glow
-- [ ] Poses: tea at the counter, lifting at the gym corner, asleep
+- [x] Tea at the counter (mug in hand, cookies out), curls at the gym corner, asleep in bed (glasses off, blanket up, lamp off)
 
 ## Before launch
 

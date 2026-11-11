@@ -19,23 +19,23 @@ export const STATIONS: Record<RoutineId, number> = {
   gym: 265,
   study: 461,
   projects: 461,
-  tea: 920,
+  tea: 985,
   gaming: 1150,
-  sleep: 1480,
+  sleep: 1568,
 };
 
 export const TIME_ZONE = 'America/New_York';
 
-/** How he settles once he reaches a station. Blocks without a pose drawn yet stand. */
-export type Pose = 'stand' | 'desk' | 'couch';
+/** How he settles once he reaches a station. */
+export type Pose = 'stand' | 'desk' | 'couch' | 'tea' | 'gym' | 'sleep';
 
 export const POSES: Record<RoutineId, Pose> = {
-  gym: 'stand',
+  gym: 'gym',
   study: 'desk',
   projects: 'desk',
-  tea: 'stand',
+  tea: 'tea',
   gaming: 'couch',
-  sleep: 'stand',
+  sleep: 'sleep',
 };
 
 export interface BostonTime {

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { profile, SECTIONS } from '@/content/profile';
-import { RoomArt, RoomLights } from '@/footer/Room';
+import { RoomArt, RoomFront, RoomLights } from '@/footer/Room';
 import { clockLabel, POSES, routineAt, skyAt, STATIONS } from '@/footer/routine';
 import { useBostonTime } from '@/footer/useBostonTime';
 import { WalkingPerson } from '@/footer/WalkingPerson';
@@ -46,6 +46,7 @@ export function Footer() {
           <svg viewBox="0 0 1600 620" className="block size-full">
             <RoomArt time={time} sky={sky} block={block.id} />
             <WalkingPerson station={STATIONS[block.id]} pose={POSES[block.id]} started={started} still={reducedMotion} paused={paused} room={room} />
+            <RoomFront />
           </svg>
           <svg viewBox="0 0 1600 620" className="md-room-lights absolute inset-0 size-full">
             <RoomLights />

@@ -53,13 +53,15 @@ function Sleeve({ length, width, color }: { length: number; width: number; color
   );
 }
 
-function Arm({ side }: { side: 'front' | 'back' }) {
+/** `held` is drawn at the hand, under the fingers, and turns with the forearm. */
+function Arm({ side, held }: { side: 'front' | 'back'; held?: ReactNode }) {
   const color = side === 'front' ? HOODIE : HOOD;
   return (
     <Joint at={[2, -120]} part={`md-arm md-arm-${side}`}>
       <Sleeve length={30} width={12} color={color} />
       <Joint at={[0, 30]} part="md-forearm">
         <Sleeve length={22} width={11} color={color} />
+        {held}
         <circle cx="0" cy="28" r="6.5" fill={SKIN} />
       </Joint>
     </Joint>
@@ -86,7 +88,7 @@ function Head() {
         <path d="M-3 -12 Q2.5 -14.5 8 -12" />
         <path d="M11 -12 Q15 -13.5 19 -12" />
       </g>
-      <g fill="none" stroke={FRAMES} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round">
+      <g className="md-glasses" fill="none" stroke={FRAMES} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round">
         <rect x="-4" y="-8" width="13" height="10" rx="3.5" />
         <rect x="11" y="-8" width="9" height="10" rx="3" />
         <path d="M9 -4 Q10 -5.5 11 -4" />
@@ -112,13 +114,30 @@ export function Person() {
         <g transform="translate(3 -158)">
           <Head />
         </g>
+        {/* Tea: held at the chest, steaming (md-mug in index.css). */}
+        <g className="md-mug">
+          <g className="md-mug-steam" fill="none" stroke="var(--md-sys-color-outline)" strokeWidth="2" strokeLinecap="round">
+            <path d="M36 -118 Q33 -123 36 -128" />
+            <path d="M42 -118 Q39 -125 42 -132" />
+          </g>
+          <rect x="31" y="-114" width="14" height="15" rx="3.5" fill="var(--md-sys-color-tertiary)" />
+        </g>
         {/* Only shown on the couch (md-controller in index.css), held where both hands meet. */}
         <g className="md-controller">
           <rect x="31" y="-103" width="24" height="11" rx="5.5" fill={CONTROLLER} />
           <circle cx="49" cy="-99" r="1.6" fill="var(--md-sys-color-tertiary-container)" />
           <circle cx="37" cy="-99" r="1.6" fill="var(--md-sys-color-primary-container)" />
         </g>
-        <Arm side="front" />
+        <Arm
+          side="front"
+          held={
+            // Seen in profile, a dumbbell is its end plate. Only shown at the gym.
+            <g className="md-dumbbell">
+              <circle cx="0" cy="28" r="10" fill="var(--md-sys-color-primary)" />
+              <circle cx="0" cy="28" r="10" fill="none" stroke={HOOD} strokeWidth="2" />
+            </g>
+          }
+        />
       </g>
     </g>
   );

@@ -20,7 +20,7 @@ export function RoomArt({ time, sky, block }: { time: BostonTime; sky: Sky; bloc
       <Desk coffee={block === 'study'} />
       <Window sky={sky} />
       <FloorPlant />
-      <Kitchen />
+      <Kitchen tea={block === 'tea'} />
       <WallClock time={time} />
       <Lounge gaming={block === 'gaming'} />
       <Bed />
@@ -79,7 +79,10 @@ function GymCorner() {
         <rect x="282" y="420" width="70" height="5" rx="2.5" />
         <rect x="282" y="450" width="70" height="5" rx="2.5" />
       </g>
-      <Dumbbell x={295} y={411} plate={c('primary')} />
+      {/* The one he curls (md-rack-top in index.css) */}
+      <g className="md-rack-top">
+        <Dumbbell x={295} y={411} plate={c('primary')} />
+      </g>
       <Dumbbell x={295} y={441} plate={c('secondary')} />
     </g>
   );
@@ -230,39 +233,53 @@ function FloorPlant() {
   );
 }
 
-function Kitchen() {
+/**
+ * Counter at his hip height, shelf above. At tea time a plate of cookies
+ * (the library's cookie shape) sits out, and one mug is in his hand instead
+ * of on the counter (md-counter-mug in index.css).
+ */
+function Kitchen({ tea }: { tea: boolean }) {
   return (
     <g>
       {/* Shelf with jars */}
-      <rect x="884" y="300" width="190" height="8" rx="4" fill={c('surface-container-highest')} />
-      <rect x="900" y="270" width="26" height="30" rx="7" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
-      <polygon points={shapeSvgPoints('cookie6', 913, 268, 9)} fill={c('primary')} />
-      <rect x="938" y="262" width="30" height="38" rx="8" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
-      <polygon points={shapeSvgPoints('cookie9', 953, 260, 10)} fill={c('tertiary')} />
-      <rect x="1014" y="278" width="40" height="22" rx="6" fill={c('secondary-container')} />
+      <rect x="884" y="316" width="190" height="8" rx="4" fill={c('surface-container-highest')} />
+      <rect x="900" y="286" width="26" height="30" rx="7" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
+      <polygon points={shapeSvgPoints('cookie6', 913, 284, 9)} fill={c('primary')} />
+      <rect x="938" y="278" width="30" height="38" rx="8" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
+      <polygon points={shapeSvgPoints('cookie9', 953, 276, 10)} fill={c('tertiary')} />
+      <rect x="1014" y="294" width="40" height="22" rx="6" fill={c('secondary-container')} />
       {/* Cabinets and counter */}
-      <rect x="872" y="384" width="220" height="86" rx="4" fill={c('secondary-container')} />
-      <path d="M982 390 V464" stroke={c('outline-variant')} strokeWidth="3" />
-      <rect x="966" y="404" width="4" height="22" rx="2" fill={c('secondary')} />
-      <rect x="994" y="404" width="4" height="22" rx="2" fill={c('secondary')} />
-      <rect x="864" y="372" width="236" height="14" rx="5" fill={c('surface-container-highest')} stroke={c('outline')} strokeWidth="2" />
+      <rect x="872" y="400" width="220" height="70" rx="4" fill={c('secondary-container')} />
+      <path d="M982 406 V464" stroke={c('outline-variant')} strokeWidth="3" />
+      <rect x="966" y="416" width="4" height="20" rx="2" fill={c('secondary')} />
+      <rect x="994" y="416" width="4" height="20" rx="2" fill={c('secondary')} />
+      <rect x="864" y="388" width="236" height="14" rx="5" fill={c('surface-container-highest')} stroke={c('outline')} strokeWidth="2" />
       {/* Kettle */}
-      <path d="M914 346 L930 334" stroke={c('primary')} strokeWidth="6" strokeLinecap="round" />
-      <rect x="882" y="330" width="44" height="42" rx="15" fill={c('primary')} />
-      <path d="M890 334 Q904 314 918 334" fill="none" stroke={c('on-surface-variant')} strokeWidth="4" strokeLinecap="round" />
-      <circle cx="904" cy="329" r="4" fill={c('on-surface-variant')} />
+      <path d="M914 362 L930 350" stroke={c('primary')} strokeWidth="6" strokeLinecap="round" />
+      <rect x="882" y="346" width="44" height="42" rx="15" fill={c('primary')} />
+      <path d="M890 350 Q904 330 918 350" fill="none" stroke={c('on-surface-variant')} strokeWidth="4" strokeLinecap="round" />
+      <circle cx="904" cy="345" r="4" fill={c('on-surface-variant')} />
       {/* Mugs */}
-      <rect x="958" y="350" width="22" height="22" rx="5" fill={c('tertiary')} />
-      <path d="M980 355 Q989 361 980 367" fill="none" stroke={c('tertiary')} strokeWidth="4" />
-      <rect x="1000" y="350" width="22" height="22" rx="5" fill={c('primary-container')} />
-      <path d="M1022 355 Q1031 361 1022 367" fill="none" stroke={c('primary-container')} strokeWidth="4" />
+      <g className="md-counter-mug">
+        <rect x="958" y="366" width="22" height="22" rx="5" fill={c('tertiary')} />
+        <path d="M980 371 Q989 377 980 383" fill="none" stroke={c('tertiary')} strokeWidth="4" />
+      </g>
+      <rect x="1000" y="366" width="22" height="22" rx="5" fill={c('primary-container')} />
+      <path d="M1022 371 Q1031 377 1022 383" fill="none" stroke={c('primary-container')} strokeWidth="4" />
       {/* Snack jar */}
-      <rect x="1046" y="338" width="30" height="34" rx="9" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
-      <rect x="1044" y="332" width="34" height="8" rx="4" fill={c('secondary')} />
+      <rect x="1046" y="354" width="30" height="34" rx="9" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
+      <rect x="1044" y="348" width="34" height="8" rx="4" fill={c('secondary')} />
+      {/* Tea-time snacks */}
+      {tea && (
+        <g>
+          <ellipse cx="944" cy="387" rx="22" ry="4" fill={c('surface-container-lowest')} stroke={c('outline-variant')} strokeWidth="2" />
+          <polygon points={shapeSvgPoints('cookie9', 936, 380, 8)} fill={c('tertiary-container')} />
+          <polygon points={shapeSvgPoints('cookie9', 952, 381, 7, 0.4)} fill={c('tertiary-container')} />
+        </g>
+      )}
     </g>
   );
 }
-
 /** A clock on the wall that shows the actual time in Boston. */
 function WallClock({ time }: { time: BostonTime }) {
   const hourAngle = ((time.hour % 12) + time.minute / 60) * 30;
@@ -322,20 +339,39 @@ function Lounge({ gaming }: { gaming: boolean }) {
     </g>
   );
 }
+/** Headboard on the left, so when he lies down after walking in from the left, his head lands on the pillow. */
 function Bed() {
   return (
     <g>
-      <rect x="1554" y="350" width="22" height="120" rx="8" fill={c('secondary')} />
+      <rect x="1380" y="350" width="22" height="120" rx="8" fill={c('secondary')} />
       <rect x="1380" y="428" width="196" height="24" rx="6" fill={c('secondary-container')} />
-      <rect x="1388" y="410" width="168" height="22" rx="8" fill={c('surface-container-lowest')} />
-      <rect x="1506" y="394" width="46" height="20" rx="9" fill={c('surface-container-highest')} />
-      <rect x="1388" y="404" width="112" height="30" rx="11" fill={c('primary-container')} />
-      <rect x="1388" y="452" width="10" height="18" rx="3" fill={c('outline')} />
+      <rect x="1398" y="410" width="172" height="22" rx="8" fill={c('surface-container-lowest')} />
+      <rect x="1404" y="396" width="48" height="20" rx="9" fill={c('surface-container-highest')} />
+      <rect className="md-bed-folded" x="1480" y="404" width="90" height="30" rx="11" fill={c('primary-container')} />
+      <rect x="1384" y="452" width="10" height="18" rx="3" fill={c('outline')} />
       <rect x="1562" y="452" width="10" height="18" rx="3" fill={c('outline')} />
     </g>
   );
 }
 
+/**
+ * Drawn in front of him: while he's asleep the blanket covers him to the
+ * chin and a few z's drift up from the pillow. Hidden otherwise
+ * (md-sleep in index.css).
+ */
+export function RoomFront() {
+  return (
+    <g className="md-sleep">
+      <rect x="1440" y="386" width="148" height="46" rx="14" fill={c('primary-container')} />
+      <rect x="1440" y="386" width="20" height="46" rx="8" fill={c('surface-container-highest')} />
+      <g className="md-zzz" fill={c('on-surface-variant')} fontFamily="var(--font-display)" fontWeight="600">
+        <text x="1440" y="366" fontSize="14" style={{ '--i': 0 } as CSSProperties}>z</text>
+        <text x="1452" y="352" fontSize="18" style={{ '--i': 1 } as CSSProperties}>z</text>
+        <text x="1466" y="334" fontSize="22" style={{ '--i': 2 } as CSSProperties}>z</text>
+      </g>
+    </g>
+  );
+}
 /** Light sources, drawn above the night dimming so they glow through it. */
 export function RoomLights() {
   return (
