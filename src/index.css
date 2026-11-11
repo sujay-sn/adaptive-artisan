@@ -1333,6 +1333,9 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
 @layer components {
   .md-footer {
     grid-template-areas: "content" "room" "bar";
+    /* No hard top edge: the footer starts as the page's own surface and
+       deepens into the wall color before the room begins. */
+    background-image: linear-gradient(var(--md-sys-color-surface), var(--md-sys-color-surface-container) min(60%, 14rem));
     /* Off screen, the browser skips the footer's rendering entirely. */
     content-visibility: auto;
     contain-intrinsic-size: auto none auto 40rem;
@@ -1340,6 +1343,13 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   .md-footer-content {
     grid-area: content;
     z-index: 3;
+  }
+  /* Bookends the hero headline: heavy, a touch condensed, fully rounded. */
+  .md-footer-name {
+    font-weight: 640;
+    font-stretch: 92%;
+    font-variation-settings: "ROND" 100;
+    letter-spacing: -0.02em;
   }
   .md-footer-bar {
     grid-area: bar;

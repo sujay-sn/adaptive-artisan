@@ -6,7 +6,9 @@ import { Button } from '@/ui/Button';
 import type { CSSProperties } from 'react';
 import { container } from './container';
 
-const LINK = 'text-body-large text-on-surface underline-offset-4 hover:underline focus-visible:underline';
+const LINK =
+  'text-title-medium text-on-surface decoration-2 underline-offset-[0.3em] transition-colors hover:text-primary hover:underline focus-visible:underline';
+const HEADING = 'text-label-large text-on-surface-variant';
 
 /**
  * The footer is Sujay's room, drawn edge to edge, with the content layered on
@@ -37,19 +39,20 @@ export function Footer() {
       </div>
 
       <div className={`md-footer-content ${container} relative grid gap-10 pt-10 expanded:grid-cols-[minmax(0,1fr)_auto] expanded:pt-14`}>
-        <div>
-          <p className="font-display text-headline-large text-on-surface">{profile.name}</p>
-          <p className="mt-1 text-body-large text-on-surface-variant">
+        <div className="max-w-[28rem]">
+          {/* The same voice as the hero headline, so the page opens and closes on it. */}
+          <p className="md-footer-name font-display text-display-small text-on-surface expanded:text-display-medium">{profile.name}</p>
+          <p className="mt-2 font-display text-title-large text-on-surface-variant">
             {profile.role} in {profile.location}
           </p>
-          <p className="mt-6 text-body-small text-on-surface-variant">
-            &copy; {new Date().getFullYear()} {profile.name}. Built as a working Material 3 Expressive system.
+          <p className="mt-6 max-w-[22rem] text-body-medium text-on-surface-variant">
+            &copy; {new Date().getFullYear()}. Built as a working Material 3 Expressive system.
           </p>
         </div>
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-16 gap-y-8">
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-16 gap-y-8 large:gap-x-24">
           <div>
-            <h2 className="text-title-small text-on-surface-variant">Sections</h2>
-            <ul className="mt-3 space-y-2">
+            <h2 className={HEADING}>Sections</h2>
+            <ul className="mt-4 space-y-3">
               {SECTIONS.filter((section) => section.id !== 'home').map((section) => (
                 <li key={section.id}>
                   <a className={LINK} href={`#${section.id}`}>
@@ -60,8 +63,8 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h2 className="text-title-small text-on-surface-variant">Elsewhere</h2>
-            <ul className="mt-3 space-y-2">
+            <h2 className={HEADING}>Elsewhere</h2>
+            <ul className="mt-4 space-y-3">
               <li>
                 <a className={LINK} href={`mailto:${profile.email}`}>
                   Email
@@ -85,7 +88,8 @@ export function Footer() {
       <div className={`md-footer-bar ${container} relative pb-4 expanded:pb-6`}>
         <div className="flex items-center justify-between gap-4 rounded-full bg-surface-bright py-2 ps-6 pe-2 shadow-2">
           <p className="min-w-0 text-body-medium text-on-surface">
-            <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(time)} in Boston.</span> {block.caption}
+            <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(time)} in Boston.</span>{' '}
+            <span className="text-title-small">{block.caption}</span>
           </p>
           <Button href="#home" variant="tonal" icon="arrow_upward" className="shrink-0">
             Back to top
