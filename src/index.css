@@ -1323,6 +1323,137 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     }
   }
 }
+/* ------------------------------------------------------------------------
+   Footer routine scene (src/footer). On arrival the desk line draws itself in
+   and the scene's pieces settle into place in order. After that only a blink
+   and code typing loop, both stopped by the site-wide pause. Pressing the
+   scene makes Sujay wave.
+   ------------------------------------------------------------------------ */
+@layer components {
+  /* Off screen, the browser skips the scene's rendering and its loops. */
+  .md-routine-scene {
+    content-visibility: auto;
+    contain-intrinsic-size: auto none auto 14rem;
+    border-radius: 1.75rem;
+  }
+  .md-routine-button:focus-visible {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 4px;
+  }
+  .md-routine svg * {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .md-routine .md-routine-person {
+    transform-origin: center bottom;
+  }
+  .md-routine .md-routine-code {
+    transform-origin: left center;
+  }
+  /* The arm pivots at the shoulder, in scene coordinates. Under reduced
+     motion it simply appears raised for the length of the wave. */
+  .md-routine .md-routine-arm {
+    transform-box: view-box;
+    transform-origin: 204px 112px;
+    opacity: 0;
+    rotate: 80deg;
+  }
+  .md-routine[data-waving] .md-routine-arm {
+    opacity: 1;
+    rotate: 0deg;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .md-routine-part {
+      transition:
+        opacity var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow),
+        scale var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+      transition-delay: calc(var(--i, 0) * 90ms + 150ms);
+    }
+    .md-routine-line {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+      transition-delay: calc(var(--i, 0) * 90ms);
+    }
+    html[data-app-started] .md-routine:not([data-revealed]) .md-routine-part {
+      opacity: 0;
+      scale: 0.8;
+    }
+    html[data-app-started] .md-routine:not([data-revealed]) .md-routine-line {
+      stroke-dashoffset: 1;
+    }
+
+    .md-routine-blink {
+      animation: md-routine-blink 5.5s infinite;
+    }
+    .md-routine .md-routine-code {
+      animation: md-routine-type 9s infinite both;
+      animation-delay: calc(var(--i, 0) * 0.6s);
+    }
+    .md-routine[data-paused] :is(.md-routine-blink, .md-routine-code) {
+      animation-play-state: paused;
+    }
+    .md-routine[data-waving] .md-routine-arm {
+      animation: md-routine-wave 1.8s ease-in-out both;
+    }
+  }
+}
+@keyframes md-routine-blink {
+  0%,
+  94%,
+  100% {
+    scale: 1 1;
+  }
+  97% {
+    scale: 1 0.1;
+  }
+}
+@keyframes md-routine-type {
+  0%,
+  6% {
+    scale: 0 1;
+  }
+  16%,
+  82% {
+    scale: 1 1;
+  }
+  90%,
+  100% {
+    scale: 0 1;
+  }
+}
+@keyframes md-routine-wave {
+  0% {
+    opacity: 0;
+    rotate: 80deg;
+  }
+  14% {
+    opacity: 1;
+    rotate: 0deg;
+  }
+  28% {
+    rotate: -16deg;
+  }
+  42% {
+    rotate: 8deg;
+  }
+  56% {
+    rotate: -16deg;
+  }
+  70% {
+    rotate: 4deg;
+  }
+  86% {
+    opacity: 1;
+    rotate: 0deg;
+  }
+  100% {
+    opacity: 0;
+    rotate: 80deg;
+  }
+}
+
 /* A clip rather than a scale, so the gradient stays put and is uncovered top
    down. Scaling squeezed the last segment's fade along with it, which made a
    half-drawn line look finished. Both ends are inset() on purpose: an implicit

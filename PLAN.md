@@ -197,6 +197,9 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 
 Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animation. Prerendered HTML, Open Graph, structured data. Accessibility, performance, and cross-browser passes. Lighthouse.
 
+- [x] Footer routine on Boston time: the character, the shared room, the afternoon projects scene, the wave, and the clock
+- [ ] Footer routine: gym, study, tea, gaming, and sleep scenes, each with its own sky in the window
+
 ## Before launch
 
 - [ ] Buy the domain
@@ -268,3 +271,6 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Scroll-driven keyframes name both ends when the property can't interpolate with its default.** A clip that only set `from` ended at `clip-path: none`, which a shape can't blend into, so the timeline line snapped in halfway instead of drawing.
 - **Education is rows, not a card grid.** A shape medallion holds the GPA, and the degree in progress carries a wavy progress bar computed from its start and end months, so it turns into a completed row on its own after graduation.
 - **Finished degrees use secondary, not tertiary.** The 2025 color spec makes tertiary-container a bright accent in dark mode, which let the finished degree outshine the current one.
+- **The footer character is built from the site's shapes, not an ink library.** A line-art library was considered and set aside: its hand-inked strokes and its own color model would have been a second visual language beside the MD3 shapes.
+- **Only the person has fixed colors.** Skin, hair, and glasses describe Sujay, so they ignore the theme; the hoodie, room, and props all follow it.
+- **Colors that must stay light pick a role per scheme.** Surface roles go near-black in dark mode and fixed roles match pale skies in light mode, so the window's cloud uses `light-dark()` to choose between them.

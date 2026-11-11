@@ -1,17 +1,23 @@
+import { useRef } from 'react';
 import { profile } from '@/content/profile';
+import { RoutineScene } from '@/footer/RoutineScene';
+import { useReveal } from '@/lib/useReveal';
 import { Button } from '@/ui/Button';
 import { container } from './container';
 
 export function Footer() {
+  const footer = useRef<HTMLElement>(null);
+  useReveal(footer);
+
   return (
-    <footer className="border-t border-outline-variant py-12">
-      <div className={`${container} grid gap-8 medium:grid-cols-[minmax(0,1fr)_auto] medium:items-end`}>
+    <footer ref={footer} className="border-t border-outline-variant py-12 expanded:py-16">
+      <div className={`${container} grid gap-10 expanded:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] expanded:items-center expanded:gap-16`}>
         <div>
-          <p className="font-display text-headline-small text-on-surface">{profile.name}</p>
-          <p className="mt-1 text-body-medium text-on-surface-variant">
+          <p className="font-display text-headline-medium text-on-surface">{profile.name}</p>
+          <p className="mt-1 text-body-large text-on-surface-variant">
             {profile.role} in {profile.location}
           </p>
-          <div className="mt-4 -ms-3 flex flex-wrap gap-1">
+          <div className="mt-5 -ms-3 flex flex-wrap gap-1">
             <Button href={`mailto:${profile.email}`} variant="text" icon="mail">
               Email
             </Button>
@@ -23,14 +29,16 @@ export function Footer() {
             </Button>
           </div>
         </div>
-        <div className="flex flex-col items-start gap-3 medium:items-end">
-          <Button href="#home" variant="tonal" icon="arrow_upward">
-            Back to top
-          </Button>
-          <p className="text-body-small text-on-surface-variant">
-            &copy; {new Date().getFullYear()} {profile.name}. Built as a working Material 3 Expressive system.
-          </p>
-        </div>
+        <RoutineScene />
+      </div>
+
+      <div className={`${container} mt-12 flex flex-wrap items-center justify-between gap-4`}>
+        <p className="text-body-small text-on-surface-variant">
+          &copy; {new Date().getFullYear()} {profile.name}. Built as a working Material 3 Expressive system.
+        </p>
+        <Button href="#home" variant="tonal" icon="arrow_upward">
+          Back to top
+        </Button>
       </div>
     </footer>
   );

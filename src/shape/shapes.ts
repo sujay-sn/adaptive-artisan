@@ -71,3 +71,13 @@ export function polygonFromRadii(radii: number[]): string {
 export function shapeClipPath(name: ShapeName, rotation = 0): string {
   return polygonFromRadii(shapeRadii(name, rotation));
 }
+
+/** An SVG `points` list for the shape, centered on (cx, cy) with the given radius in user units. */
+export function shapeSvgPoints(name: ShapeName, cx: number, cy: number, radius: number, rotation = 0): string {
+  return shapeRadii(name, rotation)
+    .map((r, i) => {
+      const angle = angleAt(i);
+      return `${Number((cx + radius * r * Math.cos(angle)).toFixed(2))},${Number((cy + radius * r * Math.sin(angle)).toFixed(2))}`;
+    })
+    .join(' ');
+}
