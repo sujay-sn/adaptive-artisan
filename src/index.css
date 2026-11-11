@@ -1248,12 +1248,92 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     }
   }
 }
+
+/* ------------------------------------------------------------------------
+   Education. A shape medallion per degree that turns into place as its row
+   arrives and morphs on hover, and an MD3 Expressive wavy progress bar.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .md-degree-shape {
+    clip-path: var(--degree-rest);
+  }
+  @media (hover: hover) {
+    .md-degree-shape:hover {
+      clip-path: var(--degree-hover);
+    }
+  }
+
+  .md-wavy-progress {
+    --gap: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    block-size: 0.75rem;
+  }
+  /* The wave is a mask over a primary fill, so it follows the theme. The path
+     runs past both edges of its tile so repeats join without seams. */
+  .md-wavy-progress-active {
+    flex: none;
+    inline-size: calc(var(--value) * (100% - var(--gap)));
+    block-size: 100%;
+    background-color: var(--md-sys-color-primary);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='12' viewBox='0 0 32 12'%3E%3Cpath d='M-16 6Q-8 11 0 6Q8 1 16 6T32 6T48 6' fill='none' stroke='black' stroke-width='4'/%3E%3C/svg%3E")
+      left center / 2rem 100% repeat-x;
+  }
+  .md-wavy-progress-track {
+    position: relative;
+    flex: 1;
+    block-size: 0.25rem;
+    border-radius: 9999px;
+    background-color: var(--md-sys-color-secondary-container);
+  }
+  /* The stop indicator: where the bar ends. */
+  .md-wavy-progress-track::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    background-color: var(--md-sys-color-primary);
+  }
+
+  /* On arrival the medallion turns and grows into place, then the wave draws
+     to its value. Both ends of each change are the same kind of value (a
+     rotation, an inset), so they interpolate instead of snapping. */
+  @media (prefers-reduced-motion: no-preference) {
+    .md-degree-shape {
+      transition:
+        clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+        rotate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+        scale var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+      transition-delay: 0s, calc(var(--i, 0) * 70ms + 120ms), calc(var(--i, 0) * 70ms + 120ms);
+    }
+    .md-wavy-progress-active {
+      clip-path: inset(0);
+      transition: clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+      transition-delay: calc(var(--i, 0) * 70ms + 320ms);
+    }
+    html[data-app-started] .md-reveal:not([data-revealed]) .md-degree-shape {
+      rotate: -40deg;
+      scale: 0.6;
+    }
+    html[data-app-started] .md-reveal:not([data-revealed]) .md-wavy-progress-active {
+      clip-path: inset(0 100% 0 0);
+    }
+  }
+}
 /* A clip rather than a scale, so the gradient stays put and is uncovered top
    down. Scaling squeezed the last segment's fade along with it, which made a
-   half-drawn line look finished. */
+   half-drawn line look finished. Both ends are inset() on purpose: an implicit
+   `to` would be clip-path: none, which can't interpolate with a shape, so the
+   line would snap in at the halfway point instead of drawing. */
 @keyframes md-timeline-draw {
   from {
     clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
   }
 }
 @keyframes md-dot-in {
