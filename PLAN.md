@@ -199,7 +199,8 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 
 - [x] Footer room on Boston time: the whole footer is the room, content on its wall, a real sky in the window, a wall clock, night dimming with lamp and TV light, and a phone crop around the current station
 - [x] Full-body character who walks in from the door to the current station when the footer arrives, and on to the next one when a block changes
-- [ ] Poses at each station: lifting, at the desk (coursework and projects), tea at the counter, gaming on the couch, asleep
+- [x] Desk pose (coursework and projects): seated and typing, code typing onto the monitor, coffee on the desk in the morning
+- [ ] Poses: lifting at the gym corner, tea at the counter, gaming on the couch, asleep
 
 ## Before launch
 
@@ -279,3 +280,4 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Night dims the room, not the wall behind the text.** The dimming fades in from the room's top, so the content keeps full contrast while lamp and TV light glow above it.
 - **The window's sky uses natural colors, not the theme.** It shows Boston's actual sky, which is still daylight when someone browses in dark mode.
 - **The walk is keyframed joints, not a library.** Each limb pivots at its own joint, legs spend 60% of the cycle planted, and travel speed matches the stride; the Web Animations API sequences walk then stop and pans the phone crop through a registered --cam property.
+- **The furniture is sized to the character, not the other way round.** Seated, his knees meet the seat, his elbows the desk top, and his eyes the monitor; the first desk had him climbing onto the chair.

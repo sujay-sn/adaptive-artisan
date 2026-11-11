@@ -1478,7 +1478,64 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   .md-person .md-forearm {
     rotate: -8deg;
   }
+  .md-person .md-blink {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* At the desk: hips drop 30 units onto the seat, thighs forward, shins
+     straight down, and the arms reach so the hands rest on the keyboard. */
+  .md-person[data-pose="desk"] :is(.md-leg, .md-upper) {
+    translate: 0 30px;
+  }
+  .md-person[data-pose="desk"] .md-leg {
+    rotate: -90deg;
+  }
+  .md-person[data-pose="desk"] .md-shin {
+    rotate: 90deg;
+  }
+  /* The far foot sits a little behind the near one, not stacked under it. */
+  .md-person[data-pose="desk"] .md-leg-back {
+    rotate: -86deg;
+  }
+  .md-person[data-pose="desk"] .md-shin-back {
+    rotate: 100deg;
+  }
+  .md-person[data-pose="desk"] .md-arm {
+    rotate: -52deg;
+  }
+  .md-person[data-pose="desk"] .md-forearm {
+    rotate: -38deg;
+  }
+  .md-code {
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
+    /* Settling into a pose and getting up again. */
+    .md-person:not([data-walking]) :is(.md-leg, .md-shin, .md-arm, .md-forearm, .md-upper) {
+      transition:
+        rotate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+        translate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+    }
+    .md-person .md-blink {
+      animation: md-blink 5.5s infinite;
+    }
+    /* Seated: hands type in turn, and the code types itself onto the monitor. */
+    .md-person[data-pose="desk"] .md-forearm {
+      animation: md-type-hands 0.32s ease-in-out infinite alternate;
+    }
+    .md-person[data-pose="desk"] .md-arm-back .md-forearm {
+      animation-delay: -0.16s;
+    }
+    .md-room:has(.md-person[data-pose="desk"]) .md-code {
+      animation: md-code-type 9s infinite both;
+      animation-delay: calc(var(--i, 0) * 0.6s);
+    }
+    .md-footer[data-paused] :is(.md-blink, .md-code) {
+      animation-play-state: paused;
+    }
     .md-person[data-walking] .md-leg {
       animation: md-walk-thigh var(--walk) infinite;
     }
@@ -1546,6 +1603,38 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   }
   100% {
     rotate: 22deg;
+  }
+}
+@keyframes md-type-hands {
+  from {
+    rotate: -34deg;
+  }
+  to {
+    rotate: -42deg;
+  }
+}
+@keyframes md-blink {
+  0%,
+  94%,
+  100% {
+    scale: 1 1;
+  }
+  97% {
+    scale: 1 0.1;
+  }
+}
+@keyframes md-code-type {
+  0%,
+  6% {
+    scale: 0 1;
+  }
+  16%,
+  82% {
+    scale: 1 1;
+  }
+  90%,
+  100% {
+    scale: 0 1;
   }
 }
 @keyframes md-walk-bob {

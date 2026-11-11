@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { profile, SECTIONS } from '@/content/profile';
 import { RoomArt, RoomLights } from '@/footer/Room';
-import { clockLabel, routineAt, skyAt, STATIONS } from '@/footer/routine';
+import { clockLabel, POSES, routineAt, skyAt, STATIONS } from '@/footer/routine';
 import { useBostonTime } from '@/footer/useBostonTime';
 import { WalkingPerson } from '@/footer/WalkingPerson';
 import { useMediaQuery } from '@/lib/useMediaQuery';
@@ -44,8 +44,8 @@ export function Footer() {
       <div ref={room} className="md-room" aria-hidden="true">
         <div className="md-room-camera">
           <svg viewBox="0 0 1600 620" className="block size-full">
-            <RoomArt time={time} sky={sky} />
-            <WalkingPerson station={STATIONS[block.id]} started={started} still={reducedMotion} paused={paused} room={room} />
+            <RoomArt time={time} sky={sky} block={block.id} />
+            <WalkingPerson station={STATIONS[block.id]} pose={POSES[block.id]} started={started} still={reducedMotion} paused={paused} room={room} />
           </svg>
           <svg viewBox="0 0 1600 620" className="md-room-lights absolute inset-0 size-full">
             <RoomLights />

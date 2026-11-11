@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { Person } from './Person';
+import type { Pose } from './routine';
 
 /** Where he comes in: the middle of the door. */
 const DOOR_X = 96;
@@ -9,12 +10,16 @@ const FLOOR_Y = 478;
 const SPEED = 145;
 const ROOM_WIDTH = 1600;
 const FADE_IN_MS = 350;
+/** Getting up from a pose before walking off; matches the pose transition in index.css. */
+const STAND_UP_MS = 450;
 
 const at = (x: number) => `translate(${x}px, ${FLOOR_Y}px)`;
 
 interface WalkingPersonProps {
   /** Where the current block happens, in room units. */
   station: number;
+  /** How he settles there once he arrives. */
+  pose: Pose;
   /** True once the footer has come into view; he enters then. */
   started: boolean;
   /** Reduced motion: no walking, he's simply at his station. */
@@ -30,7 +35,7 @@ interface WalkingPersonProps {
  * wherever he should be at this hour; if the hour changes while the page is
  * open, he walks on to the next spot.
  */
-export function WalkingPerson({ station, started, still, paused, room }: WalkingPersonProps) {
+export function WalkingPerson({ station, pose, started, still, paused, room }: WalkingPersonProps) {
   const figure = useRef<SVGGElement>(null);
   /** Where he is now, or null before he has come in. */
   const x = useRef<number | null>(null);
@@ -39,6 +44,14 @@ export function WalkingPerson({ station, started, still, paused, room }: Walking
   const [walking, setWalking] = useState(false);
   const [facing, setFacing] = useState<1 | -1>(1);
   const [inRoom, setInRoom] = useState(false);
+  /** The pose he has settled into, or null while he's on his feet. */
+  const [settled, setSettled] = useState<Pose | null>(null);
+  const settledRef = useRef<Pose | null>(null);
+  const settle = (next: Pose | null) => {
+    settledRef.current = next;
+    setSettled(next);
+  };
+  const standTimer = useRef<number | undefined>(undefined);
 
   const setCamera = (to: number) => room.current?.style.setProperty('--cam', String(to / ROOM_WIDTH));
 
@@ -56,6 +69,7 @@ export function WalkingPerson({ station, started, still, paused, room }: Walking
     }
     running.current.forEach((animation) => animation.cancel());
     running.current = [];
+    window.clearTimeout(standTimer.current);
   };
 
   // Before he comes in, wait at the door, and point the phone's crop at it.
@@ -77,21 +91,29 @@ export function WalkingPerson({ station, started, still, paused, room }: Walking
       place(station);
       setInRoom(true);
       setWalking(false);
+      settle(pose);
       return;
     }
     if (!started) return;
 
     const entering = x.current === null;
     const from = x.current ?? DOOR_X;
-    if (!entering && Math.abs(from - station) < 1) return;
+    if (!entering && Math.abs(from - station) < 1) {
+      settle(pose);
+      return;
+    }
 
+    // Seated or otherwise posed: get up first, then set off.
+    const standUp = settledRef.current && settledRef.current !== 'stand' ? STAND_UP_MS : 0;
+    settle(null);
     setFacing(station >= from ? 1 : -1);
     setInRoom(true);
-    setWalking(true);
+    if (standUp) standTimer.current = window.setTimeout(() => setWalking(true), standUp);
+    else setWalking(true);
 
     const timing = {
       duration: (Math.abs(station - from) / SPEED) * 1000,
-      delay: entering ? FADE_IN_MS : 0,
+      delay: entering ? FADE_IN_MS : standUp,
       easing: 'linear',
       fill: 'both' as const,
     };
@@ -109,6 +131,7 @@ export function WalkingPerson({ station, started, still, paused, room }: Walking
         running.current.forEach((animation) => animation.cancel());
         running.current = [];
         setWalking(false);
+        settle(pose);
       })
       .catch(() => {
         // Cancelled: a newer walk, reduced motion, or unmounting took over.
@@ -117,7 +140,7 @@ export function WalkingPerson({ station, started, still, paused, room }: Walking
     return stop;
     // place and stop only touch refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [station, started, still]);
+  }, [station, pose, started, still]);
 
   useEffect(() => {
     pausedRef.current = paused;
@@ -125,7 +148,13 @@ export function WalkingPerson({ station, started, still, paused, room }: Walking
   }, [paused]);
 
   return (
-    <g ref={figure} className="md-person" opacity={inRoom ? 1 : 0} data-walking={walking ? '' : undefined}>
+    <g
+      ref={figure}
+      className="md-person"
+      opacity={inRoom ? 1 : 0}
+      data-walking={walking ? '' : undefined}
+      data-pose={settled && settled !== 'stand' ? settled : undefined}
+    >
       <g transform={facing === -1 ? 'scale(-1 1)' : undefined}>
         <Person />
       </g>

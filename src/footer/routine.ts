@@ -17,14 +17,26 @@ export type RoutineId = RoutineBlock['id'];
  */
 export const STATIONS: Record<RoutineId, number> = {
   gym: 265,
-  study: 480,
-  projects: 480,
+  study: 461,
+  projects: 461,
   tea: 920,
   gaming: 1170,
   sleep: 1480,
 };
 
 export const TIME_ZONE = 'America/New_York';
+
+/** How he settles once he reaches a station. Blocks without a pose drawn yet stand. */
+export type Pose = 'stand' | 'desk';
+
+export const POSES: Record<RoutineId, Pose> = {
+  gym: 'stand',
+  study: 'desk',
+  projects: 'desk',
+  tea: 'stand',
+  gaming: 'stand',
+  sleep: 'stand',
+};
 
 export interface BostonTime {
   hour: number;

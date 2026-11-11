@@ -1,5 +1,6 @@
+import type { CSSProperties } from 'react';
 import { shapeSvgPoints } from '@/shape/shapes';
-import type { BostonTime, Sky } from './routine';
+import type { BostonTime, RoutineId, Sky } from './routine';
 
 // The room is 1600 x 620 units, floor at y = 470, with a deep strip of floor
 // in front for the footer bar to sit on without covering anything. The wall itself isn't
@@ -9,14 +10,14 @@ const ROOM = { width: 1600, height: 620, floor: 470 } as const;
 
 const c = (role: string) => `var(--md-sys-color-${role})`;
 
-/** Everything in the room except the person. */
-export function RoomArt({ time, sky }: { time: BostonTime; sky: Sky }) {
+/** Everything in the room except the person. Some props only appear during their block. */
+export function RoomArt({ time, sky, block }: { time: BostonTime; sky: Sky; block: RoutineId }) {
   return (
     <>
       <Floor />
       <Door />
       <GymCorner />
-      <Desk />
+      <Desk coffee={block === 'study'} />
       <Window sky={sky} />
       <FloorPlant />
       <Kitchen />
@@ -85,43 +86,66 @@ function GymCorner() {
 }
 
 const CODE = [
-  { x: 488, w: 40, role: 'primary' },
-  { x: 500, w: 34, role: 'tertiary' },
-  { x: 500, w: 56, role: 'secondary' },
-  { x: 512, w: 26, role: 'primary' },
-  { x: 488, w: 38, role: 'on-surface-variant' },
+  { x: 480, w: 40, role: 'primary' },
+  { x: 492, w: 34, role: 'tertiary' },
+  { x: 492, w: 56, role: 'secondary' },
+  { x: 504, w: 26, role: 'primary' },
+  { x: 480, w: 38, role: 'on-surface-variant' },
 ];
 
-function Desk() {
+/**
+ * Sized to Sujay: seated, his knees are at the seat, his elbows at the desk
+ * top, and his eyes at the middle of the monitor. The code types itself in
+ * while he's sitting here (md-code in index.css).
+ */
+function Desk({ coffee }: { coffee: boolean }) {
   return (
     <g>
       {/* Monitor */}
-      <rect x="474" y="268" width="128" height="84" rx="10" fill={c('surface-container-lowest')} stroke={c('outline')} strokeWidth="3" />
+      <rect x="466" y="306" width="124" height="80" rx="10" fill={c('surface-container-lowest')} stroke={c('outline')} strokeWidth="3" />
       {CODE.map((line, i) => (
-        <rect key={i} x={line.x} y={283 + i * 12} width={line.w} height="6" rx="3" fill={c(line.role)} />
+        <rect
+          key={i}
+          className="md-code"
+          x={line.x}
+          y={320 + i * 12}
+          width={line.w}
+          height="6"
+          rx="3"
+          fill={c(line.role)}
+          style={{ '--i': i } as CSSProperties}
+        />
       ))}
-      <rect x="531" y="352" width="14" height="14" fill={c('outline-variant')} />
-      <rect x="514" y="364" width="48" height="6" rx="3" fill={c('outline-variant')} />
-      {/* Lamp */}
-      <rect x="392" y="360" width="38" height="10" rx="5" fill={c('secondary')} />
-      <path d="M411 362 L398 318 L430 296" fill="none" stroke={c('secondary')} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M414 300 Q428 274 454 288 L442 308 Z" fill={c('primary')} />
-      {/* Desk, drawers, keyboard, mug */}
-      <rect x="380" y="370" width="276" height="12" rx="5" fill={c('surface-container-highest')} stroke={c('outline')} strokeWidth="2" />
-      <rect x="392" y="382" width="10" height="88" fill={c('outline-variant')} />
-      <rect x="634" y="382" width="10" height="88" fill={c('outline-variant')} />
-      <rect x="566" y="382" width="68" height="54" rx="4" fill={c('surface-container-highest')} />
-      <rect x="590" y="404" width="20" height="4" rx="2" fill={c('outline')} />
-      <rect x="496" y="364" width="66" height="6" rx="3" fill={c('outline')} />
+      <rect x="521" y="386" width="14" height="16" fill={c('outline-variant')} />
+      <rect x="504" y="400" width="48" height="6" rx="3" fill={c('outline-variant')} />
+      {/* Lamp, at the far end so its light falls on the work, not behind his head */}
+      <rect x="612" y="398" width="38" height="10" rx="5" fill={c('secondary')} />
+      <path d="M631 400 L644 358 L612 336" fill="none" stroke={c('secondary')} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M628 340 Q614 314 590 328 L600 348 Z" fill={c('primary')} />
+      {/* Desk, drawers, keyboard */}
+      <rect x="380" y="408" width="276" height="12" rx="5" fill={c('surface-container-highest')} stroke={c('outline')} strokeWidth="2" />
+      <rect x="392" y="420" width="10" height="50" fill={c('outline-variant')} />
+      <rect x="634" y="420" width="10" height="50" fill={c('outline-variant')} />
+      <rect x="566" y="420" width="68" height="40" rx="4" fill={c('surface-container-highest')} />
+      <rect x="590" y="436" width="20" height="4" rx="2" fill={c('outline')} />
+      <rect x="500" y="402" width="66" height="6" rx="3" fill={c('outline')} />
+      {/* Morning coffee, beside the keyboard */}
+      {coffee && (
+        <g>
+          <path d="M579 376 Q574 370 579 364 M587 376 Q582 368 587 360" fill="none" stroke={c('outline-variant')} strokeWidth="2.5" strokeLinecap="round" />
+          <rect x="574" y="384" width="20" height="24" rx="5" fill={c('tertiary')} />
+          <path d="M594 389 Q603 396 594 403" fill="none" stroke={c('tertiary')} strokeWidth="4" strokeLinecap="round" />
+        </g>
+      )}
       {/* Chair, in profile, facing the desk */}
       <g fill={c('secondary-container')}>
-        <rect x="430" y="330" width="14" height="80" rx="7" />
-        <rect x="430" y="398" width="72" height="14" rx="7" />
+        <rect x="428" y="386" width="14" height="66" rx="7" />
+        <rect x="428" y="444" width="66" height="12" rx="6" />
       </g>
-      <rect x="462" y="412" width="8" height="40" fill={c('outline')} />
-      <rect x="436" y="450" width="60" height="6" rx="3" fill={c('outline')} />
-      <circle cx="440" cy="462" r="6" fill={c('on-surface-variant')} />
-      <circle cx="492" cy="462" r="6" fill={c('on-surface-variant')} />
+      <rect x="456" y="456" width="8" height="6" fill={c('outline')} />
+      <rect x="434" y="460" width="54" height="5" rx="2.5" fill={c('outline')} />
+      <circle cx="440" cy="468" r="5" fill={c('on-surface-variant')} />
+      <circle cx="482" cy="468" r="5" fill={c('on-surface-variant')} />
     </g>
   );
 }
@@ -304,7 +328,7 @@ export function RoomLights() {
         <stop offset="0" stopColor="#a8d8ff" stopOpacity="0.5" />
         <stop offset="1" stopColor="#a8d8ff" stopOpacity="0" />
       </radialGradient>
-      <ellipse className="md-room-light md-room-light-lamp" cx="446" cy="330" rx="150" ry="120" fill="url(#md-room-lamp)" />
+      <ellipse className="md-room-light md-room-light-lamp" cx="598" cy="372" rx="150" ry="110" fill="url(#md-room-lamp)" />
       <ellipse className="md-room-light md-room-light-tv" cx="1270" cy="378" rx="150" ry="100" fill="url(#md-room-tv)" />
     </>
   );
