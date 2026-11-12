@@ -4,9 +4,13 @@ import { MotionConfig } from 'motion/react';
 import '@fontsource-variable/google-sans-flex/wght.css';
 import './index.css';
 import { App } from './App';
+import { unlockAudioOnFirstGesture } from './sound/cues';
+import { listenForSectionJumps } from './sound/navigation';
 import { syncThemeAcrossTabs } from './theme/store';
 
 syncThemeAcrossTabs();
+unlockAudioOnFirstGesture();
+listenForSectionJumps();
 
 // Tells the pre-paint script's safety timer that the bloom is in the app's hands now.
 document.documentElement.dataset.appStarted = '';

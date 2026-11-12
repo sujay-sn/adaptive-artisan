@@ -3,7 +3,7 @@
 
 import { usePreferences } from '@/preferences/store';
 
-export type Cue = 'theme' | 'open' | 'close' | 'success';
+export type Cue = 'theme' | 'open' | 'close' | 'success' | 'navigate';
 
 interface Note {
   frequency: number;
@@ -24,17 +24,49 @@ const CUES: Record<Cue, Note[]> = {
     { frequency: 659.25, start: 0.08, duration: 0.1 },
     { frequency: 783.99, start: 0.16, duration: 0.18 },
   ],
+  // Jumping to a section: a quick step up, quieter than the rest (see LEVEL)
+  // because it plays the most often.
+  navigate: [
+    { frequency: 783.99, start: 0, duration: 0.06 },
+    { frequency: 1046.5, start: 0.045, duration: 0.09 },
+  ],
 };
 
+/** Per-cue volume against the shared master level. */
+const LEVEL: Partial<Record<Cue, number>> = { navigate: 0.6 };
+
 let context: AudioContext | null = null;
+
+/**
+ * Safari keeps a new AudioContext suspended unless it is resumed inside a user
+ * gesture, and cues such as the section jump fire just after one. So on the
+ * first tap or key press with sound on, create and resume the context there;
+ * every later cue then plays.
+ */
+export function unlockAudioOnFirstGesture(): void {
+  const unlock = () => {
+    if (!usePreferences.getState().sound) return;
+    try {
+      context ??= new AudioContext();
+      if (context.state === 'suspended') void context.resume();
+    } catch {
+      // Sound is decoration; see playCue.
+    }
+    window.removeEventListener('pointerdown', unlock, true);
+    window.removeEventListener('keydown', unlock, true);
+  };
+  window.addEventListener('pointerdown', unlock, true);
+  window.addEventListener('keydown', unlock, true);
+}
 
 export function playCue(cue: Cue): void {
   if (!usePreferences.getState().sound) return;
   try {
     context ??= new AudioContext();
+    if (context.state === 'suspended') void context.resume();
     const now = context.currentTime;
     const master = context.createGain();
-    master.gain.value = 0.06;
+    master.gain.value = 0.06 * (LEVEL[cue] ?? 1);
     master.connect(context.destination);
     for (const note of CUES[cue]) {
       const oscillator = context.createOscillator();
