@@ -202,6 +202,10 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Desk pose (coursework and projects): seated and typing, code typing onto the monitor, coffee on the desk in the morning
 - [x] Couch pose (gaming): seated with a controller, a platformer on a three-quarter TV, lit by its glow
 - [x] Tea at the counter (mug in hand, cookies out), curls at the gym corner, asleep in bed (glasses off, blanket up, lamp off)
+- [x] Section titles settle their font axes on arrival (light and condensed to resting weight and width), and every section's content reveals in reading order
+- [x] Sound: section-jump cue on every navigation jump (never on scroll), and audio unlocked on the first gesture for Safari; theme, Hub, and contact cues were already in place
+- [ ] Prerendered HTML, Open Graph, structured data
+- [ ] Accessibility, performance, and cross-browser passes; Lighthouse
 
 ## Before launch
 
@@ -282,3 +286,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **The window's sky uses natural colors, not the theme.** It shows Boston's actual sky, which is still daylight when someone browses in dark mode.
 - **The walk is keyframed joints, not a library.** Each limb pivots at its own joint, legs spend 60% of the cycle planted, and travel speed matches the stride; the Web Animations API sequences walk then stop and pans the phone crop through a registered --cam property.
 - **The furniture is sized to the character, not the other way round.** Seated, his knees meet the seat, his elbows the desk top, and his eyes the monitor; the first desk had him climbing onto the chair.
+- **Section titles animate their axes once, on arrival, not with scroll.** Scrubbing font axes re-lays out the heading on every scroll frame and makes it wobble while it is being read.
+- **Dynamic lists reveal by their wrapper.** The project grid mounts and unmounts cards when filtering, so the wrapper reveals once and the cards keep Motion's filter animation; a card mounted after the reveal ran would never be shown.

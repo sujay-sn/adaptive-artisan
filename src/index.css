@@ -1305,6 +1305,24 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
       translate: 0 1.5rem;
     }
   }
+
+  /* Section titles also settle their font axes: from light and condensed to
+     their resting weight and width. A one-time moment on arrival, not tied
+     to scroll, since scrubbing font axes would re-lay out the heading on
+     every scroll frame. */
+  @media (prefers-reduced-motion: no-preference) {
+    .md-section-title {
+      transition:
+        opacity var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow),
+        translate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+        font-weight var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+        font-stretch var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+    }
+    html[data-app-started] .md-section-title:not([data-revealed]) {
+      font-weight: 200;
+      font-stretch: 72%;
+    }
+  }
 }
 
 /* ------------------------------------------------------------------------
