@@ -1940,6 +1940,135 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   }
 }
 
+/* ------------------------------------------------------------------------
+   Skills pile (src/skills/SkillPile.tsx). Every skill is a Material shape in
+   a jar; the physics in pile.ts moves them by writing each one's transform.
+   Above it, the categories as large type that stretches when chosen.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .md-pile {
+    --pile-scale: 1;
+    position: relative;
+    block-size: 24rem;
+    overflow: hidden;
+    border-radius: 2rem;
+    background-color: var(--md-sys-color-surface-container-low);
+    /* Empty space in the jar still scrolls the page on touch screens; only
+       the shapes themselves capture a drag. */
+    touch-action: pan-y;
+    user-select: none;
+  }
+  @media (width >= 52.5rem) {
+    .md-pile {
+      block-size: 27rem;
+    }
+  }
+  .md-pile-skill {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    /* Sized and placed by the physics; hidden above the jar until it drops. */
+    inline-size: 0;
+    block-size: 0;
+    transform: translate3d(0, -200px, 0);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .md-pile-skill:active {
+    cursor: grabbing;
+  }
+  .md-pile-skill:focus-visible {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 2px;
+  }
+  .md-pile-shape {
+    position: absolute;
+    inset: 0;
+    background-color: var(--fill);
+  }
+  .md-pile-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    font-size: max(10px, calc(0.75rem * var(--pile-scale) * var(--text, 1)));
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-align: center;
+    pointer-events: none;
+  }
+  .md-pile-skill[aria-pressed="true"] {
+    z-index: 1;
+  }
+  .md-pile-skill[aria-pressed="true"] .md-pile-label {
+    font-weight: 700;
+  }
+  .md-pile-skill[data-dim] .md-pile-shape {
+    opacity: 0.3;
+  }
+  .md-pile-skill[data-dim] .md-pile-label {
+    opacity: 0.45;
+  }
+
+  .md-kinetic-filter {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+    row-gap: 0.25rem;
+    margin-block-end: 1rem;
+  }
+  .md-kinetic-filter > button {
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: none;
+    color: var(--md-sys-color-on-surface-variant);
+    font: inherit;
+    font-weight: 380;
+    font-stretch: 78%;
+    cursor: pointer;
+  }
+  .md-kinetic-filter > button:hover {
+    color: var(--md-sys-color-on-surface);
+  }
+  .md-kinetic-filter > button[aria-pressed="true"] {
+    color: var(--md-sys-color-on-surface);
+    font-weight: 680;
+    font-stretch: 125%;
+  }
+  .md-kinetic-filter > button:focus-visible {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .md-pile-shape {
+      transition:
+        clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+        opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+    }
+    .md-pile-label {
+      transition: opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+    }
+    .md-kinetic-filter > button {
+      transition:
+        font-stretch var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+        font-weight var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default),
+        color var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+    }
+  }
+}
+
 /* A clip rather than a scale, so the gradient stays put and is uncovered top
    down. Scaling squeezed the last segment's fade along with it, which made a
    half-drawn line look finished. Both ends are inset() on purpose: an implicit

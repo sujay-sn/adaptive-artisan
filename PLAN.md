@@ -204,6 +204,7 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Tea at the counter (mug in hand, cookies out), curls at the gym corner, asleep in bed (glasses off, blanket up, lamp off)
 - [x] Section titles settle their font axes on arrival (light and condensed to resting weight and width), and every section's content reveals in reading order
 - [x] Sound: section-jump cue on every navigation jump (never on scroll), and audio unlocked on the first gesture for Safari; theme, Hub, and contact cues were already in place
+- [x] Skills as a pile of Material shapes in a jar (drop, drag, throw, select to rise to the top), replacing the constellation; kinetic-type category filter; one category at a time on phones
 - [ ] Prerendered HTML, Open Graph, structured data
 - [ ] Accessibility, performance, and cross-browser passes; Lighthouse
 
@@ -288,3 +289,6 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **The furniture is sized to the character, not the other way round.** Seated, his knees meet the seat, his elbows the desk top, and his eyes the monitor; the first desk had him climbing onto the chair.
 - **Section titles animate their axes once, on arrival, not with scroll.** Scrubbing font axes re-lays out the heading on every scroll frame and makes it wobble while it is being read.
 - **Dynamic lists reveal by their wrapper.** The project grid mounts and unmounts cards when filtering, so the wrapper reveals once and the cards keep Motion's filter animation; a card mounted after the reveal ran would never be shown.
+- **Skills are a pile of shapes, not a graph.** The constellation read as a generic data tool against the rest of the site; the shapes, tonal colors, springs, and kinetic type are the site's own materials. The graph's meaning survives in selection: the skills used alongside the chosen one stay bright.
+- **The pile's physics is Verlet, written in house.** Position-based constraints keep stacks stable and let them come to rest, which velocity-and-impulse physics did not; the loop sleeps when settled, off screen, or after eight seconds regardless, since a random pile can end in a standoff that never quite stops.
+- **Phones get one category per jar.** Fifty-two skills in a phone-sized jar shrank to illegible; each category alone fits at full size, and switching drops a fresh set.
