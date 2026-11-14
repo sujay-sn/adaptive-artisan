@@ -1990,7 +1990,7 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   .md-pile-shape {
     position: absolute;
     inset: 0;
-    background-color: var(--fill);
+    background-color: var(--dim-fill, var(--fill));
   }
   .md-pile-label {
     position: absolute;
@@ -1999,7 +1999,7 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: var(--ink);
+    color: var(--dim-ink, var(--ink));
     font-size: max(10px, calc(0.75rem * var(--pile-scale) * var(--text, 1)));
     font-weight: 500;
     line-height: 1.15;
@@ -2013,11 +2013,12 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
   .md-pile-skill[aria-pressed="true"] .md-pile-label {
     font-weight: 700;
   }
-  .md-pile-skill[data-dim] .md-pile-shape {
-    opacity: 0.3;
-  }
-  .md-pile-skill[data-dim] .md-pile-label {
-    opacity: 0.45;
+  /* Stepping back goes neutral, not transparent: a faded label is still a
+     button someone may read and press, and fading text is exactly what breaks
+     its contrast. This pair is specified to stay readable in either scheme. */
+  .md-pile-skill[data-dim] {
+    --dim-fill: var(--md-sys-color-surface-container-highest);
+    --dim-ink: var(--md-sys-color-on-surface-variant);
   }
 
   .md-kinetic-filter {
@@ -2028,6 +2029,10 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     margin-block-end: 1rem;
   }
   .md-kinetic-filter > button {
+    /* Short words like "AI" still make a 44px-wide target. */
+    min-inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+    text-align: start;
     padding: 0;
     border: 0;
     border-radius: 0.5rem;
@@ -2055,10 +2060,10 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     .md-pile-shape {
       transition:
         clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
-        opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+        background-color var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
     }
     .md-pile-label {
-      transition: opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+      transition: color var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
     }
     .md-kinetic-filter > button {
       transition:

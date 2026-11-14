@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { SKILL_CATEGORIES, skills, type SkillCategory } from '@/content/skills';
 import { useMediaQuery } from '@/lib/useMediaQuery';
+import { usePreferences } from '@/preferences/store';
 import { shapeClipPath, type ShapeName } from '@/shape/shapes';
 import { categoryLabel, relatedTo, usesOf } from './graph';
 import { moveTo, push, scatterAbove, settle, step, STILL, type World } from './pile';
@@ -102,6 +103,10 @@ export function SkillPile({ category, only = null }: SkillPileProps) {
   const select = useSkillStore((state) => state.select);
   const hover = useSkillStore((state) => state.hover);
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  // The drop can run longer than five seconds, so the site-wide pause covers it
+  // too: paused, the pile arrives settled, like under reduced motion.
+  const paused = usePreferences((state) => state.ambientPaused);
+  const settledOnly = reduceMotion || paused;
 
   const jar = useRef<HTMLDivElement>(null);
   const buttons = useRef(new Map<string, HTMLButtonElement>());
@@ -115,10 +120,7 @@ export function SkillPile({ category, only = null }: SkillPileProps) {
   const scale = useRef(1);
   const dropped = useRef(false);
   const visible = useRef(false);
-  const still = useRef(reduceMotion);
-  useEffect(() => {
-    still.current = reduceMotion;
-  }, [reduceMotion]);
+  const still = useRef(settledOnly);
   const loop = useRef({ running: false, frame: 0, last: 0, debt: 0, quiet: 0, since: 0 });
   const [focusId, setFocusId] = useState(pile[0]?.id ?? '');
 
@@ -258,6 +260,14 @@ export function SkillPile({ category, only = null }: SkillPileProps) {
     wake();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, selected]);
+
+  useEffect(() => {
+    still.current = settledOnly;
+    // Pausing mid-drop lands everything where it would have settled.
+    if (settledOnly) wake();
+    // wake only touches refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settledOnly]);
 
   // Dragging: the held shape follows the pointer and shoves the rest; letting go throws it.
   const gesture = useRef<{ id: string; startX: number; startY: number; lastX: number; lastY: number; dx: number; dy: number; dragged: boolean } | null>(null);

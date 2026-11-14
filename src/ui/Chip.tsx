@@ -6,6 +6,10 @@ import type { IconName } from './icons';
 // screen wraps inside the outline instead of spilling through it.
 const SHELL = 'inline-flex min-h-8 max-w-full shrink-0 items-center rounded-sm py-1.5 text-label-large select-none';
 const OUTLINED = 'text-on-surface-variant shadow-[inset_0_0_0_1px_var(--md-sys-color-outline-variant)]';
+// Chips you can press take the stronger outline: about 4:1 against the page,
+// where outline-variant is about 2:1. For a control, the edge is the main sign
+// that it can be pressed; a static label doesn't need that cue.
+const PRESSABLE_OUTLINED = 'text-on-surface-variant shadow-[inset_0_0_0_1px_var(--md-sys-color-outline)]';
 
 interface ChipProps {
   label: string;
@@ -32,7 +36,7 @@ interface AssistChipProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
 /** An assist chip: a compact action. */
 export function AssistChip({ label, icon, className = '', type = 'button', ...rest }: AssistChipProps) {
   return (
-    <button {...rest} type={type} className={`state-layer cursor-pointer ${SHELL} ${OUTLINED} ${icon ? 'ps-2 pe-4' : 'px-4'} ${className}`}>
+    <button {...rest} type={type} className={`state-layer cursor-pointer ${SHELL} ${PRESSABLE_OUTLINED} ${icon ? 'ps-2 pe-4' : 'px-4'} ${className}`}>
       {icon && <Icon name={icon} size={18} className="me-2 text-primary" />}
       {label}
     </button>
@@ -54,7 +58,7 @@ export function FilterChip({ label, selected, onSelectedChange, className = '', 
       type={type}
       aria-pressed={selected}
       onClick={() => onSelectedChange(!selected)}
-      className={`md-filter-chip state-layer cursor-pointer ps-2 pe-4 ${SHELL} ${selected ? 'bg-secondary-container text-on-secondary-container' : OUTLINED} ${className}`}
+      className={`md-filter-chip state-layer cursor-pointer ps-2 pe-4 ${SHELL} ${selected ? 'bg-secondary-container text-on-secondary-container' : PRESSABLE_OUTLINED} ${className}`}
     >
       <span className="md-filter-chip-check" aria-hidden="true">
         <Icon name="check" size={18} />

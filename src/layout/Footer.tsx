@@ -15,8 +15,9 @@ import { container } from './container';
 /** What the prerendered page shows until the visitor's own Boston time is known. */
 const NOON = { hour: 12, minute: 0 };
 
+// Full 44px rows, so each link is an easy target on a touch screen.
 const LINK =
-  'text-title-medium text-on-surface decoration-2 underline-offset-[0.3em] transition-colors hover:text-primary hover:underline focus-visible:underline';
+  'inline-flex min-h-11 items-center text-title-medium text-on-surface decoration-2 underline-offset-[0.3em] transition-colors hover:text-primary hover:underline focus-visible:underline';
 const HEADING = 'text-label-large text-on-surface-variant';
 
 /**
@@ -75,7 +76,7 @@ export function Footer() {
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-16 gap-y-8 large:gap-x-24">
           <div>
             <h2 className={HEADING}>Sections</h2>
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-2">
               {SECTIONS.filter((section) => section.id !== 'home').map((section) => (
                 <li key={section.id}>
                   <a className={LINK} href={`#${section.id}`}>
@@ -87,7 +88,7 @@ export function Footer() {
           </div>
           <div>
             <h2 className={HEADING}>Elsewhere</h2>
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-2">
               <li>
                 <a className={LINK} href={`mailto:${profile.email}`}>
                   Email

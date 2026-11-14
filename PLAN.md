@@ -206,7 +206,9 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Sound: section-jump cue on every navigation jump (never on scroll), and audio unlocked on the first gesture for Safari; theme, Hub, and contact cues were already in place
 - [x] Skills as a pile of Material shapes in a jar (drop, drag, throw, select to rise to the top), replacing the constellation; kinetic-type category filter; one category at a time on phones
 - [x] Prerendered HTML, Open Graph card and tags, structured data (set SITE_URL at build once there is a domain)
-- [ ] Accessibility, performance, and cross-browser passes; Lighthouse
+- [x] Accessibility pass: axe across themes, seeds, screens, and open states; keyboard and focus; accessibility tree; contrast; reflow, zoom, text spacing; reduced motion
+- [ ] Accessibility: a real screen-reader run (NVDA on Windows, VoiceOver on iPhone)
+- [ ] Performance and cross-browser passes; Lighthouse
 
 ## Before launch
 
@@ -294,3 +296,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Phones get one category per jar.** Fifty-two skills in a phone-sized jar shrank to illegible; each category alone fits at full size, and switching drops a fresh set.
 - **The page is prerendered at build and hydrated in the browser.** Anything that depends on the visitor (the Boston clock, today's date, saved preferences and theme) renders a neutral or build-date stand-in until hydration, so the first render matches the HTML exactly; saved stores load right after hydration, while the pre-paint script keeps the saved colors on screen throughout.
 - **Social tags and structured data come from the content files.** The card, the description, and the Person record can't drift from the page; skills appear in structured data only with evidence on the page.
+- **Faded skills go neutral, not transparent.** Fading a label that is still a button breaks its contrast; the neutral surface and muted text pair stays readable while still stepping back.
+- **Chips that can be pressed use the stronger outline.** MD3 gives chips outline-variant (about 2:1); for a control the edge is the main sign it can be pressed, so pressable chips use outline (about 4:1) and static labels keep the subtle edge.

@@ -80,7 +80,7 @@ export function SkillDetail({ className = '' }: { className?: string }) {
   const selectedNode = selected ? graphNode(selected) : undefined;
 
   return (
-    <aside aria-label="Skill details" className={className}>
+    <div aria-label="Skill details" role="group" className={className}>
       <Card variant="filled" className="min-h-40 rounded-xl p-5">
         {!node && <p className="text-body-medium text-on-surface-variant">Select a skill to see where I used it and what I used it with.</p>}
         {node?.kind === 'skill' && <SkillInfo node={node} selected={node.id === selected} />}
@@ -89,6 +89,6 @@ export function SkillDetail({ className = '' }: { className?: string }) {
       <p className="sr-only" aria-live="polite">
         {selectedNode ? `${selectedNode.label} selected` : ''}
       </p>
-    </aside>
+    </div>
   );
 }

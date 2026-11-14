@@ -15,15 +15,25 @@ interface FieldOwnProps {
 
 type Control = HTMLInputElement | HTMLTextAreaElement;
 
-// :user-invalid is visual only, so mirror it to aria-invalid for assistive tech.
+// :user-invalid is visual only, so mirror it to aria-invalid for assistive tech,
+// and list the error message in aria-describedby while the field is invalid:
+// screen readers read aria-errormessage on its own only inconsistently.
 function syncInvalid(control: Control, forced: boolean): void {
-  if (forced || control.matches(':user-invalid')) control.setAttribute('aria-invalid', 'true');
+  const invalid = forced || control.matches(':user-invalid');
+  if (invalid) control.setAttribute('aria-invalid', 'true');
   else control.removeAttribute('aria-invalid');
+  const error = control.getAttribute('aria-errormessage');
+  if (!error) return;
+  const ids = (control.getAttribute('aria-describedby') ?? '').split(' ').filter((id) => id && id !== error);
+  if (invalid) ids.push(error);
+  if (ids.length > 0) control.setAttribute('aria-describedby', ids.join(' '));
+  else control.removeAttribute('aria-describedby');
 }
 
-function describedBy(id: string, supportingText?: string, errorText?: string) {
+function describedBy(id: string, supportingText: string | undefined, errorText: string | undefined, invalid: boolean) {
+  const ids = [supportingText && `${id}-support`, errorText && invalid && `${id}-error`].filter(Boolean).join(' ');
   return {
-    'aria-describedby': supportingText ? `${id}-support` : undefined,
+    'aria-describedby': ids || undefined,
     'aria-errormessage': errorText ? `${id}-error` : undefined,
   };
 }
@@ -85,7 +95,7 @@ export function TextField({ label, variant, supportingText, errorText, invalid =
     <FieldShell id={fieldId} label={label} variant={variant} supportingText={supportingText} errorText={errorText} invalid={invalid} required={input.required} className={className}>
       <input
         {...input}
-        {...describedBy(fieldId, supportingText, errorText)}
+        {...describedBy(fieldId, supportingText, errorText, invalid)}
         id={fieldId}
         placeholder=" "
         aria-invalid={invalid ? true : undefined}
@@ -112,7 +122,7 @@ export function TextArea({ label, variant, supportingText, errorText, invalid = 
     <FieldShell id={fieldId} label={label} variant={variant} supportingText={supportingText} errorText={errorText} invalid={invalid} required={input.required} className={className}>
       <textarea
         {...input}
-        {...describedBy(fieldId, supportingText, errorText)}
+        {...describedBy(fieldId, supportingText, errorText, invalid)}
         id={fieldId}
         rows={rows}
         placeholder=" "
