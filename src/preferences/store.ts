@@ -66,6 +66,8 @@ export const usePreferences = create<PreferencesState>()(
     {
       // Read by the pre-paint script in index.html. Keep the key in sync.
       name: 'md-preferences',
+      // Loaded after hydration (Root.tsx), so the first render matches the prerendered page.
+      skipHydration: true,
       partialize: ({ motionScheme, sound, typeAxes, iconAxes, ambientPaused }) => ({ motionScheme, sound, typeAxes, iconAxes, ambientPaused }),
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<PreferencesState>;

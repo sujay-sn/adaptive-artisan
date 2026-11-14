@@ -205,7 +205,7 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Section titles settle their font axes on arrival (light and condensed to resting weight and width), and every section's content reveals in reading order
 - [x] Sound: section-jump cue on every navigation jump (never on scroll), and audio unlocked on the first gesture for Safari; theme, Hub, and contact cues were already in place
 - [x] Skills as a pile of Material shapes in a jar (drop, drag, throw, select to rise to the top), replacing the constellation; kinetic-type category filter; one category at a time on phones
-- [ ] Prerendered HTML, Open Graph, structured data
+- [x] Prerendered HTML, Open Graph card and tags, structured data (set SITE_URL at build once there is a domain)
 - [ ] Accessibility, performance, and cross-browser passes; Lighthouse
 
 ## Before launch
@@ -292,3 +292,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Skills are a pile of shapes, not a graph.** The constellation read as a generic data tool against the rest of the site; the shapes, tonal colors, springs, and kinetic type are the site's own materials. The graph's meaning survives in selection: the skills used alongside the chosen one stay bright.
 - **The pile's physics is Verlet, written in house.** Position-based constraints keep stacks stable and let them come to rest, which velocity-and-impulse physics did not; the loop sleeps when settled, off screen, or after eight seconds regardless, since a random pile can end in a standoff that never quite stops.
 - **Phones get one category per jar.** Fifty-two skills in a phone-sized jar shrank to illegible; each category alone fits at full size, and switching drops a fresh set.
+- **The page is prerendered at build and hydrated in the browser.** Anything that depends on the visitor (the Boston clock, today's date, saved preferences and theme) renders a neutral or build-date stand-in until hydration, so the first render matches the HTML exactly; saved stores load right after hydration, while the pre-paint script keeps the saved colors on screen throughout.
+- **Social tags and structured data come from the content files.** The card, the description, and the Person record can't drift from the page; skills appear in structured data only with evidence on the page.

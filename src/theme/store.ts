@@ -70,6 +70,8 @@ export const useTheme = create<ThemeState>()(
     }),
     {
       name: SPEC_KEY,
+      // Loaded after hydration (Root.tsx), so the first render matches the prerendered page.
+      skipHydration: true,
       partialize: (state) => specOf(state),
       merge: (persisted, current) => ({ ...current, ...sanitize((persisted ?? {}) as Partial<ThemeSpec>) }),
       onRehydrateStorage: () => (state) => {

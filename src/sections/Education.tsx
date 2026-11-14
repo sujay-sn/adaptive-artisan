@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { education, type Degree } from '@/content/profile';
 import { Section } from '@/layout/Section';
 import { degreeProgress } from '@/lib/degreeProgress';
+import { useHydrated } from '@/lib/useHydrated';
 import { shapeClipPath, type ShapeName } from '@/shape/shapes';
 import { Chip } from '@/ui/Chip';
 import { Icon } from '@/ui/Icon';
@@ -33,7 +34,10 @@ export function Education() {
 }
 
 function DegreeRow({ degree, index }: { degree: Degree; index: number }) {
-  const progress = degreeProgress(degree.start, degree.end);
+  // As of the build until hydration, so the prerendered page and the first
+  // render agree; then as of today.
+  const hydrated = useHydrated();
+  const progress = degreeProgress(degree.start, degree.end, hydrated ? new Date() : new Date(`${__BUILD_DATE__}T12:00:00`));
   const look = progress.complete ? LOOKS.complete : LOOKS.current;
   const [score, scale = '4.0'] = degree.gpa.split('/').map((part) => part.trim());
   const shapes = {

@@ -7,6 +7,11 @@ import tailwindcss from '@tailwindcss/vite';
 import { mdFoundation } from './scripts/vite-plugin-md-foundation.ts';
 
 export default defineConfig({
+  define: {
+    // The day the site was built, shared by the browser and prerender builds, so
+    // date-dependent content prerenders as of the deploy and hydrates to match.
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   plugins: [
     mdFoundation(),
     react(),

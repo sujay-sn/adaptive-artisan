@@ -3,6 +3,7 @@ import { profile, SECTIONS } from '@/content/profile';
 import { RoomArt, RoomFront, RoomLights } from '@/footer/Room';
 import { clockLabel, POSES, routineAt, skyAt, STATIONS } from '@/footer/routine';
 import { useBostonTime } from '@/footer/useBostonTime';
+import { useHydrated } from '@/lib/useHydrated';
 import { WalkingPerson } from '@/footer/WalkingPerson';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 import { useNearViewport } from '@/lib/useNearViewport';
@@ -10,6 +11,9 @@ import { usePreferences } from '@/preferences/store';
 import { Button } from '@/ui/Button';
 import { IconButton } from '@/ui/IconButton';
 import { container } from './container';
+
+/** What the prerendered page shows until the visitor's own Boston time is known. */
+const NOON = { hour: 12, minute: 0 };
 
 const LINK =
   'text-title-medium text-on-surface decoration-2 underline-offset-[0.3em] transition-colors hover:text-primary hover:underline focus-visible:underline';
@@ -21,7 +25,9 @@ const HEADING = 'text-label-large text-on-surface-variant';
  * phone the room is cropped around wherever he is at the moment.
  */
 export function Footer() {
-  const time = useBostonTime();
+  const live = useBostonTime();
+  const time = live ?? NOON;
+  const hydrated = useHydrated();
   const block = routineAt(time);
   const sky = skyAt(time);
 
@@ -63,7 +69,7 @@ export function Footer() {
             {profile.role} in {profile.location}
           </p>
           <p className="mt-6 text-body-medium text-on-surface-variant">
-            &copy; {new Date().getFullYear()}. Built as a working Material 3 Expressive system.
+            {hydrated && <>&copy; {new Date().getFullYear()}. </>}Built as a working Material 3 Expressive system.
           </p>
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-16 gap-y-8 large:gap-x-24">
@@ -105,8 +111,14 @@ export function Footer() {
       <div className={`md-footer-bar ${container} relative pb-4 expanded:pb-6`}>
         <div className="flex items-center justify-between gap-4 rounded-full bg-surface-bright py-2 ps-6 pe-2 shadow-2">
           <p className="min-w-0 text-body-medium text-on-surface">
-            <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(time)} in Boston.</span>{' '}
-            <span className="text-title-small">{block.caption}</span>
+            {live ? (
+              <>
+                <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(live)} in Boston.</span>{' '}
+                <span className="text-title-small">{block.caption}</span>
+              </>
+            ) : (
+              <span className="text-label-large text-on-surface-variant">Boston</span>
+            )}
           </p>
           <div className="flex shrink-0 items-center gap-1">
             {!reducedMotion && (
