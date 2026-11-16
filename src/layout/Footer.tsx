@@ -1,7 +1,7 @@
 import { useRef } from 'react';
-import { profile, SECTIONS } from '@/content/profile';
+import { copy, profile, SECTIONS } from '@/content/profile';
 import { RoomArt, RoomFront, RoomLights } from '@/footer/Room';
-import { clockLabel, POSES, routineAt, skyAt, STATIONS } from '@/footer/routine';
+import { CITY, clockLabel, POSES, routineAt, skyAt, STATIONS } from '@/footer/routine';
 import { useBostonTime } from '@/footer/useBostonTime';
 import { useHydrated } from '@/lib/useHydrated';
 import { WalkingPerson } from '@/footer/WalkingPerson';
@@ -70,7 +70,8 @@ export function Footer() {
             {profile.role} in {profile.location}
           </p>
           <p className="mt-6 text-body-medium text-on-surface-variant">
-            {hydrated && <>&copy; {new Date().getFullYear()}. </>}Built as a working Material 3 Expressive system.
+            {hydrated && <>&copy; {new Date().getFullYear()}. </>}
+            {copy.footerTagline}
           </p>
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-16 gap-y-8 large:gap-x-24">
@@ -114,11 +115,11 @@ export function Footer() {
           <p className="min-w-0 text-body-medium text-on-surface">
             {live ? (
               <>
-                <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(live)} in Boston.</span>{' '}
+                <span className="text-label-large text-on-surface-variant tabular-nums">{clockLabel(live)} in {CITY}.</span>{' '}
                 <span className="text-title-small">{block.caption}</span>
               </>
             ) : (
-              <span className="text-label-large text-on-surface-variant">Boston</span>
+              <span className="text-label-large text-on-surface-variant">{CITY}</span>
             )}
           </p>
           <div className="flex shrink-0 items-center gap-1">

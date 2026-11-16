@@ -1,4 +1,5 @@
 import { lazy, Suspense, useRef, useState, type CSSProperties } from 'react';
+import { copy } from '@/content/profile';
 import { SKILL_CATEGORIES, type SkillCategory } from '@/content/skills';
 import { Section } from '@/layout/Section';
 import { useMediaQuery } from '@/lib/useMediaQuery';
@@ -22,16 +23,6 @@ const VIEWS: ReadonlyArray<{ value: View; label: string }> = [
   { value: 'list', label: 'List' },
 ];
 
-/** One word each, so the row stays a single line of large type. The full names stay in the evidence panel. */
-const SHORT: Record<SkillCategory, string> = {
-  languages: 'Languages',
-  frontend: 'Frontend',
-  backend: 'Backend',
-  data: 'Data',
-  ai: 'AI',
-  tools: 'Tools',
-  fundamentals: 'Fundamentals',
-};
 
 /**
  * The categories as large type. The chosen one stretches out to full width and
@@ -40,7 +31,7 @@ const SHORT: Record<SkillCategory, string> = {
 function CategoryFilter({ value, onChange, everything }: { value: SkillCategory | null; onChange: (value: SkillCategory | null) => void; everything: boolean }) {
   const options: ReadonlyArray<{ id: SkillCategory | null; label: string }> = [
     ...(everything ? [{ id: null, label: 'Everything' }] : []),
-    ...SKILL_CATEGORIES.map((category) => ({ id: category.id, label: SHORT[category.id] })),
+    ...SKILL_CATEGORIES.map((category) => ({ id: category.id, label: category.short })),
   ];
   return (
     <div role="group" aria-label="Show skills by category" className="md-kinetic-filter font-display text-title-large expanded:text-headline-small">
@@ -66,7 +57,7 @@ export function SkillsSection() {
     <Section id="skills">
       <div className="md-reveal flex flex-wrap items-end justify-between gap-x-10 gap-y-6" style={{ '--i': 1 } as CSSProperties}>
         <p className="max-w-[60ch] text-body-large text-on-surface-variant">
-          Everything I work with, in one jar, drawn from the roles and projects on this page. Pick one up and throw it, or tap it to see where I used it.
+          {copy.skillsIntro}
         </p>
         <ChoiceChips legend="View" name="skills-view" value={view} options={VIEWS} onChange={(value) => setView(value)} />
       </div>

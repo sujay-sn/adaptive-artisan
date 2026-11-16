@@ -1,15 +1,19 @@
-/** Sujay's weekday, in Boston time. Each block runs from its hour until the next block's. */
-export const ROUTINE = [
-  { id: 'sleep', from: 0, caption: 'Asleep. Gym at 6.' },
-  { id: 'gym', from: 6, caption: 'At the gym.' },
-  { id: 'study', from: 9, caption: 'Coffee, coursework, TA work, and email.' },
-  { id: 'projects', from: 12, caption: 'Working on a project.' },
-  { id: 'tea', from: 17, caption: 'Tea and snacks.' },
-  { id: 'gaming', from: 20, caption: 'Gaming.' },
-] as const;
+import { routine } from '@/content/profile';
+import type { Scene } from '@/content/types';
 
-export type RoutineBlock = (typeof ROUTINE)[number];
-export type RoutineId = RoutineBlock['id'];
+export type RoutineId = Scene;
+
+export interface RoutineBlock {
+  id: Scene;
+  from: number;
+  caption: string;
+}
+
+/** Your day, from src/data.ts. Each block runs from its hour until the next block's. */
+export const ROUTINE: ReadonlyArray<RoutineBlock> = routine.blocks.map((block) => ({ id: block.scene, from: block.from, caption: block.caption }));
+
+/** Shown in the footer: "3:12 PM in Boston." */
+export const CITY = routine.city;
 
 /**
  * Where each block happens along the room, in its 1600-unit-wide coordinates.
@@ -24,7 +28,7 @@ export const STATIONS: Record<RoutineId, number> = {
   sleep: 1568,
 };
 
-export const TIME_ZONE = 'America/New_York';
+export const TIME_ZONE = routine.timeZone;
 
 /** How he settles once he reaches a station. */
 export type Pose = 'stand' | 'desk' | 'couch' | 'tea' | 'gym' | 'sleep';
@@ -54,7 +58,8 @@ export function bostonTime(date: Date): BostonTime {
 
 /** The block Sujay is in at `time`. */
 export function routineAt(time: BostonTime): RoutineBlock {
-  let current: RoutineBlock = ROUTINE[0];
+  // The data checks guarantee at least one block, starting at hour 0.
+  let current: RoutineBlock = ROUTINE[0]!;
   for (const block of ROUTINE) if (time.hour >= block.from) current = block;
   return current;
 }

@@ -15,5 +15,6 @@ export function render(): string {
   );
 }
 
-export { socialTags } from './seo/social';
+export { validateContent } from './content/validate';
+export { headTags, socialTags } from './seo/social';
 export { structuredData } from './seo/structuredData';

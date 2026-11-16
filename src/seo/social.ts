@@ -1,6 +1,16 @@
-import { profile } from '@/content/profile';
+import { copy, profile } from '@/content/profile';
 
 const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+/** "Sujay S N | Software Engineer", for the browser tab and shared-link cards. */
+export function pageTitle(): string {
+  return `${profile.name} | ${profile.title}`;
+}
+
+/** The page's <title> and description, rewritten into index.html at build so they always match src/data.ts. */
+export function headTags(): { title: string; description: string } {
+  return { title: escape(pageTitle()), description: escape(copy.pageDescription) };
+}
 
 /** The social card image in public/, regenerated from scripts/og-card.html. */
 export const SOCIAL_IMAGE = { path: '/og.png', width: 1200, height: 630 };
@@ -12,7 +22,7 @@ export const SOCIAL_IMAGE = { path: '/og.png', width: 1200, height: 630 };
  * relative and there is no canonical URL.
  */
 export function socialTags(siteUrl?: string): string {
-  const title = `${profile.name} | Software Engineer`;
+  const title = pageTitle();
   const image = siteUrl ? `${siteUrl}${SOCIAL_IMAGE.path}` : SOCIAL_IMAGE.path;
   const tags: Array<[string, string, string]> = [
     ['property', 'og:type', 'profile'],

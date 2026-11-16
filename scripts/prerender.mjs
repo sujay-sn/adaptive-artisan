@@ -9,7 +9,14 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const siteUrl = process.env.SITE_URL?.replace(/\/+$/, '') || undefined;
 
-const { render, structuredData, socialTags } = await import(pathToFileURL(`${root}dist-ssr/entry-server.js`).href);
+const { render, structuredData, socialTags, headTags, validateContent } = await import(pathToFileURL(`${root}dist-ssr/entry-server.js`).href);
+
+// A mistake in src/data.ts stops the build here, with every problem named.
+const problems = validateContent();
+if (problems.length > 0) {
+  console.error(`\nsrc/data.ts has ${problems.length} problem${problems.length === 1 ? '' : 's'}:\n${problems.map((p) => `  - ${p}`).join('\n')}\n`);
+  process.exit(1);
+}
 
 const indexPath = `${root}dist/index.html`;
 const template = await readFile(indexPath, 'utf8');
@@ -26,7 +33,15 @@ if (app.length < 5000 || !app.includes('id="skills"')) throw new Error(`prerende
 // Inside a <script>, "</script>" or "<!--" in the data would end it early.
 const ld = JSON.stringify(structuredData(siteUrl)).replace(/</g, '\\u003c');
 
+// The tab title and search description always match src/data.ts.
+const head = headTags();
+const TITLE = /<title>[\s\S]*?<\/title>/;
+const DESCRIPTION = /<meta\s+name="description"[\s\S]*?\/>/;
+if (!TITLE.test(template) || !DESCRIPTION.test(template)) throw new Error('prerender: <title> or the description meta tag is missing from index.html');
+
 const html = template
+  .replace(TITLE, `<title>${head.title}</title>`)
+  .replace(DESCRIPTION, `<meta name="description" content="${head.description}" />`)
   .replace(ROOT_MARKER, `<div id="root">${app}</div>`)
   .replace(SOCIAL_MARKER, `${socialTags(siteUrl)}\n    <script type="application/ld+json">${ld}</script>`);
 

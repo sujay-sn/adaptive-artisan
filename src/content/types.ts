@@ -1,0 +1,126 @@
+// The shapes everything in src/data.ts must follow. TypeScript checks data.ts
+// against these, so a misspelled field or a missing title fails the build
+// with the exact line. You shouldn't need to edit this file to change content.
+
+import type { skillCategories } from '@/data';
+import type { YearMonth } from '@/lib/degreeProgress';
+
+export interface Profile {
+  name: string;
+  fullName: string;
+  role: string;
+  /** Shown after your name in the browser tab and on shared-link cards: "Sujay S N | Software Engineer". */
+  title: string;
+  location: string;
+  email: string;
+  github: string;
+  linkedin: string;
+  /** Google Drive share link to the resume PDF. */
+  resumeUrl?: string;
+  /** Portrait for the About section. Until it exists, a monogram fills the frame. */
+  photo?: string;
+  summary: string;
+  about: string[];
+}
+
+export interface Role {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  period: string;
+  type: string;
+  summary: string;
+  highlights: string[];
+  technologies: string[];
+  /** Skill ids from skills.ts. Constellation edges are derived from these. */
+  skills: string[];
+}
+
+export interface Degree {
+  id: string;
+  degree: string;
+  school: string;
+  location: string;
+  period: string;
+  /** First and last months, which drive the progress bar and the completed state. */
+  start: YearMonth;
+  end: YearMonth;
+  gpa: string;
+  summary?: string;
+  coursework: string[];
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  summary: string;
+  description: string;
+  status: 'completed' | 'in-progress';
+  year: string;
+  duration?: string;
+  team?: string;
+  role?: string;
+  technologies: string[];
+  /** Skill ids from skills.ts. Drives constellation-to-project filtering. */
+  skills: string[];
+  features: string[];
+  /** Measured outcomes. Only numbers that also appear on the resume. */
+  results: string[];
+  challenges: string[];
+  repoUrl?: string;
+  demoUrl?: string;
+  /** Cover media. Until a project has some, its cover is generated from MD3 shapes. */
+  media?: {
+    /** A screenshot, also the video's first frame. */
+    poster: string;
+    /** A short muted loop, played while the card is hovered or focused. */
+    video?: string;
+  };
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+  category: SkillCategory;
+}
+
+export interface SkillCategoryInfo {
+  id: string;
+  /** The full name, shown in the evidence panel and the list view. */
+  label: string;
+  /** One word for the large category filter above the skills pile. */
+  short: string;
+}
+
+export type SkillCategory = (typeof skillCategories)[number]['id'];
+
+/** Sentences on the page that are yours rather than the interface's. */
+export interface PageCopy {
+  /** The search-result and link-preview description. */
+  pageDescription: string;
+  skillsIntro: string;
+  contactIntro: string;
+  /** Shown after the contact form sends. */
+  contactThanks: string;
+  footerTagline: string;
+}
+
+/** The footer room's six drawings. Each block of your day shows one of them. */
+export type Scene = 'sleep' | 'gym' | 'study' | 'projects' | 'tea' | 'gaming';
+
+export interface RoutineBlock {
+  scene: Scene;
+  /** The hour it starts, 0 to 23, in your time zone. It runs until the next block's hour. */
+  from: number;
+  caption: string;
+}
+
+export interface Routine {
+  /** Shown in the footer: "3:12 PM in Boston." */
+  city: string;
+  /** An IANA time zone, such as America/New_York. Daylight saving is handled for you. */
+  timeZone: string;
+  /** In order of hour; the first must start at 0. */
+  blocks: RoutineBlock[];
+}

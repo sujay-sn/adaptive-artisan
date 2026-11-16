@@ -3,7 +3,9 @@ import { profile } from '@/content/profile';
 // One span per letter, so each letter can respond to the cursor on its own
 // weight, width, and roundness (see .hero-letter in index.css). The heading
 // carries the real name for assistive tech; the letters are presentation.
-const LINES = ['Sujay', 'S N'];
+// The first word on one line and the rest on the next: "Sujay" over "S N".
+const [first = profile.name, ...rest] = profile.name.split(' ');
+const LINES = rest.length > 0 ? [first, rest.join(' ')] : [first];
 
 export function HeroName({ id }: { id: string }) {
   return (

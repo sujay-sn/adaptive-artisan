@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type CSSProperties } from 'react';
-import { profile } from '@/content/profile';
+import { copy, profile } from '@/content/profile';
 import { Section } from '@/layout/Section';
 import { shapeClipPath } from '@/shape/shapes';
 import { playCue } from '@/sound/cues';
@@ -30,7 +30,7 @@ function Sent({ onReset }: { onReset: () => void }) {
       <h3 ref={heading} tabIndex={-1} className="font-display text-headline-small text-on-surface">
         Message sent
       </h3>
-      <p className="max-w-[45ch] text-body-large text-on-surface-variant">Thanks for reaching out. I'll reply within a couple of days.</p>
+      <p className="max-w-[45ch] text-body-large text-on-surface-variant">{copy.contactThanks}</p>
       <Button variant="text" onClick={onReset}>
         Send another message
       </Button>
@@ -96,7 +96,7 @@ export function Contact() {
       <div className="grid gap-10 large:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] large:gap-16">
         <div className="md-reveal" style={{ '--i': 1 } as CSSProperties}>
           <p className="max-w-[45ch] text-body-large text-on-surface">
-            I graduate in December 2026 and I'm looking for full-time software engineering roles. Send a message here, or reach me directly.
+            {copy.contactIntro}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button href={`mailto:${profile.email}`} icon="mail">
