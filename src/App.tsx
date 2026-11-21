@@ -1,19 +1,37 @@
-import { Contact } from '@/contact/Contact';
+import { useEffect } from 'react';
 import { HubFab, HubHost } from '@/hub/HubLaunchers';
 import { Footer } from '@/layout/Footer';
 import { NavigationRail } from '@/layout/NavigationRail';
 import { TopAppBar } from '@/layout/TopAppBar';
 import { useActiveSection } from '@/layout/useActiveSection';
-import { ProjectsSection } from '@/projects/ProjectsSection';
-import { About } from '@/sections/About';
-import { Education } from '@/sections/Education';
-import { Experience } from '@/sections/Experience';
-import { Hero } from '@/sections/Hero';
-import { SkillsSection } from '@/skills/SkillsSection';
+import { HomePage } from '@/pages/HomePage';
+import { NotFoundPage } from '@/pages/NotFoundPage';
+import { ProjectPage } from '@/pages/ProjectPage';
+import { ProjectsPage } from '@/pages/ProjectsPage';
+import { followHistory, interceptLinks, useRoute } from '@/router';
+import { pageHead } from '@/seo/pages';
 
-/** The page shell: navigation, the hub, and the sections in order. */
+/** The shell every page shares: navigation, the hub, and the footer, around the current page. */
 export function App() {
-  const active = useActiveSection();
+  const route = useRoute();
+  const onHome = route.name === 'home';
+  const scrolled = useActiveSection(onHome);
+  // Away from the home page, the rail shows where these pages belong.
+  const active = onHome ? scrolled : 'projects';
+
+  useEffect(() => {
+    const stopLinks = interceptLinks();
+    const stopHistory = followHistory();
+    return () => {
+      stopLinks();
+      stopHistory();
+    };
+  }, []);
+
+  useEffect(() => {
+    document.title = pageHead(route).title;
+  }, [route]);
+
   return (
     <>
       <a
@@ -29,14 +47,11 @@ export function App() {
       </div>
       <HubHost />
       <div className="expanded:ps-24 large:ps-[13.75rem]">
-        <main id="main">
-          <Hero />
-          <About />
-          <SkillsSection />
-          <Experience />
-          <ProjectsSection />
-          <Education />
-          <Contact />
+        <main id="main" tabIndex={-1} className="outline-none">
+          {route.name === 'home' && <HomePage />}
+          {route.name === 'projects' && <ProjectsPage skill={route.skill} />}
+          {route.name === 'project' && <ProjectPage key={route.id} id={route.id} />}
+          {route.name === 'not-found' && <NotFoundPage />}
         </main>
         <Footer />
       </div>

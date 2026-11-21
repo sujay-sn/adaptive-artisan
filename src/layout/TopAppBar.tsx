@@ -29,7 +29,7 @@ export function TopAppBar({ active }: { active: SectionId }) {
     <header className="md-top-app-bar expanded:hidden">
       <div className="md-top-app-bar-surface flex h-16 items-center gap-1 px-1">
         <IconButton icon="menu" label="Open navigation" aria-haspopup="dialog" onClick={() => setOpen(true)} />
-        <a href="#home" className="rounded-full px-2 py-1 font-display text-title-large text-on-surface">
+        <a href="/#home" className="rounded-full px-2 py-1 font-display text-title-large text-on-surface">
           {profile.name}
         </a>
         <IconButton className="ms-auto" icon={`${next}_mode`} label={`Switch to ${next} mode`} onClick={toggleColorScheme} />
@@ -43,7 +43,7 @@ export function TopAppBar({ active }: { active: SectionId }) {
               return (
                 <li key={id}>
                   <a
-                    href={`#${id}`}
+                    href={`/#${id}`}
                     aria-current={current ? 'true' : undefined}
                     onClick={() => {
                       target.current = id;

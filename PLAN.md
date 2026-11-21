@@ -208,6 +208,9 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [x] Prerendered HTML, Open Graph card and tags, structured data (set SITE_URL at build once there is a domain)
 - [x] Accessibility pass: axe across themes, seeds, screens, and open states; keyboard and focus; accessibility tree; contrast; reflow, zoom, text spacing; reduced motion
 - [ ] Accessibility: a real screen-reader run (NVDA on Windows, VoiceOver on iPhone)
+- [x] Project pages: featured editorial rows on home, a Projects page with the skill filter in the address, a page per project with gallery and viewer, card-to-page morph, every page prerendered
+- [ ] Build-time image optimization for project screenshots (WebP at several sizes)
+- [ ] GitHub archive on the Projects page (waiting on a decision: automatic or data.ts only)
 - [ ] Performance and cross-browser passes; Lighthouse
 
 ## Before launch
@@ -299,3 +302,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Faded skills go neutral, not transparent.** Fading a label that is still a button breaks its contrast; the neutral surface and muted text pair stays readable while still stepping back.
 - **Chips that can be pressed use the stronger outline.** MD3 gives chips outline-variant (about 2:1); for a control the edge is the main sign it can be pressed, so pressable chips use outline (about 4:1) and static labels keep the subtle edge.
 - **All content lives in src/data.ts.** Profile, page copy, experience, education, projects, skills, and the footer routine are edited in one file; types in src/content/types.ts catch misspelled or missing fields, and a validator run by the tests and every build catches broken references, duplicate ids, and out-of-order routine hours, naming the item. The section list stays in code, since a new section needs a component.
+- **Projects have pages, routed in place.** A small router (src/router.ts) handles /, /projects/, and /projects/<id>/; links stay real links, ordinary clicks move between pages in place with the card-to-page morph, back restores scroll, and focus moves to the new page's heading. Every page is prerendered to its own folder, so direct visits and shared links get real HTML with their own title, description, and share card.
+- **The home page shows up to six featured projects as editorial rows.** Each leads with a headline result chosen in data.ts; the full list, filterable by skill through the address, is on the Projects page.

@@ -4,6 +4,7 @@ import '@fontsource-variable/google-sans-flex/wght.css';
 import './index.css';
 import { App } from './App';
 import { Root } from './Root';
+import { legacyProjectId, projectPath } from './router';
 import { unlockAudioOnFirstGesture } from './sound/cues';
 import { listenForSectionJumps } from './sound/navigation';
 import { syncThemeAcrossTabs } from './theme/store';
@@ -11,6 +12,10 @@ import { syncThemeAcrossTabs } from './theme/store';
 syncThemeAcrossTabs();
 unlockAudioOnFirstGesture();
 listenForSectionJumps();
+
+// Projects used to open in a dialog at /?project=id; send those links on to the project's page.
+const legacy = legacyProjectId(window.location.search);
+if (legacy) window.location.replace(projectPath(legacy));
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing #root element');

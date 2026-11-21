@@ -34,7 +34,7 @@ export function NavigationRail({ active }: { active: SectionId }) {
             return (
               <li key={id}>
                 <a
-                  href={`#${id}`}
+                  href={`/#${id}`}
                   aria-current={current ? 'true' : undefined}
                   className="group flex h-15 flex-col items-center gap-1 pt-1 text-on-surface-variant large:state-layer large:h-14 large:flex-row large:gap-3 large:rounded-full large:px-4 large:pt-0"
                 >

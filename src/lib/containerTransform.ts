@@ -29,3 +29,38 @@ export async function containerTransform(element: HTMLElement, name: string, dir
     delete root.dataset.containerTransform;
   }
 }
+
+/**
+ * The container transform across a page change, where one side doesn't exist
+ * until the other is gone. Opening, `element` (a card) morphs into whatever
+ * the new page names (its cover, via html[data-container-transform] in
+ * index.css). Closing, the page's named cover morphs into whatever `target`
+ * finds once the previous page is back, such as that project's card.
+ */
+export async function pageTransform(
+  name: string,
+  direction: 'open' | 'close',
+  update: () => void,
+  element: HTMLElement | null,
+  target?: () => HTMLElement | null,
+): Promise<void> {
+  const root = document.documentElement;
+  root.dataset.containerTransform = name;
+  if (direction === 'open' && element) element.style.viewTransitionName = name;
+  let landed: HTMLElement | null = null;
+  const transition = document.startViewTransition(() => {
+    if (element) element.style.viewTransitionName = '';
+    update();
+    if (direction === 'close') {
+      landed = target?.() ?? null;
+      if (landed) landed.style.viewTransitionName = name;
+    }
+  });
+  try {
+    await transition.finished;
+  } finally {
+    if (element) element.style.viewTransitionName = '';
+    if (landed) (landed as HTMLElement).style.viewTransitionName = '';
+    delete root.dataset.containerTransform;
+  }
+}

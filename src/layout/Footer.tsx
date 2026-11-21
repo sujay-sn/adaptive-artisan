@@ -4,6 +4,7 @@ import { RoomArt, RoomFront, RoomLights } from '@/footer/Room';
 import { CITY, clockLabel, POSES, routineAt, skyAt, STATIONS } from '@/footer/routine';
 import { useBostonTime } from '@/footer/useBostonTime';
 import { useHydrated } from '@/lib/useHydrated';
+import { useRoute } from '@/router';
 import { WalkingPerson } from '@/footer/WalkingPerson';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 import { useNearViewport } from '@/lib/useNearViewport';
@@ -29,6 +30,8 @@ export function Footer() {
   const live = useBostonTime();
   const time = live ?? NOON;
   const hydrated = useHydrated();
+  // Back to top: the hero on the home page, the start of the page elsewhere.
+  const top = useRoute().name === 'home' ? 'home' : 'main';
   const block = routineAt(time);
   const sky = skyAt(time);
 
@@ -80,7 +83,7 @@ export function Footer() {
             <ul className="mt-2">
               {SECTIONS.filter((section) => section.id !== 'home').map((section) => (
                 <li key={section.id}>
-                  <a className={LINK} href={`#${section.id}`}>
+                  <a className={LINK} href={`/#${section.id}`}>
                     {section.label}
                   </a>
                 </li>
@@ -136,9 +139,9 @@ export function Footer() {
               label="Back to top"
               variant="tonal"
               className="medium:hidden"
-              onClick={() => (window.location.hash = 'home')}
+              onClick={() => (window.location.hash = top)}
             />
-            <Button href="#home" variant="tonal" icon="arrow_upward" className="max-medium:hidden">
+            <Button href={`#${top}`} variant="tonal" icon="arrow_upward" className="max-medium:hidden">
               Back to top
             </Button>
           </div>

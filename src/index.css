@@ -787,7 +787,8 @@ html[data-theme-reveal]::view-transition-new(root) {
 html[data-container-transform="hub-surface"] .md-hub[open] {
   view-transition-name: hub-surface;
 }
-html[data-container-transform="project-surface"] .md-project-dialog[open] {
+/* A project's card and its page's cover share the name while the page changes (src/router.ts). */
+html[data-container-transform="project-surface"] [data-project-hero] {
   view-transition-name: project-surface;
 }
 ::view-transition-group(hub-surface),
@@ -2128,57 +2129,133 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     font-stretch: 80%;
   }
   @media (hover: hover) {
-    .md-project-card:hover .md-cover-shape-a {
+    [data-project-card]:hover .md-cover-shape-a {
       clip-path: var(--cover-a-hover);
       rotate: 14deg;
     }
-    .md-project-card:hover .md-cover-shape-b {
+    [data-project-card]:hover .md-cover-shape-b {
       clip-path: var(--cover-b-hover);
       rotate: -10deg;
     }
   }
-  .md-project-card:focus-within .md-cover-shape-a {
+  [data-project-card]:focus-within .md-cover-shape-a {
     clip-path: var(--cover-a-hover);
     rotate: 14deg;
   }
-  .md-project-card:focus-within .md-cover-shape-b {
+  [data-project-card]:focus-within .md-cover-shape-b {
     clip-path: var(--cover-b-hover);
     rotate: -10deg;
   }
 
-  .md-project-dialog {
-    inline-size: min(70rem, calc(100vw - 3rem));
-    block-size: min(48rem, calc(100dvh - 3rem));
-    max-inline-size: none;
-    max-block-size: none;
-    overflow: hidden;
+  /* Featured rows on the home page (src/projects/ProjectRow.tsx). The cover
+     rests in a tilted shape and opens out into a panel, straightening, while
+     the row is hovered or focused; the picture inside settles from a little
+     zoomed to its full view. */
+  .md-row-media {
+    rotate: var(--tilt);
   }
-  .md-project-dialog[open] {
-    display: flex;
-    flex-direction: column;
+  .md-row-mask {
+    clip-path: var(--rest);
   }
-  /* Closes at once; with view transitions, the card morph covers the exit. */
-  .md-project-dialog:not([open]) {
-    transition: none;
+  .md-row-mask > * {
+    scale: 1.08;
   }
-  @media (width < 52.5rem) {
-    .md-project-dialog {
-      inline-size: 100vw;
-      block-size: 100dvh;
-      margin: 0;
-      border-radius: 0;
+  .md-project-row:is(:hover, :focus-within) .md-row-media {
+    rotate: 0deg;
+  }
+  .md-project-row:is(:hover, :focus-within) .md-row-mask {
+    clip-path: var(--open);
+  }
+  .md-project-row:is(:hover, :focus-within) .md-row-mask > * {
+    scale: 1;
+  }
+  @media (width >= 52.5rem) {
+    .md-project-row:nth-child(even) .md-row-media {
+      order: 2;
     }
   }
-  .md-project-dialog .md-stagger {
+  .md-row-metric {
+    font-stretch: 112%;
+  }
+
+  /* Rows and cards are each one link: the title's link stretches over all of it. */
+  .md-row-link::after,
+  .md-card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .md-project-row {
+    border-radius: 2rem;
+  }
+  .md-row-link:focus-visible,
+  .md-card-link:focus-visible {
+    outline: none;
+  }
+  .md-project-row:has(.md-row-link:focus-visible),
+  .md-project-card:has(.md-card-link:focus-visible) {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 6px;
+  }
+
+  /* A project page arrives in reading order, each part rising in after the last. */
+  .md-stagger {
     transition:
       opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default),
       translate var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
     transition-delay: calc(80ms + var(--i, 0) * 45ms);
   }
   @starting-style {
-    .md-project-dialog[open] .md-stagger {
+    .md-stagger {
       opacity: 0;
       translate: 0 0.75rem;
+    }
+  }
+
+  /* Gallery thumbnails and the full-screen viewer (src/projects/Gallery.tsx). */
+  .md-gallery-thumb > :is(img, video) {
+    transition: scale var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
+  }
+  .md-gallery-thumb:is(:hover, :focus-visible) > :is(img, video) {
+    scale: 1.04;
+  }
+  .md-gallery-thumb:focus-visible {
+    outline: 3px solid var(--md-sys-color-secondary);
+    outline-offset: 3px;
+  }
+  .md-lightbox {
+    inline-size: 100vw;
+    block-size: 100dvh;
+    max-inline-size: none;
+    max-block-size: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: var(--md-sys-color-surface-container-lowest);
+    color: var(--md-sys-color-on-surface);
+  }
+  .md-lightbox::backdrop {
+    background-color: rgb(0 0 0 / 0.6);
+  }
+  .md-lightbox-item {
+    transition: opacity var(--md-spring-effects-default-duration) var(--md-spring-effects-default);
+  }
+  @starting-style {
+    .md-lightbox-item {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .md-row-media {
+      transition: rotate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+    }
+    .md-row-mask {
+      transition: clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+    }
+    .md-row-mask > * {
+      transition: scale var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
     }
   }
 
@@ -2191,7 +2268,7 @@ html[data-container-transform="project-surface"] .md-project-dialog[open] {
     .md-cover-shape {
       transition: none;
     }
-    .md-project-dialog .md-stagger {
+    .md-stagger {
       translate: none;
     }
     .md-sent-badge {

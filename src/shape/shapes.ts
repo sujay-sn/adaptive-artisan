@@ -81,3 +81,13 @@ export function shapeSvgPoints(name: ShapeName, cx: number, cy: number, radius: 
     })
     .join(' ');
 }
+
+/**
+ * A rounded rectangle on the same points as every shape, so any of them can
+ * open out into it, as a project's cover does on hover. Kept out of SHAPES so
+ * generated covers never pick it.
+ */
+export function panelClipPath(): string {
+  const radial = superellipse(10);
+  return polygonFromRadii(Array.from({ length: SHAPE_POINTS }, (_, i) => radial(angleAt(i))));
+}

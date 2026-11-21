@@ -43,7 +43,22 @@ export function validateContent(): string[] {
     if (project.media && !isPublicPath(project.media.poster)) problem(`project "${project.id}": media.poster must be a path in public/, starting with "/", like "/burrow.webp".`);
     if (project.media?.video && !isPublicPath(project.media.video)) problem(`project "${project.id}": media.video must be a path in public/, starting with "/".`);
     if (project.skills.length === 0) problem(`project "${project.id}": tag at least one skill, so it shows up when that skill is selected.`);
+    if (project.headline && (!project.headline.value.trim() || !project.headline.label.trim())) problem(`project "${project.id}": headline needs both a value and a label.`);
+    (project.gallery ?? []).forEach((item, index) => {
+      const where = `project "${project.id}", gallery item ${index + 1}`;
+      if (item.type === 'embed') {
+        if (!/^[A-Za-z0-9_-]{6,64}$/.test(item.id)) problem(`${where}: "${item.id}" doesn't look like a ${item.provider} video id. Use only the id, not the whole link.`);
+        if (!item.title.trim()) problem(`${where}: give the video a title.`);
+        if (item.poster && !isPublicPath(item.poster)) problem(`${where}: poster must be a path in public/, starting with "/".`);
+        return;
+      }
+      if (!isPublicPath(item.src)) problem(`${where}: src must be a path in public/, starting with "/", like "/projects/${project.id}/screen.webp".`);
+      if (!item.alt.trim()) problem(`${where}: alt text is required; describe what the ${item.type} shows.`);
+      if (item.type === 'video' && item.poster && !isPublicPath(item.poster)) problem(`${where}: poster must be a path in public/, starting with "/".`);
+    });
   }
+  const featured = projects.filter((project) => project.featured).length;
+  if (featured > 6) problem(`projects: ${featured} are marked featured; the home page shows up to six.`);
 
   const yearMonth = /^\d{4}-(0[1-9]|1[0-2])$/;
   for (const degree of education) {

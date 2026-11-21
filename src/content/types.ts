@@ -70,6 +70,12 @@ export interface Project {
   challenges: string[];
   repoUrl?: string;
   demoUrl?: string;
+  /** Shown on the home page. Up to six; they appear in the order listed. Without any, the first six show. */
+  featured?: boolean;
+  /** The result a featured row leads with, in large type: { value: '85% → 34%', label: 'server load, after ...' }. */
+  headline?: { value: string; label: string };
+  /** Screenshots, short clips, and demo videos, shown on the project's page. */
+  gallery?: GalleryItem[];
   /** Cover media. Until a project has some, its cover is generated from MD3 shapes. */
   media?: {
     /** A screenshot, also the video's first frame. */
@@ -78,6 +84,40 @@ export interface Project {
     video?: string;
   };
 }
+
+/**
+ * One item in a project's gallery. Files go in public/ (public/projects/<project-id>/ keeps
+ * them together) and are referenced from "/", like "/projects/burrow-housing/search.webp".
+ */
+export type GalleryItem =
+  | {
+      type: 'image';
+      src: string;
+      /** What the image shows, for people who can't see it. Required. */
+      alt: string;
+      caption?: string;
+    }
+  | {
+      /** A short clip, under about 30 seconds: plays muted and looping, with a pause button. */
+      type: 'video';
+      src: string;
+      /** A still to show before it plays. */
+      poster?: string;
+      /** What the clip shows. Required. */
+      alt: string;
+      caption?: string;
+    }
+  | {
+      /** A longer demo on YouTube or Loom. Loads only when someone presses play. */
+      type: 'embed';
+      provider: 'youtube' | 'loom';
+      /** The video's id: the part after "watch?v=" on YouTube, or after "/share/" on Loom. */
+      id: string;
+      title: string;
+      /** A still for Loom videos; YouTube's own thumbnail is used otherwise. */
+      poster?: string;
+      caption?: string;
+    };
 
 export interface Skill {
   id: string;
@@ -100,6 +140,8 @@ export interface PageCopy {
   /** The search-result and link-preview description. */
   pageDescription: string;
   skillsIntro: string;
+  /** Under the heading on the Projects page. */
+  projectsIntro: string;
   contactIntro: string;
   /** Shown after the contact form sends. */
   contactThanks: string;

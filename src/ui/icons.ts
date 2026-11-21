@@ -6,9 +6,13 @@
 
 export const ICON_NAMES = [
   'add',
+  'arrow_back',
+  'arrow_forward',
   'arrow_upward',
   'brightness_auto',
   'check',
+  'chevron_left',
+  'chevron_right',
   'close',
   'code',
   'dark_mode',

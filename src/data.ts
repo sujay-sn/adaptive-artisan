@@ -10,8 +10,12 @@
 // Common edits:
 // - New project: copy one in `projects` and give it a unique id. That id goes
 //   in the share link (?project=your-id). Tag it with skill ids from `skills`.
-// - Screenshots: put files in public/ and set media: { poster: '/name.webp' },
+// - Home page: mark up to six projects featured: true; they show in list order,
+//   each leading with its headline (a short value and a label) if it has one.
+// - Cover: put a screenshot in public/ and set media: { poster: '/name.webp' },
 //   optionally with video: '/name.mp4' for a short muted loop on hover.
+// - Gallery: list images, short clips, and YouTube or Loom demos in gallery: [...]
+//   for the project's page. Every image and clip needs alt text describing it.
 // - Tagging a skill: add its id to the `skills` list of the roles or projects
 //   where you used it. Untagged skills still show, without evidence.
 // - New skill: add it to `skills` with a unique id and one of the categories.
@@ -55,6 +59,7 @@ export const copy: PageCopy = {
   pageDescription: 'Sujay S N, full-stack software engineer in Boston. A portfolio built as a working Material 3 Expressive design system.',
   skillsIntro:
     'Everything I work with, in one jar, drawn from the roles and projects on this page. Pick one up and throw it, or tap it to see where I used it.',
+  projectsIntro: 'Everything I have built, with the stack, the results, and screenshots where I have them.',
   contactIntro: "I graduate in December 2026 and I'm looking for full-time software engineering roles. Send a message here, or reach me directly.",
   contactThanks: "Thanks for reaching out. I'll reply within a couple of days.",
   footerTagline: 'Built as a working Material 3 Expressive system.',
@@ -165,9 +170,11 @@ export const projects: Project[] = [
     id: 'burrow-housing',
     title: 'Burrow Housing',
     summary: 'Sublease marketplace with geospatial search, secure sign-in, and real-time messaging.',
+    headline: { value: '85% → 34%', label: 'server load, after moving uploads to S3 presigned URLs' },
     description:
       'A sublease marketplace where tenants list rooms and people looking for short-term housing find them by distance. Search runs on MongoDB geospatial queries with Google Maps, chat and media uploads are built in, and sign-up is verified by email.',
     status: 'completed',
+    featured: true,
     year: '2025',
     duration: '4 months',
     team: 'solo project',
@@ -196,9 +203,11 @@ export const projects: Project[] = [
     id: 'insurance-data-platform',
     title: 'Insurance Data Orchestration Platform',
     summary: 'Event-driven REST platform with caching, schema validation, and full-text search.',
+    headline: { value: '120ms → 35ms', label: 'API response time, with Redis caching and ETags' },
     description:
       'A Node.js REST API for insurance data built around event-driven services. Writes flow through RabbitMQ into Elasticsearch for full-text search, reads are cached in Redis with ETag-based conditional requests, and every payload is checked against JSON Schema.',
     status: 'completed',
+    featured: true,
     year: '2025',
     technologies: ['Node.js', 'Redis', 'RabbitMQ', 'Elasticsearch', 'JSON Schema', 'Google OAuth', 'RS256 JWT', 'Docker Compose'],
     skills: ['nodejs', 'restapi', 'redis', 'rabbitmq', 'elasticsearch', 'jwt', 'docker', 'distributed-systems'],
@@ -224,6 +233,7 @@ export const projects: Project[] = [
     description:
       'A trading platform that pairs live market data with AI-generated, portfolio-aware analysis. Includes role-based access, identity verification with document upload, Stripe payments, and portfolio charts.',
     status: 'completed',
+    featured: true,
     year: '2025',
     duration: '6 months',
     team: 'solo project',
@@ -251,6 +261,7 @@ export const projects: Project[] = [
     description:
       'A portfolio built as a demonstration of Material 3 Expressive on the web, where Google\u2019s own web components are in maintenance mode. Dynamic color, spring motion, variable type, and shape morphing, built from the spec.',
     status: 'in-progress',
+    featured: true,
     year: '2026',
     team: 'solo project',
     technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Motion', 'Base UI', 'Material Color Utilities'],

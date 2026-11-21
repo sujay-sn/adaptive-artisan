@@ -1,58 +1,29 @@
-import { AnimatePresence, LazyMotion } from 'motion/react';
-import { useEffect, type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { projects } from '@/content/projects';
 import { Section } from '@/layout/Section';
-import { graphNode } from '@/skills/graph';
-import { useSkillStore } from '@/skills/store';
-import { FilterChip } from '@/ui/Chip';
-import { projectFilterSkills } from './filters';
-import { ProjectCard } from './ProjectCard';
-import { ProjectDialog } from './ProjectDialog';
-import { closeProject, syncProjectWithUrl, useProjectStore } from './store';
-
-const loadMotionFeatures = () => import('./motionFeatures').then((module) => module.default);
-const FILTERS = projectFilterSkills();
+import { projectsPath } from '@/router';
+import { Button } from '@/ui/Button';
+import { featuredProjects } from './featured';
+import { ProjectRow } from './ProjectRow';
 
 /**
- * Projects, filterable by skill. The filter is shared with the constellation,
- * so "See projects" there lands here already filtered. Cards animate to their
- * new places when the filter changes.
+ * Featured projects on the home page, as editorial rows, with a way through to
+ * every project. Each row opens its project's page.
  */
 export function ProjectsSection() {
-  const projectSkill = useSkillStore((state) => state.projectSkill);
-  const openId = useProjectStore((state) => state.openId);
-
-  useEffect(() => syncProjectWithUrl(), []);
-
-  const setFilter = (skill: string | null) => useSkillStore.setState({ projectSkill: skill });
-  const shown = projectSkill ? projects.filter((project) => project.skills.includes(projectSkill)) : projects;
-  // A filter set from the constellation may not be one of the usual chips; show it anyway.
-  const chips = projectSkill && !FILTERS.includes(projectSkill) ? [projectSkill, ...FILTERS] : FILTERS;
-  const label = (skill: string) => graphNode(skill)?.label ?? skill;
-
+  const featured = featuredProjects();
   return (
     <Section id="projects">
-      <div role="group" aria-label="Filter projects by skill" className="md-reveal mb-8 flex flex-wrap gap-2" style={{ '--i': 1 } as CSSProperties}>
-        <FilterChip label="All" selected={projectSkill === null} onSelectedChange={() => setFilter(null)} />
-        {chips.map((skill) => (
-          <FilterChip key={skill} label={label(skill)} selected={projectSkill === skill} onSelectedChange={(on) => setFilter(on ? skill : null)} />
+      <div className="space-y-16 expanded:space-y-24">
+        {featured.map((project, index) => (
+          <ProjectRow key={project.id} project={project} index={index} />
         ))}
       </div>
-      <p role="status" className="sr-only">
-        {projectSkill ? `${shown.length} ${shown.length === 1 ? 'project uses' : 'projects use'} ${label(projectSkill)}` : ''}
-      </p>
-      <LazyMotion features={loadMotionFeatures} strict>
-        {/* The wrapper reveals, not the cards: filtering mounts and unmounts cards,
-            and one mounted after the reveal ran would never be shown. */}
-        <div className="md-reveal grid gap-6 expanded:grid-cols-2" style={{ '--i': 2 } as CSSProperties}>
-          <AnimatePresence initial={false}>
-            {shown.map((project, index) => (
-              <ProjectCard key={project.id} project={project} featured={index === 0} />
-            ))}
-          </AnimatePresence>
-        </div>
-      </LazyMotion>
-      <ProjectDialog project={projects.find((project) => project.id === openId) ?? null} onRequestClose={() => void closeProject()} />
+      <div className="md-reveal mt-16 flex flex-wrap items-center gap-4" style={{ '--i': featured.length + 1 } as CSSProperties}>
+        <Button href={projectsPath()} variant="tonal" trailingIcon="arrow_forward">
+          {projects.length > featured.length ? `See all ${projects.length} projects` : 'See all projects'}
+        </Button>
+      </div>
     </Section>
   );
 }

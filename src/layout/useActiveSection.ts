@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { SECTIONS, type SectionId } from '@/content/profile';
 
-/** The section crossing the middle of the viewport, for scrollspy navigation. */
-export function useActiveSection(): SectionId {
+/** The section crossing the middle of the viewport, for scrollspy navigation. Watches only while `enabled`, as on the home page. */
+export function useActiveSection(enabled = true): SectionId {
   const [active, setActive] = useState<SectionId>('home');
 
   useEffect(() => {
+    if (!enabled) return;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -19,7 +20,7 @@ export function useActiveSection(): SectionId {
       if (section) observer.observe(section);
     }
     return () => observer.disconnect();
-  }, []);
+  }, [enabled]);
 
   return active;
 }
