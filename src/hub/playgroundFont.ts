@@ -2,8 +2,9 @@ import { useSyncExternalStore } from 'react';
 import fullFontUrl from '@fontsource-variable/google-sans-flex/files/google-sans-flex-latin-full-normal.woff2?url';
 
 // The full Google Sans Flex (all six axes, about 1.4 MB) loads only when the
-// hub opens, under its own family name, so the rest of the site keeps the
-// small cuts.
+// hub opens or a visitor has custom type axes saved, under its own family
+// name, so everyone else keeps the small cuts. src/preferences/typeAxes.ts
+// puts it in front of the site's families once the axes move.
 
 export type PlaygroundFontStatus = 'idle' | 'loading' | 'ready' | 'error';
 

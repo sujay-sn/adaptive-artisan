@@ -151,6 +151,7 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Tonal palette viewer
 - [x] Live preview of the real components
 - [x] Type playground on the full Google Sans Flex, loaded only when the hub opens
+- [x] Type axes apply to the whole site, not just the sample: weight and width shift every style relative to its own value, the rest form a shared base, saved axes return before first paint, and the full font loads only for visitors who customize
 - [x] Icon playground: fill, weight, grade, optical size
 - [x] Motion scheme switch, with a plot of the spring and a demo
 - [x] Sound effects (Web Audio), off by default
@@ -306,4 +307,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **All content lives in src/data.ts.** Profile, page copy, experience, education, projects, skills, and the footer routine are edited in one file; types in src/content/types.ts catch misspelled or missing fields, and a validator run by the tests and every build catches broken references, duplicate ids, and out-of-order routine hours, naming the item. The section list stays in code, since a new section needs a component.
 - **Projects have pages, routed in place.** A small router (src/router.ts) handles /, /projects/, and /projects/<id>/; links stay real links, ordinary clicks move between pages in place with the card-to-page morph, back restores scroll, and focus moves to the new page's heading. Every page is prerendered to its own folder, so direct visits and shared links get real HTML with their own title, description, and share card.
 - **The home page shows up to six featured projects as editorial rows.** Each leads with a headline result chosen in data.ts; the full list, filterable by skill through the address, is on the Projects page.
+- **Hub type axes move the whole site, relatively.** Applying the Type tab's weight literally would set every heading and paragraph to one weight and erase the hierarchy, so each rule adds the visitor's weight shift to its own value and scales its own width. Slant, grade, roundness, and pinned optical size form a shared variation base that rules with their own axes append to. The small cuts lack most axes, so custom type swaps in the full font, and only then.
 - **Placeholders are marked, not hidden.** Example entries carry example: true. They show an Example entry label, the build warns while any remain, and they never reach structured data.

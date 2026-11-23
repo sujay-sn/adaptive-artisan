@@ -1,6 +1,7 @@
 import { MotionConfig } from 'motion/react';
 import { StrictMode, useEffect, type ReactNode } from 'react';
 import { usePreferences } from './preferences/store';
+import { applyTypeAxes } from './preferences/typeAxes';
 import { useTheme } from './theme/store';
 
 /**
@@ -11,6 +12,22 @@ import { useTheme } from './theme/store';
  * this effect runs ahead of any of the app's own.
  */
 function RestoreSaved() {
+  useEffect(() => {
+    // Type axes go onto <html> once per frame however fast a slider moves,
+    // since each change re-lays out the whole page. Subscribed before the
+    // rehydrate below, so saved axes apply too; until then the pre-paint
+    // script's copy stays on screen.
+    let frame = 0;
+    const unsubscribe = usePreferences.subscribe((state, previous) => {
+      if (state.typeAxes === previous.typeAxes) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => applyTypeAxes(usePreferences.getState().typeAxes));
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      unsubscribe();
+    };
+  }, []);
   useEffect(() => {
     void usePreferences.persist.rehydrate();
     void useTheme.persist.rehydrate();

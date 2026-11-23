@@ -27,7 +27,8 @@ export function TypePanel() {
     <div className="space-y-8">
       <div className="space-y-2">
         <p className="max-w-[60ch] text-body-medium text-on-surface-variant">
-          Google Sans Flex is the typeface of Material 3 Expressive. Every axis below is live.
+          Google Sans Flex is the typeface of Material 3 Expressive. Every axis below is live, and the whole site follows
+          along. Weight and width shift every style together, so headings stay heavier than body text.
         </p>
         <p role="status" className="text-body-small text-on-surface-variant">
           {font === 'loading' && 'Loading the full font with all six axes (about 1.4 MB).'}
