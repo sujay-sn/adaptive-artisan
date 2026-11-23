@@ -1,4 +1,4 @@
-import { education, profile } from '@/content/profile';
+import { awards, certifications, education, profile } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { skills } from '@/content/skills';
 import { projectPath } from '@/router';
@@ -11,6 +11,9 @@ import { usesOf } from '@/skills/graph';
  */
 export function structuredData(siteUrl?: string): Record<string, unknown> {
   const [locality, region] = profile.location.split(',').map((part) => part.trim());
+  // Example placeholders never reach search engines.
+  const realAwards = awards.filter((award) => !award.example);
+  const realCertifications = certifications.filter((certification) => !certification.example);
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
@@ -24,6 +27,20 @@ export function structuredData(siteUrl?: string): Record<string, unknown> {
     alumniOf: education.map((degree) => ({ '@type': 'CollegeOrUniversity', name: degree.school })),
     sameAs: [profile.linkedin, profile.github],
     knowsAbout: skills.filter((skill) => usesOf(skill.id).length > 0).map((skill) => skill.name),
+    ...(realAwards.length > 0 ? { award: realAwards.map((award) => `${award.title}, ${award.from} (${award.date.slice(0, 4)})`) } : {}),
+    ...(realCertifications.length > 0
+      ? {
+          hasCredential: realCertifications.map((certification) => ({
+            '@type': 'EducationalOccupationalCredential',
+            name: certification.name,
+            credentialCategory: 'certification',
+            recognizedBy: { '@type': 'Organization', name: certification.issuer },
+            dateCreated: certification.issued,
+            ...(certification.expires ? { expires: certification.expires } : {}),
+            url: certification.verifyUrl,
+          })),
+        }
+      : {}),
   };
 }
 

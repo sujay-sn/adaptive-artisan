@@ -119,6 +119,40 @@ export type GalleryItem =
       caption?: string;
     };
 
+/** An award or recognition, such as one given by a company. */
+export interface Award {
+  id: string;
+  title: string;
+  /** Who gave it: "Accenture". */
+  from: string;
+  date: YearMonth;
+  /** One line on why it was given. */
+  reason: string;
+  /** The id of the role in `experience` it came from; that role's card links to it. */
+  role?: string;
+  /** A page about it, if there is one. */
+  url?: string;
+  /** A placeholder: labeled "Example" on the page and named in a build warning until replaced. */
+  example?: boolean;
+}
+
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  issued: YearMonth;
+  expires?: YearMonth;
+  credentialId?: string;
+  /** Where anyone can confirm it: the Credly badge page, or the issuer's verification page. */
+  verifyUrl: string;
+  /** Skill ids it covers; the skills section shows it as evidence for them. */
+  skills: string[];
+  /** The badge image, in public/: "/certifications/aws-cloud-practitioner.png". */
+  badge?: string;
+  /** A placeholder: labeled "Example" on the page and named in a build warning until replaced. */
+  example?: boolean;
+}
+
 export interface Skill {
   id: string;
   name: string;

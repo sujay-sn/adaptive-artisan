@@ -2259,6 +2259,29 @@ html[data-container-transform="project-surface"] [data-project-hero] {
     }
   }
 
+  /* Recognition (src/sections/Recognition.tsx): an award's seal turns and morphs on hover. */
+  .md-award {
+    /* Award chips in Experience jump here. An award that hasn't revealed yet
+       sits 1.5rem lower until it does, so land with room to spare. */
+    scroll-margin-top: 2.5rem;
+  }
+  .md-award-seal {
+    clip-path: var(--seal);
+  }
+  @media (hover: hover) {
+    .md-award:hover .md-award-seal {
+      clip-path: var(--seal-hover);
+      rotate: 24deg;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .md-award-seal {
+      transition:
+        clip-path var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
+        rotate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow);
+    }
+  }
+
   /* Contact: the success badge springs in. */
   .md-sent-badge {
     animation: md-pop var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default) both;

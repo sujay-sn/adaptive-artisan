@@ -1,4 +1,4 @@
-import { copy, education, experience, profile, projects, routine, skillCategories, skills } from '@/data';
+import { awards, certifications, copy, education, experience, profile, projects, routine, skillCategories, skills } from '@/data';
 
 /**
  * Checks src/data.ts for mistakes TypeScript can't see: references that point
@@ -78,6 +78,25 @@ export function validateContent(): string[] {
   if (profile.photo && !isPublicPath(profile.photo)) problem('profile: photo must be a path in public/, starting with "/".');
   for (const [field, value] of Object.entries(copy)) if (!value.trim()) problem(`copy: ${field} is empty.`);
 
+  duplicates('awards', awards.map((award) => award.id));
+  duplicates('certifications', certifications.map((certification) => certification.id));
+  const roleIds = new Set(experience.map((role) => role.id));
+  for (const award of awards) {
+    if (!award.title.trim() || !award.from.trim() || !award.reason.trim()) problem(`award "${award.id}": title, from, and reason are all required.`);
+    if (!yearMonth.test(award.date)) problem(`award "${award.id}": date must be "YYYY-MM", like "2023-06".`);
+    if (award.role && !roleIds.has(award.role)) problem(`award "${award.id}": role "${award.role}" isn't an id in \`experience\`.`);
+    if (award.url && !isUrl(award.url)) problem(`award "${award.id}": url must be a full https:// address.`);
+  }
+  for (const certification of certifications) {
+    const where = `certification "${certification.id}"`;
+    if (!certification.name.trim() || !certification.issuer.trim()) problem(`${where}: name and issuer are both required.`);
+    if (!yearMonth.test(certification.issued) || (certification.expires && !yearMonth.test(certification.expires))) problem(`${where}: issued and expires must be "YYYY-MM", like "2025-01".`);
+    else if (certification.expires && certification.expires <= certification.issued) problem(`${where}: expires (${certification.expires}) must be after issued (${certification.issued}).`);
+    if (!isUrl(certification.verifyUrl)) problem(`${where}: verifyUrl must be a full https:// address, such as the Credly badge page.`);
+    if (certification.badge && !isPublicPath(certification.badge)) problem(`${where}: badge must be a path in public/, starting with "/".`);
+    unknownSkills(where, certification.skills);
+  }
+
   // The footer looks up the block for every hour, so the day has to start at 0 and move forward.
   const blocks = routine.blocks;
   if (blocks.length === 0) problem('routine: add at least one block.');
@@ -94,4 +113,16 @@ export function validateContent(): string[] {
   }
 
   return problems;
+}
+
+/**
+ * Entries still marked `example: true`, as reminders. The build prints these
+ * but doesn't stop: examples are there to develop against until the real
+ * entries are in.
+ */
+export function contentWarnings(): string[] {
+  return [
+    ...awards.filter((award) => award.example).map((award) => `award "${award.id}" is an example placeholder; replace it with a real award.`),
+    ...certifications.filter((c) => c.example).map((c) => `certification "${c.id}" is an example placeholder; replace it with a real certification.`),
+  ];
 }

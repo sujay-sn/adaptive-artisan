@@ -24,7 +24,7 @@ export function pages(): string[] {
 }
 
 export { routeOf };
-export { validateContent } from './content/validate';
+export { contentWarnings, validateContent } from './content/validate';
 export { pageHead } from './seo/pages';
 export { escapeHtml, socialTags } from './seo/social';
 export { projectStructuredData, structuredData } from './seo/structuredData';

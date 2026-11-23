@@ -13,7 +13,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const siteUrl = process.env.SITE_URL?.replace(/\/+$/, '') || undefined;
 
 const server = await import(pathToFileURL(`${root}dist-ssr/entry-server.js`).href);
-const { render, pages, routeOf, pageHead, socialTags, escapeHtml, structuredData, projectStructuredData, validateContent } = server;
+const { render, pages, routeOf, pageHead, socialTags, escapeHtml, structuredData, projectStructuredData, validateContent, contentWarnings } = server;
 
 // A mistake in src/data.ts stops the build here, with every problem named.
 const problems = validateContent();
@@ -21,6 +21,8 @@ if (problems.length > 0) {
   console.error(`\nsrc/data.ts has ${problems.length} problem${problems.length === 1 ? '' : 's'}:\n${problems.map((p) => `  - ${p}`).join('\n')}\n`);
   process.exit(1);
 }
+// Example placeholders are fine while developing, but shouldn't go live.
+for (const warning of contentWarnings()) console.warn(`prerender: warning: ${warning}`);
 
 const template = await readFile(`${root}dist/index.html`, 'utf8');
 const ROOT_MARKER = '<div id="root"></div>';

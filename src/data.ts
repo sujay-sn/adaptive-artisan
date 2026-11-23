@@ -19,9 +19,13 @@
 // - Tagging a skill: add its id to the `skills` list of the roles or projects
 //   where you used it. Untagged skills still show, without evidence.
 // - New skill: add it to `skills` with a unique id and one of the categories.
+// - Awards and certifications: add them under Recognition. An award can name the
+//   role it came from (role: 'accenture'), which puts a link on that role's card;
+//   a certification's skills show it as evidence in the skills section. Entries
+//   marked example: true are placeholders: delete them once the real ones are in.
 // ============================================================================
 
-import type { Degree, PageCopy, Profile, Project, Role, Routine, Skill, SkillCategoryInfo } from '@/content/types';
+import type { Award, Certification, Degree, PageCopy, Profile, Project, Role, Routine, Skill, SkillCategoryInfo } from '@/content/types';
 
 // ----------------------------------------------------------------------------
 // About you
@@ -359,6 +363,38 @@ export const skills: Skill[] = [
   { id: 'design-patterns', name: 'Design patterns', category: 'fundamentals' },
   { id: 'distributed-systems', name: 'Distributed systems', category: 'fundamentals' },
   { id: 'system-design', name: 'System design', category: 'fundamentals' },
+];
+
+// ----------------------------------------------------------------------------
+// Recognition: awards and certifications, newest first
+// ----------------------------------------------------------------------------
+// The two below are examples, there to build the section against. Replace
+// them with the real ones; the build warns while any example is left.
+export const awards: Award[] = [
+  {
+    id: 'example-award',
+    title: 'Example award',
+    from: 'Accenture',
+    date: '2023-06',
+    reason: 'A placeholder until the real awards are added here.',
+    role: 'accenture',
+    example: true,
+  },
+];
+
+// verifyUrl is the link anyone can use to confirm a certification, such as its Credly badge page.
+export const certifications: Certification[] = [
+  {
+    id: 'example-certification',
+    name: 'Example certification',
+    issuer: 'Example issuer',
+    issued: '2025-01',
+    expires: '2028-01',
+    credentialId: 'EXAMPLE-0000',
+    verifyUrl: 'https://www.credly.com/',
+    skills: ['react'],
+    example: true,
+  },
 ];
 
 // ----------------------------------------------------------------------------

@@ -36,7 +36,9 @@ export const ICON_NAMES = [
   'school',
   'send',
   'share',
+  'verified',
   'work',
+  'workspace_premium',
 ] as const;
 
 export type IconName = (typeof ICON_NAMES)[number];

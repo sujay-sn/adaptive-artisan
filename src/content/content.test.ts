@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { experience, projects, routine } from '@/data';
-import { validateContent } from './validate';
+import { awards, certifications, experience, projects, routine } from '@/data';
+import { contentWarnings, validateContent } from './validate';
 
 describe('content in src/data.ts', () => {
   it('passes every check', () => {
@@ -25,6 +25,29 @@ describe('content in src/data.ts', () => {
     } finally {
       projects.pop();
     }
+  });
+
+  it('catches an award tied to a role that does not exist', () => {
+    awards.push({ id: 'trial-award', title: 'Trial', from: 'Somewhere', date: '2024-01', reason: 'For testing.', role: 'not-a-role' });
+    try {
+      expect(validateContent()).toContainEqual(expect.stringContaining('role "not-a-role"'));
+    } finally {
+      awards.pop();
+    }
+  });
+
+  it('catches a certification that expires before it was issued', () => {
+    certifications.push({ id: 'trial-cert', name: 'Trial', issuer: 'Somewhere', issued: '2025-06', expires: '2025-01', verifyUrl: 'https://example.com/', skills: [] });
+    try {
+      expect(validateContent()).toContainEqual(expect.stringContaining('must be after issued'));
+    } finally {
+      certifications.pop();
+    }
+  });
+
+  it('names every example placeholder still in the data', () => {
+    const examples = [...awards, ...certifications].filter((entry) => entry.example).length;
+    expect(contentWarnings()).toHaveLength(examples);
   });
 
   it('catches routine hours out of order', () => {

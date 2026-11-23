@@ -1,3 +1,4 @@
+import { certifications } from '@/content/profile';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
@@ -10,6 +11,7 @@ const list = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 function SkillInfo({ node, selected }: { node: GraphNode; selected: boolean }) {
   const select = useSkillStore((state) => state.select);
   const uses = usesOf(node.id);
+  const certified = certifications.filter((certification) => certification.skills.includes(node.id));
   const related = relatedTo(node.id).slice(0, 8);
   const projectCount = uses.filter((use) => use.kind === 'project').length;
   return (
@@ -17,8 +19,11 @@ function SkillInfo({ node, selected }: { node: GraphNode; selected: boolean }) {
       <p className="text-label-medium text-on-surface-variant">{categoryLabel(node.category)}</p>
       <h3 className="mt-1 font-display text-headline-small text-on-surface">{node.label}</h3>
       <p className="mt-3 text-body-medium text-on-surface">
-        {uses.length > 0 ? `Used in ${list.format(uses.map((use) => use.label))}.` : 'On my resume, but not tied to a role or project on this page.'}
+        {uses.length > 0 ? `Used in ${list.format(uses.map((use) => use.label))}.` : certified.length > 0 ? '' : 'On my resume, but not tied to a role or project on this page.'}
       </p>
+      {certified.length > 0 && (
+        <p className="mt-2 text-body-medium text-on-surface">Certified: {list.format(certified.map((certification) => `${certification.name}, ${certification.issuer}`))}.</p>
+      )}
       {related.length > 0 && (
         <div className="mt-4">
           <p className="text-label-medium text-on-surface-variant">Used with</p>

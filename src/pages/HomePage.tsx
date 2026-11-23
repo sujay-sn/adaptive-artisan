@@ -4,6 +4,7 @@ import { About } from '@/sections/About';
 import { Education } from '@/sections/Education';
 import { Experience } from '@/sections/Experience';
 import { Hero } from '@/sections/Hero';
+import { Recognition } from '@/sections/Recognition';
 import { SkillsSection } from '@/skills/SkillsSection';
 
 /** The home page: every section, in order. */
@@ -16,6 +17,7 @@ export function HomePage() {
       <Experience />
       <ProjectsSection />
       <Education />
+      <Recognition />
       <Contact />
     </>
   );

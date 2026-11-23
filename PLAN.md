@@ -210,7 +210,9 @@ Web Audio sounds (opt-in). Scroll-driven reveals and section-title axis animatio
 - [ ] Accessibility: a real screen-reader run (NVDA on Windows, VoiceOver on iPhone)
 - [x] Project pages: featured editorial rows on home, a Projects page with the skill filter in the address, a page per project with gallery and viewer, card-to-page morph, every page prerendered
 - [ ] Build-time image optimization for project screenshots (WebP at several sizes)
-- [ ] GitHub archive on the Projects page (waiting on a decision: automatic or data.ts only)
+- [x] Other projects are added by hand in data.ts; no automatic GitHub import
+- [x] Recognition section: award seals and certification cards with Verify links, award chips on Experience roles, certifications as skill evidence, Person award and hasCredential in structured data
+- [ ] Recognition: replace the example award and certification in data.ts with the real ones (the build warns until then)
 - [ ] Performance and cross-browser passes; Lighthouse
 
 ## Before launch
@@ -304,3 +306,4 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **All content lives in src/data.ts.** Profile, page copy, experience, education, projects, skills, and the footer routine are edited in one file; types in src/content/types.ts catch misspelled or missing fields, and a validator run by the tests and every build catches broken references, duplicate ids, and out-of-order routine hours, naming the item. The section list stays in code, since a new section needs a component.
 - **Projects have pages, routed in place.** A small router (src/router.ts) handles /, /projects/, and /projects/<id>/; links stay real links, ordinary clicks move between pages in place with the card-to-page morph, back restores scroll, and focus moves to the new page's heading. Every page is prerendered to its own folder, so direct visits and shared links get real HTML with their own title, description, and share card.
 - **The home page shows up to six featured projects as editorial rows.** Each leads with a headline result chosen in data.ts; the full list, filterable by skill through the address, is on the Projects page.
+- **Placeholders are marked, not hidden.** Example entries carry example: true. They show an Example entry label, the build warns while any remain, and they never reach structured data.

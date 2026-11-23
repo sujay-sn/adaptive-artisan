@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { experience } from '@/content/profile';
+import { awards, experience } from '@/content/profile';
 import { Section } from '@/layout/Section';
 import { graphNode } from '@/skills/graph';
 import { useSkillStore } from '@/skills/store';
@@ -39,6 +39,23 @@ export function Experience() {
                     {job.type}, {job.location}
                   </p>
                 </div>
+                {awards.some((award) => award.role === job.id) && (
+                  <ul className="mt-4 flex flex-wrap gap-2" aria-label="Awards for this role">
+                    {awards
+                      .filter((award) => award.role === job.id)
+                      .map((award) => (
+                        <li key={award.id}>
+                          <a
+                            href={`#award-${award.id}`}
+                            className="state-layer inline-flex min-h-8 items-center gap-1.5 rounded-full bg-tertiary-container py-1 ps-2 pe-3 text-label-large text-on-tertiary-container"
+                          >
+                            <Icon name="workspace_premium" size={18} />
+                            {award.title}
+                          </a>
+                        </li>
+                      ))}
+                  </ul>
+                )}
                 {match && skillName && (
                   <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-secondary-container py-1 ps-2 pe-3 text-label-medium text-on-secondary-container">
                     <Icon name="check" size={16} />
