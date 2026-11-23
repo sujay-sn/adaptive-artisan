@@ -123,6 +123,8 @@ export type GalleryItem =
 export interface Award {
   id: string;
   title: string;
+  /** The kind or level of award, as the program names it: "Thank You", "Excellence", "Spot Award". */
+  type?: string;
   /** Who gave it: "Accenture". */
   from: string;
   date: YearMonth;
@@ -132,6 +134,11 @@ export interface Award {
   role?: string;
   /** A page about it, if there is one. */
   url?: string;
+  /**
+   * The certificate itself, in public/: "/awards/accenture-eco-action-2022.pdf". Company
+   * awards have no public page to verify against, so this is the proof.
+   */
+  document?: string;
   /** A placeholder: labeled "Example" on the page and named in a build warning until replaced. */
   example?: boolean;
 }

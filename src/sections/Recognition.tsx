@@ -54,11 +54,19 @@ export function Recognition() {
                 </div>
                 <div className="min-w-0">
                   {award.example && <ExampleLabel />}
+                  {award.type && <p className="text-label-large text-primary">{award.type}</p>}
                   <h4 className="text-title-large text-on-surface">{award.title}</h4>
                   <p className="mt-1 text-body-medium text-on-surface-variant">
                     {award.from}, {monthYear(award.date)}
                   </p>
                   <p className="mt-3 text-body-medium text-on-surface">{award.reason}</p>
+                  {award.document && (
+                    <div className="mt-4">
+                      <Button href={award.document} variant="outlined" icon="description" target="_blank" rel="noopener noreferrer" aria-label={`View certificate for ${award.title} (opens in a new tab)`}>
+                        View certificate
+                      </Button>
+                    </div>
+                  )}
                   {award.url && (
                     <a href={award.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1 text-label-large text-primary underline-offset-4 hover:underline">
                       Read more <Icon name="open_in_new" size={18} />

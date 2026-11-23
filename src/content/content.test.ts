@@ -36,6 +36,15 @@ describe('content in src/data.ts', () => {
     }
   });
 
+  it('catches an award certificate that is not a PDF or image in public/', () => {
+    awards.push({ id: 'trial-doc', title: 'Trial', from: 'Somewhere', date: '2024-01', reason: 'For testing.', document: 'awards/trial.docx' });
+    try {
+      expect(validateContent()).toContainEqual(expect.stringContaining('document must be a PDF or image'));
+    } finally {
+      awards.pop();
+    }
+  });
+
   it('catches a certification that expires before it was issued', () => {
     certifications.push({ id: 'trial-cert', name: 'Trial', issuer: 'Somewhere', issued: '2025-06', expires: '2025-01', verifyUrl: 'https://example.com/', skills: [] });
     try {

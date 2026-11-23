@@ -86,6 +86,8 @@ export function validateContent(): string[] {
     if (!yearMonth.test(award.date)) problem(`award "${award.id}": date must be "YYYY-MM", like "2023-06".`);
     if (award.role && !roleIds.has(award.role)) problem(`award "${award.id}": role "${award.role}" isn't an id in \`experience\`.`);
     if (award.url && !isUrl(award.url)) problem(`award "${award.id}": url must be a full https:// address.`);
+    if (award.type !== undefined && !award.type.trim()) problem(`award "${award.id}": type is empty; remove it or name the award's kind, like "Thank You".`);
+    if (award.document && !(isPublicPath(award.document) && /\.(pdf|png|jpe?g|webp)$/i.test(award.document))) problem(`award "${award.id}": document must be a PDF or image in public/, starting with "/", like "/awards/${award.id}.pdf".`);
   }
   for (const certification of certifications) {
     const where = `certification "${certification.id}"`;

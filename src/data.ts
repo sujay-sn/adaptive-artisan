@@ -23,6 +23,8 @@
 //   role it came from (role: 'accenture'), which puts a link on that role's card;
 //   a certification's skills show it as evidence in the skills section. Entries
 //   marked example: true are placeholders: delete them once the real ones are in.
+// - Award certificates: put the PDF or image in public/awards/ and set
+//   document: '/awards/name.pdf'; the award gets a View certificate link.
 // ============================================================================
 
 import type { Award, Certification, Degree, PageCopy, Profile, Project, Role, Routine, Skill, SkillCategoryInfo } from '@/content/types';
@@ -374,6 +376,7 @@ export const awards: Award[] = [
   {
     id: 'example-award',
     title: 'Example award',
+    type: 'Thank You',
     from: 'Accenture',
     date: '2023-06',
     reason: 'A placeholder until the real awards are added here.',
