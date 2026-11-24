@@ -154,6 +154,7 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Type axes apply to the whole site, not just the sample: weight and width shift every style relative to its own value, the rest form a shared base, saved axes return before first paint, and the full font loads only for visitors who customize
 - [x] The hub edits a draft: the dialog previews draft colors, light or dark, and motion; draft type and icons reach only the preview pane and samples; Apply closes the hub and reveals the look across the site; closing with unapplied changes asks first. Sound and the hero swatches stay instant
 - [x] Icon axes apply site-wide, except icons whose fill shows state
+- [x] Favicon: an MD3 shape with a core shape inside, morphing cookie, flower, sunny, clover on a hold-then-morph cycle, generated from the shape library at build; it follows the visitor's theme and light or dark, morphs when a theme is chosen by hand, and holds still under reduced motion or the pause control
 - [x] Icon playground: fill, weight, grade, optical size
 - [x] Motion scheme switch, with a plot of the spring and a demo
 - [x] Sound effects (Web Audio), off by default
@@ -316,4 +317,5 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **Back and forward put focus back where the visitor was.** Restoring scroll alone left focus on the page body, so keyboard and screen reader users started over at the top. Returning from a project now focuses the card or row that opened it; arriving on a project page focuses its heading.
 - **Controls get a 48px hit area, not a bigger look.** Chips stay 32px and buttons 40px, as MD3 draws them; an invisible ::after (the touch-target utility) brings each to MD3's 48px minimum, the way icon buttons already did.
 - **Changes the eye sees are also spoken.** The gallery viewer announces each item as you move through it, since a dialog's changing label is not read out, and clearing a project filter is announced like setting one.
+- **The favicon is drawn frame by frame, with an animated file underneath.** Firefox plays an animated SVG favicon; Chrome and Safari show only its first frame. So the build writes an SMIL-animated file (for Firefox, and for the moment before the app starts), and the app then swaps in single frames during each morph, which every browser shows. Timers drive it rather than animation frames, because a background tab, where a favicon is most often seen, gets no animation frames at all.
 - **Placeholders are marked, not hidden.** Example entries carry example: true. They show an Example entry label, the build warns while any remain, and they never reach structured data.

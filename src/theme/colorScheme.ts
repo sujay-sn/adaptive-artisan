@@ -84,3 +84,6 @@ export function useColorScheme() {
   const resolved = useSyncExternalStore(subscribe, resolvedColorScheme, (): ResolvedColorScheme => 'light');
   return { preference, resolved };
 }
+
+/** Calls back whenever the scheme on screen may have changed: a toggle, another tab, or the system. Returns a cleanup. */
+export const subscribeToColorScheme = subscribe;

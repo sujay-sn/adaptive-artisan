@@ -28,6 +28,8 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
  */
 export function withThemeReveal(origin: RevealOrigin | null, apply: () => void, { duration = 650, sound = true }: RevealOptions = {}): void {
   if (sound) playCue('theme');
+  // Tells listeners (the favicon) that a theme was chosen here, by hand.
+  window.dispatchEvent(new CustomEvent('md:theme-change', { detail: origin }));
   if (!origin || typeof document.startViewTransition !== 'function' || reducedMotion()) {
     apply();
     return;

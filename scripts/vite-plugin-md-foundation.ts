@@ -6,10 +6,14 @@
 //  - the Material Symbols stylesheet, subset by Google Fonts to only the icons
 //    listed in src/ui/icons.ts
 //
+// It also writes /favicon.svg from the shape library (src/theme/favicon.ts), in
+// the default theme's light and dark colors.
+//
 // index.html marks both spots with comments so the output order is explicit.
 
 import type { Plugin } from 'vite';
-import { DEFAULT_THEME, themeDeclarations, themeStylesheet } from '../src/theme/engine.ts';
+import { buildScheme, DEFAULT_THEME, schemeColors, themeDeclarations, themeStylesheet } from '../src/theme/engine.ts';
+import { animatedFaviconSvg, type FaviconColors } from '../src/theme/favicon.ts';
 import { ICON_NAMES } from '../src/ui/icons.ts';
 import { springStylesheet } from '../src/motion/tokens.ts';
 
@@ -23,9 +27,27 @@ function iconFontHref(): string {
   return `https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:${axes}&icon_names=${names}&display=block`;
 }
 
+function faviconColors(isDark: boolean): FaviconColors {
+  const colors = schemeColors(buildScheme(DEFAULT_THEME, isDark));
+  return { shape: colors.primary, core: colors.primaryContainer };
+}
+
+const favicon = () => animatedFaviconSvg(faviconColors(false), faviconColors(true));
+
 export function mdFoundation(): Plugin {
   return {
     name: 'md-foundation',
+    configureServer(server) {
+      server.middlewares.use('/favicon.svg', (_request, response) => {
+        response.setHeader('Content-Type', 'image/svg+xml');
+        response.end(favicon());
+      });
+    },
+    generateBundle(options) {
+      // Once, for the client build; the server bundle has no use for it.
+      if (options.dir?.endsWith('dist-ssr')) return;
+      this.emitFile({ type: 'asset', fileName: 'favicon.svg', source: favicon() });
+    },
     transformIndexHtml: {
       order: 'pre',
       handler(html) {

@@ -7,11 +7,13 @@ import { Root } from './Root';
 import { legacyProjectId, projectPath } from './router';
 import { unlockAudioOnFirstGesture } from './sound/cues';
 import { listenForSectionJumps } from './sound/navigation';
+import { startFaviconMotion } from './theme/faviconMotion';
 import { syncThemeAcrossTabs } from './theme/store';
 
 syncThemeAcrossTabs();
 unlockAudioOnFirstGesture();
 listenForSectionJumps();
+startFaviconMotion();
 
 // Projects used to open in a dialog at /?project=id; send those links on to the project's page.
 const legacy = legacyProjectId(window.location.search);
