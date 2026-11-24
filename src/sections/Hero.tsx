@@ -8,19 +8,21 @@ import { ThemeControls } from '@/theme/ThemeControls';
 import { Button } from '@/ui/Button';
 import { IconButton } from '@/ui/IconButton';
 import { HeroName } from './HeroName';
-import { HeroShapes } from './HeroShapes';
+import { HeroField, type HeroFieldHandle } from './HeroField';
 
 /** Distance in px within which a headline letter responds to the cursor. */
 const LETTER_REACH = 280;
 
 /**
  * The hero: the name set large, live color controls beneath it, and the
- * shape cluster beside it. On fine pointers, the cursor drives parallax on
- * the shapes and the axes of each letter. First visits open with the bloom.
+ * shape field beside it. On fine pointers, the cursor ripples the field and
+ * drives the axes of each letter; a tap anywhere outside a control drops a
+ * bigger ripple. First visits open with the bloom.
  */
 export function Hero() {
   const section = useRef<HTMLElement>(null);
   const art = useRef<HTMLDivElement>(null);
+  const field = useRef<HeroFieldHandle>(null);
   const frame = useRef(0);
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const finePointer = useMediaQuery('(hover: hover) and (pointer: fine)');
@@ -44,13 +46,11 @@ export function Hero() {
   const onPointerMove = (event: PointerEvent<HTMLElement>) => {
     if (!interactive) return;
     const { clientX, clientY } = event;
+    field.current?.pointerMove(clientX, clientY);
     cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(() => {
       const root = section.current;
       if (!root) return;
-      const box = root.getBoundingClientRect();
-      root.style.setProperty('--px', (((clientX - box.left) / box.width) * 2 - 1).toFixed(3));
-      root.style.setProperty('--py', (((clientY - box.top) / box.height) * 2 - 1).toFixed(3));
       for (const letter of root.querySelectorAll<HTMLElement>('.hero-letter')) {
         const rect = letter.getBoundingClientRect();
         const distance = Math.hypot(clientX - (rect.left + rect.width / 2), clientY - (rect.top + rect.height / 2));
@@ -62,11 +62,17 @@ export function Hero() {
 
   const onPointerLeave = () => {
     cancelAnimationFrame(frame.current);
+    field.current?.pointerLeave();
     const root = section.current;
     if (!root) return;
-    root.style.setProperty('--px', '0');
-    root.style.setProperty('--py', '0');
     for (const letter of root.querySelectorAll<HTMLElement>('.hero-letter')) letter.style.setProperty('--hover', '0');
+  };
+
+  // A tap or click on the hero, outside its controls and text, drops a ripple into the field.
+  const onPointerDown = (event: PointerEvent<HTMLElement>) => {
+    if (reducedMotion || !(event.target instanceof Element)) return;
+    if (event.target.closest('a, button, input, label, select, textarea, p, h1')) return;
+    field.current?.tap(event.clientX, event.clientY);
   };
 
   return (
@@ -77,6 +83,7 @@ export function Hero() {
       aria-labelledby="home-title"
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
+      onPointerDown={onPointerDown}
       className="hero relative isolate overflow-clip"
     >
       <div
@@ -106,12 +113,12 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Behind the name on small screens, its own column from expanded up. */}
+        {/* Behind the name on small screens, faint enough that text over its accents stays readable; its own column from expanded up. */}
         <div
           ref={art}
-          className="hero-art pointer-events-none absolute end-[-18%] top-6 -z-10 w-[80vw] max-w-[34rem] opacity-50 medium:opacity-70 expanded:relative expanded:end-auto expanded:top-auto expanded:z-0 expanded:w-full expanded:max-w-[44rem] expanded:justify-self-end expanded:opacity-100"
+          className="hero-art pointer-events-none absolute end-[-18%] top-6 -z-10 w-[80vw] max-w-[34rem] opacity-30 medium:opacity-50 expanded:relative expanded:end-auto expanded:top-auto expanded:z-0 expanded:w-full expanded:max-w-[44rem] expanded:justify-self-end expanded:opacity-100"
         >
-          <HeroShapes paused={paused} animate={!reducedMotion} />
+          <HeroField ref={field} paused={paused} animate={!reducedMotion} />
         </div>
       </div>
 

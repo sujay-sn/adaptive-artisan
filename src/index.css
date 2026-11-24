@@ -1051,28 +1051,16 @@ html[data-container-transform="project-surface"] [data-project-hero] {
       font-variation-settings var(--md-spring-spatial-default-duration) var(--md-spring-spatial-default);
   }
 
-  .hero-cluster {
+  /* The shape field (src/sections/shapeField.ts) draws on a canvas. During
+     the bloom, the page's grayscale filter covers it like everything else. */
+  .hero-field {
     position: relative;
     aspect-ratio: 1;
   }
-  .hero-shape {
-    position: absolute;
-    aspect-ratio: 1;
-    translate: calc(var(--px, 0) * var(--depth, 1) * -0.9rem) calc(var(--py, 0) * var(--depth, 1) * -0.9rem);
-    transition:
-      translate var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
-      scale var(--md-spring-spatial-slow-duration) var(--md-spring-spatial-slow),
-      opacity var(--md-spring-effects-slow-duration) var(--md-spring-effects-slow);
-    transition-delay: 0s, calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms);
-    animation: hero-spin var(--spin, 90s) linear infinite;
-    animation-direction: var(--spin-direction, normal);
-  }
-  .hero-cluster[data-paused] .hero-shape {
-    animation-play-state: paused;
-  }
-  html[data-bloom] .hero-shape {
-    scale: 0.35;
-    opacity: 0;
+  .hero-field > canvas {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   /* Scroll parallax: the art drifts and fades as the hero leaves the viewport.
@@ -1110,10 +1098,6 @@ html[data-container-transform="project-surface"] [data-project-hero] {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-shape {
-      animation: none;
-      translate: none;
-    }
     .hero-letter {
       transition: none;
     }
@@ -1123,11 +1107,6 @@ html[data-container-transform="project-surface"] [data-project-hero] {
   }
 }
 
-@keyframes hero-spin {
-  to {
-    rotate: 1turn;
-  }
-}
 @keyframes hero-drift {
   to {
     translate: 0 22%;

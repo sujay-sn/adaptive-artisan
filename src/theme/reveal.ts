@@ -28,6 +28,8 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
  */
 export function withThemeReveal(origin: RevealOrigin | null, apply: () => void, { duration = 650, sound = true }: RevealOptions = {}): void {
   if (sound) playCue('theme');
+  // Lets canvas art (the hero's shape field) roll the new colors out from the same point.
+  window.dispatchEvent(new CustomEvent('md:theme-change', { detail: origin }));
   if (!origin || typeof document.startViewTransition !== 'function' || reducedMotion()) {
     apply();
     return;

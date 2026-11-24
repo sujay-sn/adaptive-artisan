@@ -62,7 +62,7 @@ Hierarchy comes from shape size, not a single radius everywhere.
 | extra-extra-large | 48px | `rounded-2xl` |
 | full | pill | `rounded-full` |
 
-Morphing shapes appear in exactly three places: the hero cluster, the avatar frame (cookie at rest, sunny on hover), and the loading indicator. Squircles via `corner-shape` where supported. Focus rings follow the shape.
+Morphing shapes appear in exactly three places: the hero's shape field, the avatar frame (cookie at rest, sunny on hover), and the loading indicator. Squircles via `corner-shape` where supported. Focus rings follow the shape.
 
 ### Motion
 
@@ -154,6 +154,7 @@ Everything is left-aligned. The project dialog is full screen on compact and two
 - [x] Type axes apply to the whole site, not just the sample: weight and width shift every style relative to its own value, the rest form a shared base, saved axes return before first paint, and the full font loads only for visitors who customize
 - [x] The hub edits a draft: the dialog previews draft colors, light or dark, and motion; draft type and icons reach only the preview pane and samples; Apply closes the hub and reveals the look across the site; closing with unapplied changes asks first. Sound and the hero swatches stay instant
 - [x] Icon axes apply site-wide, except icons whose fill shows state
+- [x] Hero art as a shape field: a few hundred MD3 shapes on a hex grid forming one large shape that slowly morphs; the cursor ripples it, a tap drops a bigger ripple, and a theme change rolls its colors across it from wherever the change came from. Springs follow the motion scheme, the loop sleeps when settled or off screen, and reduced motion draws it still
 - [x] Icon playground: fill, weight, grade, optical size
 - [x] Motion scheme switch, with a plot of the spring and a demo
 - [x] Sound effects (Web Audio), off by default
@@ -313,4 +314,6 @@ Baseline features are used freely. Newer features (`corner-shape`, scroll-driven
 - **The hub previews, the page applies.** Changing the live page from every slider turned the hub's preview into decoration, put the whole page through unreadable in-between states, and re-laid it out on every tick. The hub now edits a draft that the page takes only on Apply, followed by one reveal from the FAB. Draft type stays out of the hub's own controls so they remain readable at any weight. Sound and the hero swatches stay instant: you decide on a sound by hearing it, and a swatch tap is already a deliberate choice.
 - **Type tokens resolve per scope.** Families and the medium weight are inline theme tokens pointing at variables declared on :root and on every [data-type-scope] element, because a token resolved once at the root can't be overridden for a subtree.
 - **The applied look is cached, not recomputed, before first paint.** The app stores the variables it set in md-appearance and the pre-paint script replays them, the way the theme caches its CSS, so the axis logic lives in one place.
+- **The hero's art answers the visitor.** Four shapes drifting in a corner fell behind the skills jar and the footer room, which both respond to you. The shape field keeps the hero's identity (MD3 shapes forming one large morphing shape) and adds cause and effect: ripples from the cursor and taps, and new colors arriving as a wave. It draws on a 2D canvas from the same 144-point shape library, so it needs no WebGL and adds no dependency. Gooey metaball merging was considered and set aside, since the blur that fuses the shapes also erases the lobes that make them recognizable.
+- **Field cells lift toward vivid roles.** Secondary sits close to gray in most schemes, so a lifted secondary container moves to primary instead, and a ripple never muddies the field.
 - **Placeholders are marked, not hidden.** Example entries carry example: true. They show an Example entry label, the build warns while any remain, and they never reach structured data.
