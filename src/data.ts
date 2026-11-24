@@ -8,8 +8,8 @@
 // or routine hours out of order stop the build and name the exact problem.
 //
 // Common edits:
-// - New project: copy one in `projects` and give it a unique id. That id goes
-//   in the share link (?project=your-id). Tag it with skill ids from `skills`.
+// - New project: copy one in `projects` and give it a unique id. That id is
+//   its page's address (/projects/your-id/). Tag it with skill ids from `skills`.
 // - Home page: mark up to six projects featured: true; they show in list order,
 //   each leading with its headline (a short value and a label) if it has one.
 // - Cover: put a screenshot in public/ and set media: { poster: '/name.webp' },
