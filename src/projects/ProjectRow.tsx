@@ -5,6 +5,7 @@ import { projectPath } from '@/router';
 import { panelClipPath, shapeClipPath, type ShapeName } from '@/shape/shapes';
 import { Icon } from '@/ui/Icon';
 import { projectMeta } from './meta';
+import { MetricValue } from './MetricValue';
 import { ProjectCover } from './ProjectCover';
 
 // Each row's cover rests in its own shape, tilted alternately, and opens out
@@ -55,7 +56,9 @@ export function ProjectRow({ project, index }: { project: Project; index: number
         <p className="mt-3 max-w-[50ch] text-body-large text-on-surface-variant">{project.summary}</p>
         {project.headline ? (
           <div className="mt-6">
-            <p className="md-row-metric font-display text-display-small text-primary">{project.headline.value}</p>
+            <p className="md-row-metric font-display text-display-small text-primary">
+              <MetricValue value={project.headline.value} />
+            </p>
             <p className="mt-1 max-w-[40ch] text-label-large text-on-surface-variant">{project.headline.label}</p>
           </div>
         ) : (

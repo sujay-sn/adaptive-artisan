@@ -5,6 +5,7 @@ import type { Project } from '@/content/projects';
 import { spring } from '@/motion/tokens';
 import { projectPath } from '@/router';
 import { projectMeta } from './meta';
+import { MetricValue } from './MetricValue';
 import { ProjectCover } from './ProjectCover';
 
 const enter = spring('expressive', 'spatial', 'default');
@@ -45,7 +46,7 @@ export function ProjectCard({ project }: { project: Project }) {
         <p className="mt-3 max-w-[60ch] text-body-large">{project.summary}</p>
         {project.headline && (
           <p className="mt-4 text-title-medium text-primary">
-            {project.headline.value} <span className="text-body-medium text-on-surface-variant">{project.headline.label}</span>
+            <MetricValue value={project.headline.value} /> <span className="text-body-medium text-on-surface-variant">{project.headline.label}</span>
           </p>
         )}
         <p className="mt-4 text-label-medium text-on-surface-variant">{project.technologies.slice(0, 6).join(', ')}</p>

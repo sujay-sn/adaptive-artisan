@@ -3,6 +3,7 @@ import { projects } from '@/content/projects';
 import { container } from '@/layout/container';
 import { Gallery } from '@/projects/Gallery';
 import { projectMeta } from '@/projects/meta';
+import { MetricValue } from '@/projects/MetricValue';
 import { ProjectCover } from '@/projects/ProjectCover';
 import { projectPath, projectsPath } from '@/router';
 import { Button } from '@/ui/Button';
@@ -71,7 +72,9 @@ export function ProjectPage({ id }: { id: string }) {
         </div>
         {project.headline && (
           <div className="md-stagger rounded-2xl bg-primary-container p-6 text-on-primary-container" style={order(1)}>
-            <p className="font-display text-display-small">{project.headline.value}</p>
+            <p className="font-display text-display-small">
+              <MetricValue value={project.headline.value} />
+            </p>
             <p className="mt-2 text-body-medium">{project.headline.label}</p>
           </div>
         )}

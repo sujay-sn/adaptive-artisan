@@ -1,4 +1,5 @@
 import { AnimatePresence, LazyMotion } from 'motion/react';
+import { useState } from 'react';
 import { copy } from '@/content/profile';
 import { projects } from '@/content/projects';
 import { container } from '@/layout/container';
@@ -23,7 +24,12 @@ export function ProjectsPage({ skill }: { skill: string | null }) {
   const shown = skill ? projects.filter((project) => project.skills.includes(skill)) : projects;
   // A filter from the skills section may not be one of the usual chips; show it anyway.
   const chips = skill && !FILTERS.includes(skill) ? [skill, ...FILTERS] : FILTERS;
-  const setFilter = (next: string | null) => void navigate(projectsPath(next), { replace: true, keepScroll: true });
+  // Once someone has filtered, clearing it is announced too; on arrival the status stays quiet.
+  const [filtered, setFiltered] = useState(false);
+  const setFilter = (next: string | null) => {
+    setFiltered(true);
+    void navigate(projectsPath(next), { replace: true, keepScroll: true });
+  };
 
   return (
     <div className={`${container} pt-6 pb-24 expanded:pt-10`}>
@@ -42,7 +48,11 @@ export function ProjectsPage({ skill }: { skill: string | null }) {
         ))}
       </div>
       <p role="status" className="sr-only">
-        {skill ? `${shown.length} ${shown.length === 1 ? 'project uses' : 'projects use'} ${label(skill)}` : ''}
+        {skill
+          ? `${shown.length} ${shown.length === 1 ? 'project uses' : 'projects use'} ${label(skill)}`
+          : filtered
+            ? `Showing all ${projects.length} projects`
+            : ''}
       </p>
 
       <LazyMotion features={loadMotionFeatures} strict>

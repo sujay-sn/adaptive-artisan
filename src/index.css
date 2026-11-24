@@ -276,7 +276,10 @@
     inline-size: var(--md-icon-size, 1.5rem);
     block-size: var(--md-icon-size, 1.5rem);
     line-height: 1;
-    letter-spacing: normal;
+    /* Ligatures stop forming once letters are spaced, so an icon would show a
+       clipped word under a reader's text-spacing override (WCAG 1.4.12). */
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
     text-transform: none;
     white-space: nowrap;
     direction: ltr;
@@ -342,6 +345,18 @@
   }
   &:disabled::before {
     opacity: 0;
+  }
+}
+
+/* Grows the hit area to MD3's 48px minimum without changing the visual size,
+   as IconButton does. Uses ::after; state-layer uses ::before. */
+@utility touch-target {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc((100% - 3rem) / 2));
+    inset-inline: min(0px, calc((100% - 3rem) / 2));
   }
 }
 

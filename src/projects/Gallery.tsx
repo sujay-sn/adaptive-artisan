@@ -60,7 +60,19 @@ function Lightbox({ items, index, onIndex, onClose }: { items: GalleryItem[]; in
   const swipe = useRef<number | null>(null);
   const open = index !== null;
   const item = open ? items[index] : undefined;
-  const step = (by: number) => index !== null && onIndex((index + by + items.length) % items.length);
+  // A dialog's label changing is not read out, so moving between items is announced here.
+  const [announcement, setAnnouncement] = useState('');
+  const step = (by: number) => {
+    if (index === null) return;
+    const next = (index + by + items.length) % items.length;
+    const nextItem = items[next];
+    onIndex(next);
+    if (nextItem) setAnnouncement(`${describe(nextItem)}, ${next + 1} of ${items.length}`);
+  };
+  const close = () => {
+    setAnnouncement('');
+    onClose();
+  };
 
   useLayoutEffect(() => {
     const element = dialog.current;
@@ -74,7 +86,7 @@ function Lightbox({ items, index, onIndex, onClose }: { items: GalleryItem[]; in
       ref={dialog}
       aria-label={item ? `${describe(item)}, ${(index ?? 0) + 1} of ${items.length}` : 'Gallery'}
       className="md-lightbox"
-      onClose={onClose}
+      onClose={close}
       onKeyDown={(event) => {
         if (event.key === 'ArrowRight') step(1);
         else if (event.key === 'ArrowLeft') step(-1);
@@ -89,13 +101,16 @@ function Lightbox({ items, index, onIndex, onClose }: { items: GalleryItem[]; in
         if (Math.abs(dx) > 60 && event.pointerType !== 'mouse') step(dx < 0 ? 1 : -1);
       }}
     >
+      <p className="sr-only" aria-live="polite">
+        {announcement}
+      </p>
       {item && (
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between gap-2 p-2">
             <p className="ps-3 text-label-large text-on-surface-variant tabular-nums">
               {(index ?? 0) + 1} / {items.length}
             </p>
-            <IconButton icon="close" label="Close" onClick={onClose} />
+            <IconButton icon="close" label="Close" onClick={close} />
           </div>
           <div className="relative flex min-h-0 flex-1 items-center justify-center gap-2 px-2">
             {items.length > 1 && <IconButton icon="chevron_left" label="Previous" variant="tonal" className="shrink-0" onClick={() => step(-1)} />}

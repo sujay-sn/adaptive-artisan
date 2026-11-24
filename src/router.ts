@@ -81,6 +81,22 @@ function arrive(hash: string, scrollY?: number): void {
   if (!target && scrollY === undefined) document.querySelector<HTMLElement>('[data-page-heading]')?.focus({ preventScroll: true });
 }
 
+/**
+ * After back or forward: return focus to the link that led to the page just
+ * left (a project's card or row), so keyboard and screen reader users pick up
+ * where they were rather than at the top. Arriving on a project page, or with
+ * no such link, focus goes to the page's heading. Scroll is already restored,
+ * so nothing here scrolls.
+ */
+function refocus(left: string): void {
+  if (left === window.location.pathname) return;
+  const link =
+    routeOf(window.location.pathname).name === 'project'
+      ? undefined
+      : [...document.querySelectorAll<HTMLAnchorElement>('main a[href]')].find((a) => new URL(a.href).pathname === left);
+  (link ?? document.querySelector<HTMLElement>('[data-page-heading]'))?.focus({ preventScroll: true });
+}
+
 function rememberScroll(): void {
   history.replaceState({ ...(history.state as object | null), scrollY: window.scrollY }, '');
 }
@@ -113,12 +129,14 @@ export function followHistory(): () => void {
   history.scrollRestoration = 'manual';
   let shown = snapshot();
   const onPopState = (event: PopStateEvent) => {
-    const before = routeOf(shown.split('?')[0] ?? '/');
+    const left = shown.split('?')[0] ?? '/';
+    const before = routeOf(left);
     shown = snapshot();
     const scrollY = (event.state as { scrollY?: number } | null)?.scrollY;
     const update = () => {
       flushSync(notify);
       arrive(window.location.hash, scrollY);
+      refocus(left);
     };
     if (before.name === 'project' && typeof document.startViewTransition === 'function' && !prefersReducedMotion()) {
       void pageTransform(SURFACE, 'close', update, null, () => document.querySelector<HTMLElement>(`[data-project-card="${before.id}"] [data-morph]`));

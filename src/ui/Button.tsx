@@ -50,7 +50,7 @@ const SIZES: Record<ButtonSize, { box: string; padding: string; textPadding: str
 function buttonClassName(variant: ButtonVariant = 'filled', size: ButtonSize = 'small', extra = ''): string {
   const s = SIZES[size];
   return [
-    'state-layer press-morph inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap select-none disabled:cursor-default',
+    'state-layer touch-target press-morph inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap select-none disabled:cursor-default',
     s.box,
     variant === 'text' ? s.textPadding : s.padding,
     COLORS[variant],
