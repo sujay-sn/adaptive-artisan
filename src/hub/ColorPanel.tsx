@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
-import { toggleColorScheme, useColorScheme } from '@/theme/colorScheme';
 import { DEFAULT_THEME, normalizeHex, PALETTE_NAMES, PALETTE_TONES, SEEDS, tonalPalettes, type PaletteName, type SchemeVariant, type ThemeSpec } from '@/theme/engine';
 import { originFromElement, withThemeReveal } from '@/theme/reveal';
 import { SeedSwatch } from '@/theme/SeedSwatch';
-import { useTheme } from '@/theme/store';
 import { extractWallpaper, forgetWallpaper, loadWallpaper, saveWallpaper } from '@/theme/wallpaper';
 import { Button } from '@/ui/Button';
 import { ChoiceChips } from '@/ui/ChoiceChips';
 import { IconButton } from '@/ui/IconButton';
 import { Switch } from '@/ui/Switch';
 import { TextField } from '@/ui/TextField';
+import { resolveScheme, useDraft } from './draft';
 
 const VARIANTS: ReadonlyArray<{ value: SchemeVariant; label: string }> = [
   { value: 'tonalSpot', label: 'Tonal spot' },
@@ -48,11 +47,10 @@ function Heading({ id, children }: { id: string; children: string }) {
 }
 
 export function ColorPanel() {
-  const seed = useTheme((state) => state.seed);
-  const variant = useTheme((state) => state.variant);
-  const contrast = useTheme((state) => state.contrast);
-  const setTheme = useTheme((state) => state.setTheme);
-  const { resolved } = useColorScheme();
+  const { seed, variant, contrast } = useDraft((state) => state.theme);
+  const setTheme = useDraft((state) => state.setTheme);
+  const toggleColorScheme = useDraft((state) => state.toggleColorScheme);
+  const resolved = resolveScheme(useDraft((state) => state.colorScheme));
 
   // Text in the hex field while it is being edited; null shows the current seed.
   const [draft, setDraft] = useState<string | null>(null);

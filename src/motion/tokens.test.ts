@@ -46,6 +46,7 @@ describe('springs as CSS easings', () => {
     const css = springStylesheet();
     expect(css).toContain('--md-spring-spatial-fast: linear(');
     expect(css).toContain('--md-spring-effects-slow-duration:');
-    expect(css).toContain(':root[data-motion-scheme="standard"]');
+    expect(css).toContain('[data-motion-scheme="expressive"] {');
+    expect(css).toContain('[data-motion-scheme="standard"] {');
   });
 });

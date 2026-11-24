@@ -5,6 +5,7 @@ import { playCue } from '@/sound/cues';
 import { Button } from '@/ui/Button';
 import { ChoiceChips } from '@/ui/ChoiceChips';
 import { Switch } from '@/ui/Switch';
+import { useDraft } from './draft';
 
 const SCHEMES: ReadonlyArray<{ value: MotionScheme; label: string }> = [
   { value: 'expressive', label: 'Expressive' },
@@ -16,8 +17,8 @@ const Y_MAX = 1.25;
 const toY = (value: number) => 110 - (value / Y_MAX) * 100;
 
 export function MotionPanel() {
-  const scheme = usePreferences((state) => state.motionScheme);
-  const setMotionScheme = usePreferences((state) => state.setMotionScheme);
+  const scheme = useDraft((state) => state.motionScheme);
+  const setMotionScheme = useDraft((state) => state.setMotionScheme);
   const sound = usePreferences((state) => state.sound);
   const setSound = usePreferences((state) => state.setSound);
   const [moved, setMoved] = useState(false);
@@ -31,7 +32,7 @@ export function MotionPanel() {
       <div className="space-y-4">
         <ChoiceChips legend="Motion scheme" name="hub-motion" value={scheme} options={SCHEMES} onChange={(value) => setMotionScheme(value)} />
         <p className="max-w-[60ch] text-body-medium text-on-surface-variant">
-          Expressive springs overshoot and settle with a little bounce. Standard springs are calmer. Every component on the site switches with you.
+          Expressive springs overshoot and settle with a little bounce. Standard springs are calmer. The hub switches as you choose, and the rest of the site once you apply.
         </p>
       </div>
 
@@ -64,7 +65,7 @@ export function MotionPanel() {
             if (on) playCue('success');
           }}
         />
-        <p className="text-body-small text-on-surface-variant">Short tones when the theme changes and when this panel opens or closes. Off unless you turn them on.</p>
+        <p className="text-body-small text-on-surface-variant">Short tones when the theme changes and when this panel opens or closes. Off unless you turn them on, and this one takes effect right away.</p>
       </div>
     </div>
   );

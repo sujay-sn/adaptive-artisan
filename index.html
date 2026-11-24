@@ -31,21 +31,9 @@
         if (prefs && prefs.state && prefs.state.motionScheme === 'standard') {
           document.documentElement.setAttribute('data-motion-scheme', 'standard');
         }
-        // Type axes from the hub. Mirrors typeAxesVars in src/preferences/typeAxes.ts.
-        var t = prefs && prefs.state && prefs.state.typeAxes;
-        if (t) {
-          var d = { wght: 400, wdth: 100, opsz: 72, slnt: 0, GRAD: 0, ROND: 0 };
-          for (var k in d) if (typeof t[k] !== 'number') t[k] = d[k];
-          if (t.wght !== d.wght || t.wdth !== d.wdth || t.opsz !== d.opsz || t.slnt !== d.slnt || t.GRAD !== d.GRAD || t.ROND !== d.ROND) {
-            var fvs = ['"slnt" ' + t.slnt, '"GRAD" ' + t.GRAD, '"ROND" ' + t.ROND];
-            if (t.opsz !== d.opsz) fvs.push('"opsz" ' + t.opsz);
-            var rs = document.documentElement.style;
-            rs.setProperty('--md-wght-shift', String(t.wght - d.wght));
-            rs.setProperty('--md-wdth-scale', String(t.wdth / d.wdth));
-            rs.setProperty('--md-fvs', fvs.join(', '));
-            rs.setProperty('--md-font-user', '"Google Sans Flex Playground"');
-          }
-        }
+        // Type and icon axes the visitor applied in the hub (src/preferences/appearance.ts).
+        var look = JSON.parse(localStorage.getItem('md-appearance') || 'null');
+        if (look) for (var name in look) document.documentElement.style.setProperty(name, look[name]);
         // First visit this session (or ?bloom to replay it): paint in monochrome, ready for the bloom.
         var replay = /[?&]bloom(=|&|$)/.test(location.search);
         if ((replay || !sessionStorage.getItem('md-bloomed')) && 'startViewTransition' in document && !matchMedia('(prefers-reduced-motion: reduce)').matches) {

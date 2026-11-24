@@ -1,6 +1,7 @@
-import { DEFAULT_TYPE_AXES, usePreferences, type TypeAxes } from '@/preferences/store';
+import { DEFAULT_TYPE_AXES, type TypeAxes } from '@/preferences/store';
 import { Button } from '@/ui/Button';
 import { Slider } from '@/ui/Slider';
+import { useDraft } from './draft';
 import { PLAYGROUND_FONT, usePlaygroundFont } from './playgroundFont';
 
 const AXES: ReadonlyArray<{ key: keyof TypeAxes; label: string; min: number; max: number }> = [
@@ -13,12 +14,12 @@ const AXES: ReadonlyArray<{ key: keyof TypeAxes; label: string; min: number; max
 ];
 
 export function TypePanel() {
-  const axes = usePreferences((state) => state.typeAxes);
-  const setTypeAxes = usePreferences((state) => state.setTypeAxes);
-  const resetTypeAxes = usePreferences((state) => state.resetTypeAxes);
+  const axes = useDraft((state) => state.typeAxes);
+  const setTypeAxes = useDraft((state) => state.setTypeAxes);
+  const resetTypeAxes = () => setTypeAxes(DEFAULT_TYPE_AXES);
   const font = usePlaygroundFont();
   const style = {
-    fontFamily: `"${PLAYGROUND_FONT}", var(--font-display)`,
+    fontFamily: `"${PLAYGROUND_FONT}", var(--md-font-display)`,
     fontVariationSettings: AXES.map(({ key }) => `"${key}" ${axes[key]}`).join(', '),
   };
   const changed = AXES.some(({ key }) => axes[key] !== DEFAULT_TYPE_AXES[key]);
@@ -27,8 +28,8 @@ export function TypePanel() {
     <div className="space-y-8">
       <div className="space-y-2">
         <p className="max-w-[60ch] text-body-medium text-on-surface-variant">
-          Google Sans Flex is the typeface of Material 3 Expressive. Every axis below is live, and the whole site follows
-          along. Weight and width shift every style together, so headings stay heavier than body text.
+          Google Sans Flex is the typeface of Material 3 Expressive. Every axis below is live here and in the preview,
+          and reaches the whole site once you apply. Weight and width shift every style together, so headings stay heavier than body text.
         </p>
         <p role="status" className="text-body-small text-on-surface-variant">
           {font === 'loading' && 'Loading the full font with all six axes (about 1.4 MB).'}

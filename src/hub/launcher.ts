@@ -6,7 +6,8 @@ import { playCue } from '@/sound/cues';
 
 export interface HubProps {
   open: boolean;
-  onRequestClose: () => void;
+  /** Closes the hub back into the control that opened it. Resolves once it has. */
+  onRequestClose: () => Promise<void>;
 }
 
 interface HubState {
@@ -46,11 +47,24 @@ export function preloadHub(): Promise<void> {
   return mounted;
 }
 
+// Set by the hub module: starts its draft over from the applied look just
+// before each opening, so it opens on what the page shows.
+let beforeOpen: () => void = () => undefined;
+export function onBeforeHubOpens(callback: () => void): void {
+  beforeOpen = callback;
+}
+
 let origin: HTMLElement | null = null;
+
+/** The control the open hub came from, which it will close back into. */
+export function hubOrigin(): HTMLElement | null {
+  return origin;
+}
 
 export async function openHub(from: HTMLElement | null): Promise<void> {
   origin = from;
   await preloadHub();
+  beforeOpen();
   playCue('open');
   const show = () => flushSync(() => useHubStore.setState({ open: true }));
   if (canContainerTransform(from)) await containerTransform(from, SURFACE, 'open', show);

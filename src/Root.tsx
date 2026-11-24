@@ -1,7 +1,7 @@
 import { MotionConfig } from 'motion/react';
 import { StrictMode, useEffect, type ReactNode } from 'react';
 import { usePreferences } from './preferences/store';
-import { applyTypeAxes } from './preferences/typeAxes';
+import { applyAppearance } from './preferences/appearance';
 import { useTheme } from './theme/store';
 
 /**
@@ -13,15 +13,16 @@ import { useTheme } from './theme/store';
  */
 function RestoreSaved() {
   useEffect(() => {
-    // Type axes go onto <html> once per frame however fast a slider moves,
-    // since each change re-lays out the whole page. Subscribed before the
-    // rehydrate below, so saved axes apply too; until then the pre-paint
-    // script's copy stays on screen.
+    // Type and icon axes go onto <html> once per frame however fast they
+    // change, since each change re-lays out the whole page.
     let frame = 0;
     const unsubscribe = usePreferences.subscribe((state, previous) => {
-      if (state.typeAxes === previous.typeAxes) return;
+      if (state.typeAxes === previous.typeAxes && state.iconAxes === previous.iconAxes) return;
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => applyTypeAxes(usePreferences.getState().typeAxes));
+      frame = requestAnimationFrame(() => {
+        const { typeAxes, iconAxes } = usePreferences.getState();
+        applyAppearance(typeAxes, iconAxes);
+      });
     });
     return () => {
       cancelAnimationFrame(frame);
@@ -29,7 +30,12 @@ function RestoreSaved() {
     };
   }, []);
   useEffect(() => {
-    void usePreferences.persist.rehydrate();
+    // Until this runs, the pre-paint script's cached copy of the axes is on
+    // screen. Applying after the saved state loads also clears a stale cache.
+    void Promise.resolve(usePreferences.persist.rehydrate()).then(() => {
+      const { typeAxes, iconAxes } = usePreferences.getState();
+      applyAppearance(typeAxes, iconAxes);
+    });
     void useTheme.persist.rehydrate();
   }, []);
   return null;

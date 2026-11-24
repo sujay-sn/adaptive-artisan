@@ -88,7 +88,11 @@ export function springEasing(token: SpringToken): { duration: number; easing: st
   };
 }
 
-/** Custom properties for every spring. The Standard scheme applies under data-motion-scheme="standard". */
+/**
+ * Custom properties for every spring. Standard applies under
+ * data-motion-scheme="standard". Any element can name its scheme, which is how
+ * the hub previews a motion scheme before it reaches the page.
+ */
 export function springStylesheet(): string {
   const declarations = (scheme: MotionScheme) =>
     SPRING_KINDS.flatMap((kind) =>
@@ -97,7 +101,7 @@ export function springStylesheet(): string {
         return `--md-spring-${kind}-${speed}: ${easing};\n--md-spring-${kind}-${speed}-duration: ${duration}ms;`;
       }),
     ).join('\n');
-  return `:root {\n${declarations('expressive')}\n}\n:root[data-motion-scheme="standard"] {\n${declarations('standard')}\n}`;
+  return `:root,\n[data-motion-scheme="expressive"] {\n${declarations('expressive')}\n}\n[data-motion-scheme="standard"] {\n${declarations('standard')}\n}`;
 }
 
 /** Cubic-bezier easings, for CSS transitions and keyframes. */

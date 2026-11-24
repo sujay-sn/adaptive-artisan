@@ -39,7 +39,7 @@ export function NavigationRail({ active }: { active: SectionId }) {
                   className="group flex h-15 flex-col items-center gap-1 pt-1 text-on-surface-variant large:state-layer large:h-14 large:flex-row large:gap-3 large:rounded-full large:px-4 large:pt-0"
                 >
                   <span className="grid h-8 w-14 place-items-center rounded-full group-aria-[current=true]:text-on-secondary-container max-large:state-layer large:w-6">
-                    <Icon name={icon} fill={current} />
+                    <Icon name={icon} fill={current || undefined} />
                   </span>
                   <span className="text-label-medium group-aria-[current=true]:font-bold group-aria-[current=true]:text-on-surface large:text-label-large large:group-aria-[current=true]:text-on-secondary-container">
                     {label}

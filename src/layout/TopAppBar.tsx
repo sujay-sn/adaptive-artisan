@@ -51,7 +51,7 @@ export function TopAppBar({ active }: { active: SectionId }) {
                     }}
                     className={`state-layer flex h-14 items-center gap-3 rounded-full px-4 text-label-large ${current ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant'}`}
                   >
-                    <Icon name={icon} fill={current} />
+                    <Icon name={icon} fill={current || undefined} />
                     {label}
                   </a>
                 </li>

@@ -13,13 +13,13 @@ export function HubPreview() {
   const [notifications, setNotifications] = useState(true);
   return (
     <div className="space-y-5">
-      <p className="text-title-medium text-on-surface">Live preview</p>
+      <p className="text-title-medium text-on-surface">Preview</p>
       <Card variant="filled" tone="primary" className="rounded-xl p-5">
         <p className="font-display text-headline-small">{profile.name}</p>
         <p className="mt-1 text-body-medium">{profile.role}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button icon="description">Resume</Button>
-          <Button variant="outlined">GitHub</Button>
+          <Button variant="tonal">GitHub</Button>
         </div>
       </Card>
       <Card variant="outlined" className="rounded-lg-plus p-5">

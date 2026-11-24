@@ -364,7 +364,7 @@ export function RoomFront() {
     <g className="md-sleep">
       <rect x="1440" y="386" width="148" height="46" rx="14" fill={c('primary-container')} />
       <rect x="1440" y="386" width="20" height="46" rx="8" fill={c('surface-container-highest')} />
-      <g className="md-zzz" fill={c('on-surface-variant')} fontFamily="var(--font-display)" fontWeight="600">
+      <g className="md-zzz" fill={c('on-surface-variant')} fontFamily="var(--md-font-display)" fontWeight="600">
         <text x="1440" y="366" fontSize="14" style={{ '--i': 0 } as CSSProperties}>z</text>
         <text x="1452" y="352" fontSize="18" style={{ '--i': 1 } as CSSProperties}>z</text>
         <text x="1466" y="334" fontSize="22" style={{ '--i': 2 } as CSSProperties}>z</text>

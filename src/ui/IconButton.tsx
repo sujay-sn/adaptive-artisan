@@ -42,7 +42,7 @@ export function IconButton({ icon, label, variant = 'standard', selected, select
       aria-pressed={toggle ? selected : undefined}
       className={`state-layer press-morph inline-grid size-10 shrink-0 cursor-pointer place-items-center select-none [--md-shape-pressed:0.5rem] after:absolute after:-inset-1 after:content-[''] disabled:cursor-default disabled:text-on-surface/38 ${shape} ${color} ${className}`}
     >
-      <Icon name={toggle && selected && selectedIcon ? selectedIcon : icon} fill={toggle && selected} />
+      <Icon name={toggle && selected && selectedIcon ? selectedIcon : icon} fill={toggle ? selected : undefined} />
     </button>
   );
 }

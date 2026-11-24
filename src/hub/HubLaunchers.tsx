@@ -9,7 +9,7 @@ export function HubHost() {
   if (!requested) return null;
   return (
     <Suspense fallback={null}>
-      <LazyHub open={open} onRequestClose={() => void closeHub()} />
+      <LazyHub open={open} onRequestClose={closeHub} />
     </Suspense>
   );
 }
